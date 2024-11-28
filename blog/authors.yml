@@ -1,0 +1,23 @@
+jorge:
+  name: Jorge Morales Pou
+  title: Lead Software Engineer
+  url: https://github.com/jorgemoralespou
+  image_url: https://github.com/jorgemoralespou.png
+  page: true
+  socials:
+    # x: jorgemoralespou
+    github: jorgemoralespou
+
+graham:
+  name: Graham Dumpleton
+  title: Lead Software Engineer
+  url: https://github.com/grahamdumpleton
+  image_url: https://github.com/grahamdumpleton.png
+  page: true
+    # # customize the url of the author page at /blog/authors/<permalink>
+    # permalink: '/all-grahamdumpleton-articles'
+  socials:
+    # x: grahamdumpleton
+    linkedin: grahamdumpleton
+    github: grahamdumpleton
+    # newsletter: https://thisweekinreact.com

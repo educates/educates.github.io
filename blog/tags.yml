@@ -1,0 +1,54 @@
+educates:
+  label: Educates
+  permalink: /educates
+  description: Educates Training Platform
+
+getting-started:
+  label: Getting Started
+  permalink: /getting-started
+  description: Getting Started on Educates
+
+kind:
+  label: KinD
+  permalink: /kind
+  description: Kubernetes in Docker
+
+announcement:
+  label: Announcement
+  permalink: /announcement
+  description: Announcement
+
+releases:
+  label: Releases
+  permalink: /releases
+  description: Releases
+
+providers:
+  label: Providers
+  permalink: /providers
+  description: Providers
+
+installation:
+  label: Installation
+  permalink: /installation
+  description: Installation
+
+tips-and-tricks:
+  label: Tips and Tricks
+  permalink: /tips-and-tricks
+  description: Tips and Tricks
+
+kubernetes:
+  label: Kubernetes
+  permalink: /kubernetes
+  description: Kubernetes
+
+cli:
+  label: CLI
+  permalink: /cli
+  description: CLI
+
+resources:
+  label: Resources
+  permalink: /resources
+  description: Resources
