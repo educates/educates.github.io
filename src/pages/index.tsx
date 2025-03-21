@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 // import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Heading from '@theme/Heading';
+// import Heading from '@theme/Heading';
 import Img from '@theme/MDXComponents/Img';
 import { initializeItyped } from '../js/ityped';
 import { ImageAndText } from '../components/ImageAndText';

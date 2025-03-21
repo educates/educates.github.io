@@ -83,6 +83,11 @@ const config: Config = {
           sidebarPath: require.resolve("./sidebars.js"),
         },
         blog: {
+          blogTitle: "Educates Training Platform blog!",
+          blogDescription: "A blog about all things Educates!",
+          // blogSidebarTitle: "All posts",
+          // blogSidebarCount: "ALL",
+          // postsPerPage: "ALL",
           showReadingTime: true,
           feedOptions: {
             type: ["rss", "atom"],

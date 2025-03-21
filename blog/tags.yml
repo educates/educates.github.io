@@ -52,3 +52,13 @@ resources:
   label: Resources
   permalink: /resources
   description: Resources
+
+authoring:
+  label: Authoring
+  permalink: /authoring
+  description: Authoring workshops
+
+local:
+  label: local
+  permalink: /local
+  description: Local development
