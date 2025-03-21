@@ -1,7 +1,7 @@
 ---
 slug: educates-independent
 title: Educates becomes an independent OSS project
-authors: [jorge]
+authors: [jorge,graham]
 tags: [educates, announcement]
 ---
 I am happy to announce a significant change regarding the [Educates project](https://educates.dev), an interactive training platform for hands-on labs hosted on Kubernetes.
