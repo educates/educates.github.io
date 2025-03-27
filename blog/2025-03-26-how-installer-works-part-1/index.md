@@ -11,6 +11,7 @@ Before Educates 3.0, installation was limited to deploying the Educates Training
 
 In this article, we’ll explore how the new installer works, the supported cluster infrastructure providers in **Educates 3.2.0**, and the design decisions behind its implementation. Let’s dive in!
 
+<!-- truncate -->
 ---
 
 ## Backward Compatibility with Educates 2.x
