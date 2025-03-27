@@ -32,8 +32,8 @@ you don't get a browser warning when accessing a site served with them.
 
 ![Certificate not trusted](certificate_not_trusted.png)
 
-Event though the process is different on different operating systems, there's an open source tool that makes the process
-quite easy for all. [mkcert](https://mkcert.dev) is a simple tool for making locally-trusted development certificates. 
+Even though the process is different on different operating systems, there's an open source tool that makes the process
+quite easy for all. [mkcert](https://mkcert.dev) is a simple tool for making locally-trusted development certificates.
 It requires no configuration.
 
 We will use only the CA generation for the purpose of this blog, although in a later blog, we will also show how you
