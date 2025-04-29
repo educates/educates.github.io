@@ -22,3 +22,17 @@ graham:
     linkedin: grahamdumpleton
     github: grahamdumpleton
     # newsletter: https://thisweekinreact.com
+
+bill:
+  name: Bill Kable
+  title: Engineer
+  url: https://github.com/spinguard
+  image_url: https://github.com/billkable.png
+  page: true
+    # # customize the url of the author page at /blog/authors/<permalink>
+    # permalink: '/all-grahamdumpleton-articles'
+  socials:
+    # x: grahamdumpleton
+    linkedin: billkable
+    github: billkable
+    # newsletter: https://thisweekinreact.com
