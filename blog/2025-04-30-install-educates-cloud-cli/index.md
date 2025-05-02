@@ -5,13 +5,15 @@ authors: [bill]
 tags: [educates, installation, cli]
 ---
 
-In the [How the install works](./how-installer-works-part-1) post,
+In the [How the install works](/blog/how-installer-works-part-1) post,
 we covered the highlights of how the new **Educates 3.0** cli can be
 used to install Educates locally.
 
 In this post,
 we cover how to use the Educates CLI to install on a Cloud Provider,
 and specifically Google Cloud.
+
+<!-- truncate -->
 
 ---
 ## Prerequisites
@@ -164,7 +166,7 @@ they are not Standalone IaaS Cloud providers.
 
 ## Conclusion
 
-Like in the [How the install works](./how-installer-works-part-1) post,
+Like in the [How the install works](/blog/how-installer-works-part-1) post,
 We saw that the new installer in Educates 3.x simplifies the deployment process,
 and that Educates handles the heavy lifting of ingress, endpoint
 and certificate management.
