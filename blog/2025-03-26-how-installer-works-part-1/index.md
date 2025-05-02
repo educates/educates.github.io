@@ -168,8 +168,6 @@ clusterPackages:
 
 This transformation ensures that the configuration is optimized for the specific infrastructure provider while maintaining the flexibility to customize settings as needed.
 
-![Config to values](config_to_values.png)
-
 ---
 
 ## Supported Infrastructure Providers
