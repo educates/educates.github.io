@@ -26,7 +26,7 @@ export const ImageAndText = (props: { title: any; imageUrl: any; imageAlt: any; 
         <section className={clsx(`margin-top--lg margin-bottom--lg`, styles.flexContainer, gray && styles.bgGrey100)}>
             {!imageOnTheRight && <ImageElement imageUrl={imageUrl} imageAlt={imageAlt} />}
             <div className={clsx(styles.colMd6, styles.flexItem, styles.flexTextDiv)}>
-                <Heading as="h1" className='hero__title'>{title}</Heading>
+                <Heading as="h1" className='section_title'>{title}</Heading>
                 <span className={clsx(styles.colMd6, styles.centeredText)}>
                     {children}
                 </span>

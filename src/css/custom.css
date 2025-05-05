@@ -75,12 +75,12 @@
   width: 50%;
 }
 
-.hero__title {
+.section_title {
   font-size: 3em; /* Default font size for larger screens */
 }
 
 @media (max-width: 1200px) {
-  .hero__title {
+  .section_title {
     font-size: 2.5em;
   }
   .ityped {
@@ -92,7 +92,7 @@
 }
 
 @media (max-width: 992px) {
-  .hero__title {
+  .section_title {
     font-size: 2em;
   }
   .ityped {
@@ -104,7 +104,7 @@
 }
 
 @media (max-width: 768px) {
-  .hero__title {
+  .section_title {
     font-size: 1.5em;
   }
   .ityped {
@@ -116,7 +116,7 @@
 }
 
 @media (max-width: 576px) {
-  .hero__title {
+  .section_title {
     font-size: 1.2em;
   }
   .ityped {
