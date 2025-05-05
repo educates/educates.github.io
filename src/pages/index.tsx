@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, FC } from 'react';
 // import clsx from 'clsx';
 // import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -8,6 +8,7 @@ import Layout from '@theme/Layout';
 import Img from '@theme/MDXComponents/Img';
 import { initializeItyped } from '../js/ityped';
 import { ImageAndText } from '../components/ImageAndText';
+import Pricing from '../components/Pricing/Pricing';
 
 // create a list of strings
 const educatesHighlights = [
@@ -19,7 +20,7 @@ const educatesHighlights = [
 ];
 
 function MainSection({ title }: { title: string }): JSX.Element {
-  return (<div style={{
+  return (<section style={{
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -31,7 +32,7 @@ function MainSection({ title }: { title: string }): JSX.Element {
         alt="Project Logo"
         className="centered-image"
       />
-      {/* <Heading as="h1" className="hero__title">
+      {/* <Heading as="h1" className="section_title">
         {title}
       </Heading> */}
       <div className="typing-carousel">
@@ -44,7 +45,7 @@ function MainSection({ title }: { title: string }): JSX.Element {
         ))}
       </ul>
     </div>
-  </div>
+  </section>
   );
 }
 
@@ -71,6 +72,7 @@ export default function Home(): JSX.Element {
       >
         The Educates project provides a system for hosting interactive workshop environments in Kubernetes, or on top of a local container runtime. It can be used for self paced or supervised workshops. It can also be useful where you need to package up demos of applications hosted in Kubernetes or a local container runtime.
       </ImageAndText>
+      <Pricing />
     </Layout>
   );
 }
