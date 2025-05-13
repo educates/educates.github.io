@@ -45,5 +45,5 @@ The output should look like this:
 ```{ .text .no-copy title="Output" }
 educates version
 
-3.0.0
+3.3.2
 ```

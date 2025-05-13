@@ -38,7 +38,7 @@ Creating cluster "educates" ...
 Set kubectl context to "kind-educates"
 You can now use your cluster with:
 
-kubectl cluster-info --context kind-educates --kubeconfig /Users/daniel/.kube/config
+kubectl cluster-info --context kind-educates --kubeconfig /Users/you/.kube/config
 
 Have a question, bug, or feature request? Let us know! https://kind.sigs.k8s.io/#community 🙂
 Deploying local image registry

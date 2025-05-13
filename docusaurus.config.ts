@@ -22,6 +22,21 @@ const config: Config = {
   trailingSlash: false, // See: https://docusaurus.io/docs/deployment#docusaurusconfigjs-settings
   deploymentBranch: "main", // The branch your GitHub pages site is deployed from.
 
+  customFields: {
+    educatesProject: {
+      projectGitHubUrl: "https://github.com/educates/educates-training-platform",
+      contributingUrl: "https://github.com/educates/educates-training-platform/blob/develop/CONTRIBUTING.md",
+      sponsorshipUrl: "https://github.com/sponsors/educates",
+      descriptionTitle: "Interactive Training Platform",
+      description: "The Educates project provides a system for hosting interactive workshop environments in Kubernetes,"
+                      + "or on top of a local container runtime. It can be used for self paced or supervised workshops."
+                      + "It can also be useful where you need to package up demos of applications hosted in Kubernetes "
+                      + "or a local container runtime.",
+      screenshot: "/img/screenshot.png",
+      youtubeUrl: "https://www.youtube.com/@EducatesTrainingPlatform",
+    }
+  },
+
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
 
@@ -37,20 +52,6 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
-
-  // scripts: [
-  //   {
-  //     src: "/js/ityped.ts",
-  //     async: true,
-  //   },
-  // ],
-
-  // stylesheets: [
-  //   {
-  //     href: "/css/ityped.css",
-  //     type: "text/css",
-  //   },
-  // ],
 
   plugins: [
     [
@@ -117,6 +118,19 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: "img/logo.svg",
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
+    },
+    // announcementBar: {
+    //   id: 'support_us',
+    //   content:
+    //     'We are looking for support to help us maintain the project, please <a target="_blank" rel="noopener noreferrer" href="https://github.com/sponsors/educates">sponsor us</a>',
+    //   backgroundColor: '#fafbfc',
+    //   textColor: '#091E42',
+    //   isCloseable: true,
+    // },
     navbar: {
       title: "Educates Training Platform",
       logo: {
@@ -124,30 +138,16 @@ const config: Config = {
         src: "img/logo.svg",
       },
       items: [
-        { to: "/features", label: "Features", position: "left" },
-        // { to: "/team", label: "Team", position: "left" },
-        // { to: "/resources", label: "Resources", position: "left" },
-        // {
-        //   type: "docSidebar",
-        //   sidebarId: "tutorialSidebar",
-        //   position: "left",
-        //   label: "Ref docs",
-        // },
-        {
-          label: "Getting Started Guides",
-          to: "/getting-started-guides",
-        },
-        { to: "/blog", label: "Blog", position: "left" },
-        {
-          href: "https://docs.educates.dev",
-          label: "Docs",
-          position: "left",
-        },
-        {
-          href: "https://github.com/educates/educates-training-platform",
-          label: "GitHub",
-          position: "right",
-        },
+        { to: '/#use-cases', label: 'Use Cases', position: 'left' },
+        { to: '/#features', label: 'Features', position: 'left' },
+        { to: '/#team', label: 'Team', position: 'left' },
+        // { to: '/#references', label: 'References', position: 'left' },
+        { to: '/#pricing', label: 'Pricing', position: 'left' },
+        { to: '/getting-started-guides', label: 'Getting Started', position: 'left' },
+        { to: '/blog', label: 'Blog', position: 'left' },
+        { href: 'https://docs.educates.dev', label: 'Docs', position: 'left' },
+        { href: 'https://github.com/educates/educates-training-platform', label: 'GitHub', position: 'right' },
+        // { href: '/login', label: 'Login / Sign Up', position: 'right', className: 'navbar-login-button' },
       ],
     },
     footer: {
@@ -156,19 +156,17 @@ const config: Config = {
         {
           title: "Project",
           items: [
-            {
-              label: "Features",
-              to: "/features",
-            },
-            // {
-            //   label: "Team",
-            //   href: "/team",
-            // },
+            { label: "Use Cases", to: "/#use-cases" },
+            { label: "Features", to: "/#features" },
+            { label: "Team", to: "/#team" },
+            // { label: "References", to: "/#references" },
+            { label: "Pricing", to: "/#pricing" },
           ],
         },
         {
           title: "Docs",
           items: [
+            { label: "Blog", to: "/blog" },
             {
               label: "Getting Started Guides",
               to: "/getting-started-guides",
@@ -177,19 +175,11 @@ const config: Config = {
               label: "Reference docs",
               href: "https://docs.educates.dev",
             },
-            {
-              label: "Additional resources",
-              href: "/resources",
-            },
           ],
         },
         {
           title: "Community",
           items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
             {
               label: "Slack",
               href: "https://kubernetes.slack.com/archives/C05UWT4SKRV",
@@ -197,6 +187,10 @@ const config: Config = {
             {
               label: "GitHub",
               href: "https://github.com/educates/educates-training-platform",
+            },
+            {
+              label: "YouTube",
+              href: "https://www.youtube.com/@EducatesTrainingPlatform",
             },
           ],
         },
