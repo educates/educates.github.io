@@ -3,10 +3,10 @@ sidebar_position: 5
 ---
 # Getting Started Guides
 
-Over the next hours, we will take a look at [Educates](https://educates.dev),
+Let's take a look at [Educates Training Platform](https://educates.dev),
 an educational framework for building workshops powered by [Kubernetes](https://kubernetes.io).
 
-The outline will look like this:
+The outline of these guides look like this:
 
 1. [Prerequisites and Setup](/getting-started-guides/setup)
 2. [How does Educates work?](/getting-started-guides/about)
