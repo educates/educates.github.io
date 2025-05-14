@@ -10,10 +10,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { FaCheck } from 'react-icons/fa';
 import { PricingPlan, pricingPlans, pricingTitle, pricingDescription } from '@site/src/data/pricing';
-import { educatesProject } from '@site/src/data/project';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
-
-const PriceCard: React.FC<PricingPlan> = ({ name, price, features, isPopular, isOSS }) => (
+const PriceCard: React.FC<PricingPlan & { githubUrl: string, slackUrl: string }> = ({ name, price, features, isPopular, isOSS, githubUrl, slackUrl }) => (
   <Box
     sx={{
       bgcolor: 'white',
@@ -80,7 +79,7 @@ const PriceCard: React.FC<PricingPlan> = ({ name, price, features, isPopular, is
         {isOSS ? (
           <Button
             component="a"
-            href={educatesProject.projectGitHubUrl}
+            href={githubUrl}
             target="_blank"
             rel="noopener noreferrer"
             variant={isPopular ? 'contained' : 'outlined'}
@@ -93,11 +92,14 @@ const PriceCard: React.FC<PricingPlan> = ({ name, price, features, isPopular, is
         ) : (
           <Button
             variant={isPopular ? 'contained' : 'outlined'}
+            href={slackUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             color={isPopular ? 'primary' : 'inherit'}
             size="large"
             fullWidth
           >
-            Get Started
+            Contact us on Slack
           </Button>
         )}
       </Box>
@@ -107,6 +109,9 @@ const PriceCard: React.FC<PricingPlan> = ({ name, price, features, isPopular, is
 
 
 const Pricing: React.FC<{ sectionType: 'even' | 'odd' }> = ({ sectionType }) => {
+  const { siteConfig } = useDocusaurusContext();
+  const educatesProject = siteConfig.customFields.educatesProject;
+
   return (
     <Box className="section-box" id="pricing">
       <Box className={`section-container section-${sectionType}`}>
@@ -130,19 +135,23 @@ const Pricing: React.FC<{ sectionType: 'even' | 'odd' }> = ({ sectionType }) => 
                     {pricingDescription}
                   </Typography>
                 </Box>
-                <Grid container spacing={4}  justifyContent="center" sx={{ width: '100%', px: { xs: 2, md: 0 } }}>
+                <Grid container spacing={4} justifyContent="center" sx={{ width: '100%', px: { xs: 2, md: 0 } }}>
                   {pricingPlans.map((plan, index) => (
                     // @ts-ignore
-                    <Grid item xs={12} lg={Math.min(pricingPlans.length, 5)}  justifyContent="center" key={index}>
-                      <PriceCard {...plan} />
+                    <Grid item xs={12} lg={Math.min(pricingPlans.length, 5)} justifyContent="center" key={index}>
+                      <PriceCard {...plan} githubUrl={educatesProject.projectGitHubUrl} slackUrl={educatesProject.projectSlackUrl} />
                     </Grid>
                   ))}
                 </Grid>
                 <Box textAlign="center" pt={4}>
                   <Typography variant="body2" color="text.secondary">
                     Need a custom plan?{' '}
-                    <Button variant="text" color="primary">
-                      Contact us
+                    <Button variant="text"
+                      color="primary"
+                      href={educatesProject.projectSlackUrl}
+                      target="_blank"
+                      rel="noopener noreferrer">
+                      Contact us on Slack
                     </Button>
                   </Typography>
                 </Box>
