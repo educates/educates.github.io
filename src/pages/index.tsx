@@ -11,7 +11,7 @@ import FeaturedContent from '../components/sections/FeaturedContent';
 import featuredCards from '../data/featuredContent';
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
-  var index = 0;
+  var index = 1;
 
   function getSectionType(index: number) {
     return index % 2 === 0 ? 'odd' : 'even';
