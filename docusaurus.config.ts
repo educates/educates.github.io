@@ -155,7 +155,7 @@ const config: Config = {
             { to: "/#team", label: "Team" },
             // { to: '/#references', label: 'References', position: 'left' },
             { to: "/#pricing", label: "Pricing" },
-            { to: "/#featuredContent", label: "Featured Content" },
+            { to: "/#featured-content", label: "Featured Content" },
           ],
         },
         { to: "/downloads", label: "Downloads", position: "left" },
@@ -197,7 +197,7 @@ const config: Config = {
         {
           title: "Docs",
           items: [
-            { label: "Featured Content", to: "/#featuredContent" },
+            { label: "Featured Content", to: "/#featured-content" },
             { label: "Blog", to: "/blog" },
             {
               label: "Getting Started Guides",

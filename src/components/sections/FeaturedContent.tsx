@@ -33,7 +33,7 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({
   sectionType,
 }) => {
   return (
-    <Box className="section-box" id="featuredContent">
+    <Box className="section-box" id="featured-content">
       <Box className={`section-container section-${sectionType}`}>
         <Box className="section-content">
           <Container maxWidth={false} sx={{ maxWidth: '2200px', height: '100%', mx: 'auto', p: 0 }}>
