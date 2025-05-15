@@ -22,12 +22,13 @@ const Carrousel: React.FC<CarrouselProps> = ({ images, altPrefix = 'Carousel ima
   const [currentImage, setCurrentImage] = useState(0);
   const [paused, setPaused] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const interval = 3000;
 
   useEffect(() => {
     if (!paused) {
       intervalRef.current = setInterval(() => {
         setCurrentImage((prev) => (prev + 1) % images.length);
-      }, 3000);
+      }, interval);
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -96,7 +97,21 @@ const Carrousel: React.FC<CarrouselProps> = ({ images, altPrefix = 'Carousel ima
         <Typography variant="h6" component="h3" sx={{ mb: 1 }}>
           {title}
         </Typography>
-        <Typography color="text.secondary" sx={{ maxWidth: 800, mx: 'auto' }}>
+        <Typography 
+          color="text.secondary" 
+          sx={{ 
+            maxWidth: 800, 
+            mx: 'auto',
+            height: '6rem', // Fixed height for 3 lines (1.5rem per line)
+            minHeight: '6rem',
+            lineHeight: '1.5rem',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 4, // Limit to 3 lines
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
           {description}
         </Typography>
       </Box>

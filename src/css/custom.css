@@ -236,6 +236,7 @@ body.navbar-bg-transparent::before {
 }
 
 .menu__link,
+.dropdown__link,
 .navbar__item:not(.navbar-login-button) {
   color: var(--headerColor) !important;
   background: none !important;
@@ -249,6 +250,7 @@ body.navbar-bg-transparent::before {
 }
 
 .menu__link:hover,
+.dropdown__link:hover,
 .navbar__item:not(.navbar-login-button):hover,
 .navbar__item:not(.navbar-login-button):focus {
   color: var(--headerColor) !important;

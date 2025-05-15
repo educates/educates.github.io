@@ -16,7 +16,6 @@ export default function LayoutWrapper(props) {
 
   useEffect(() => {
     // Wait for DOM to be ready
-    console.log('location.pathname on change of path', location.pathname);
     setTimeout(() => {
       if (location.pathname !== '/' && location.pathname !== '/index.html') {
         document.body.classList.add('navbar-bg-transparent');

@@ -30,6 +30,8 @@ const config: Config = {
       contributingUrl:
         "https://github.com/educates/educates-training-platform/blob/develop/CONTRIBUTING.md",
       sponsorshipUrl: "https://github.com/sponsors/educates",
+      downloadsUrl:
+        "https://github.com/educates/educates-training-platform/releases",
       descriptionTitle: "Interactive Training Platform",
       description:
         "The Educates project provides a system for hosting interactive workshop environments in Kubernetes, " +
@@ -143,15 +145,30 @@ const config: Config = {
         src: "img/logo.svg",
       },
       items: [
-        { to: "/#use-cases", label: "Use Cases", position: "left" },
-        { to: "/#features", label: "Features", position: "left" },
-        { to: "/#team", label: "Team", position: "left" },
-        // { to: '/#references', label: 'References', position: 'left' },
-        { to: "/#pricing", label: "Pricing", position: "left" },
         {
-          to: "/getting-started-guides",
-          label: "Getting Started",
+          type: "dropdown",
+          label: "Project",
           position: "left",
+          items: [
+            { to: "/#use-cases", label: "Use Cases" },
+            { to: "/#features", label: "Features" },
+            { to: "/#team", label: "Team" },
+            // { to: '/#references', label: 'References', position: 'left' },
+            { to: "/#pricing", label: "Pricing" },
+            { to: "/#featuredContent", label: "Featured Content" },
+          ],
+        },
+        { to: "/downloads", label: "Downloads", position: "left" },
+        {
+          type: "dropdown",
+          label: "Guides",
+          position: "left",
+          items: [
+            { to: "/getting-started-guides", label: "Getting Started" },
+            { to: "/getting-started-guides/setup", label: "Setup" },
+            { to: "/getting-started-guides/about", label: "About" },
+            { to: "/getting-started-guides/authoring", label: "Authoring" },
+          ],
         },
         { to: "/blog", label: "Blog", position: "left" },
         { href: "https://docs.educates.dev", label: "Docs", position: "right" },
@@ -174,11 +191,13 @@ const config: Config = {
             { label: "Team", to: "/#team" },
             // { label: "References", to: "/#references" },
             { label: "Pricing", to: "/#pricing" },
+            { label: "Downloads", to: "/downloads" },
           ],
         },
         {
           title: "Docs",
           items: [
+            { label: "Featured Content", to: "/#featuredContent" },
             { label: "Blog", to: "/blog" },
             {
               label: "Getting Started Guides",
