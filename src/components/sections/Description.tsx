@@ -4,7 +4,9 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-// import { educatesProject } from '@site/src/data/project';
+import Carrousel from '../Carrousel/Carrousel';
+import { carouselImages } from '../../data/description';
+
 
 const Description: React.FC<{ sectionType: 'even' | 'odd' }> = ({ sectionType }) => {
   const { siteConfig } = useDocusaurusContext();
@@ -24,9 +26,9 @@ const Description: React.FC<{ sectionType: 'even' | 'odd' }> = ({ sectionType })
                 alignItems: 'center',
               }}
             >
-              <Grid container alignItems="center" spacing={5} sx={{ height: '100%' }}>
+              <Grid container alignItems="center" justifyContent="center" spacing={5} sx={{ height: '100%' }} className="description-section-grid">
                 {/* @ts-ignore */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                   <Typography
                     component="h1"
                     variant="h2"
@@ -45,15 +47,8 @@ const Description: React.FC<{ sectionType: 'even' | 'odd' }> = ({ sectionType })
                   </Typography>
                 </Grid>
                 {/* @ts-ignore */}
-                <Grid item xs={12} md={6} sx={{ display: 'flex' , justifyContent: 'center', alignItems: 'center' }}>
-                  <Box sx={{ width: '80%' }}>
-                    <img
-                      // @ts-ignore
-                      src={educatesProject.screenshot}
-                      alt="Educates Platform"
-                      style={{ width: '100%', objectFit: 'contain', borderRadius: 16 }}
-                    />
-                  </Box>
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Carrousel images={carouselImages} imageClassName="description-section-image" />
                 </Grid>
               </Grid>
             </Box>

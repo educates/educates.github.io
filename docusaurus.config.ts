@@ -24,21 +24,28 @@ const config: Config = {
 
   customFields: {
     educatesProject: {
-      projectGitHubUrl: "https://github.com/educates/educates-training-platform",
-      contributingUrl: "https://github.com/educates/educates-training-platform/blob/develop/CONTRIBUTING.md",
+      projectGitHubUrl:
+        "https://github.com/educates/educates-training-platform",
+      projectSlackUrl: "https://kubernetes.slack.com/archives/C05UWT4SKRV",
+      contributingUrl:
+        "https://github.com/educates/educates-training-platform/blob/develop/CONTRIBUTING.md",
       sponsorshipUrl: "https://github.com/sponsors/educates",
+      downloadsUrl:
+        "https://github.com/educates/educates-training-platform/releases",
       descriptionTitle: "Interactive Training Platform",
-      description: "The Educates project provides a system for hosting interactive workshop environments in Kubernetes,"
-                      + "or on top of a local container runtime. It can be used for self paced or supervised workshops."
-                      + "It can also be useful where you need to package up demos of applications hosted in Kubernetes "
-                      + "or a local container runtime.",
+      description:
+        "The Educates project provides a system for hosting interactive workshop environments in Kubernetes, " +
+        "or on top of a local container runtime. It can be used for self paced or supervised workshops. " +
+        "It can also be useful where you need to package up demos of applications hosted in Kubernetes " +
+        "or a local container runtime.",
       screenshot: "/img/screenshot.png",
       youtubeUrl: "https://www.youtube.com/@EducatesTrainingPlatform",
-    }
+    },
   },
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
+  onBrokenAnchors: "warn",
 
   markdown: {
     mermaid: true,
@@ -119,7 +126,7 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/logo.svg",
     colorMode: {
-      defaultMode: 'light',
+      defaultMode: "light",
       disableSwitch: true,
       respectPrefersColorScheme: false,
     },
@@ -138,15 +145,38 @@ const config: Config = {
         src: "img/logo.svg",
       },
       items: [
-        { to: '/#use-cases', label: 'Use Cases', position: 'left' },
-        { to: '/#features', label: 'Features', position: 'left' },
-        { to: '/#team', label: 'Team', position: 'left' },
-        // { to: '/#references', label: 'References', position: 'left' },
-        { to: '/#pricing', label: 'Pricing', position: 'left' },
-        { to: '/getting-started-guides', label: 'Getting Started', position: 'left' },
-        { to: '/blog', label: 'Blog', position: 'left' },
-        { href: 'https://docs.educates.dev', label: 'Docs', position: 'left' },
-        { href: 'https://github.com/educates/educates-training-platform', label: 'GitHub', position: 'right' },
+        {
+          type: "dropdown",
+          label: "Project",
+          position: "left",
+          items: [
+            { to: "/#use-cases", label: "Use Cases" },
+            { to: "/#features", label: "Features" },
+            { to: "/#team", label: "Team" },
+            // { to: '/#references', label: 'References', position: 'left' },
+            { to: "/#pricing", label: "Pricing" },
+            { to: "/#featured-content", label: "Featured Content" },
+          ],
+        },
+        { to: "/downloads", label: "Downloads", position: "left" },
+        {
+          type: "dropdown",
+          label: "Guides",
+          position: "left",
+          items: [
+            { to: "/getting-started-guides", label: "Getting Started" },
+            { to: "/getting-started-guides/setup", label: "Setup" },
+            { to: "/getting-started-guides/about", label: "About" },
+            { to: "/getting-started-guides/authoring", label: "Authoring" },
+          ],
+        },
+        { to: "/blog", label: "Blog", position: "left" },
+        { href: "https://docs.educates.dev", label: "Docs", position: "right" },
+        {
+          href: "https://github.com/educates/educates-training-platform",
+          label: "GitHub",
+          position: "right",
+        },
         // { href: '/login', label: 'Login / Sign Up', position: 'right', className: 'navbar-login-button' },
       ],
     },
@@ -161,11 +191,13 @@ const config: Config = {
             { label: "Team", to: "/#team" },
             // { label: "References", to: "/#references" },
             { label: "Pricing", to: "/#pricing" },
+            { label: "Downloads", to: "/downloads" },
           ],
         },
         {
           title: "Docs",
           items: [
+            { label: "Featured Content", to: "/#featured-content" },
             { label: "Blog", to: "/blog" },
             {
               label: "Getting Started Guides",

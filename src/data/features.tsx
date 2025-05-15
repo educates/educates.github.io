@@ -44,12 +44,12 @@ export const features: FeatureProps[] = [
     },
     {
         title: 'Developer Friendly',
-        description: 'The platform is designed to be developer friendly, with a focus on ease of use and customization.',
+        description: 'The platform is designed to be developer friendly, with a focus on ease of use and content creation.',
         icon: FaCode,
     },
     {
         title: 'Customizable',
-        description: 'Customize the platform to your specific training needs and requirements.',
+        description: 'Provide your own theme and branding to make the platform your own.',
         icon: FaPencilAlt,
     },
     {
@@ -59,7 +59,7 @@ export const features: FeatureProps[] = [
     },
     {
         title: 'Open Source',
-        description: 'The platform is open source, so you can customize it to your specific training needs and requirements.',
+        description: 'The platform is Open Source and free to use and licensed under the Apache 2.0 license.',
         icon: FaCode,
     },
 ];

@@ -6,20 +6,36 @@ export default function LayoutWrapper(props) {
   const location = useLocation();
 
   useEffect(() => {
-    // Add/remove home-navbar-bg based on current path
-    if (location.pathname === '/' || location.pathname === '/index.html') {
-      document.body.classList.add('home-navbar-bg');
+    // This runs on mount, even before router is ready
+    if (location.pathname !== '/' && location.pathname !== '/index.html') {
+      document.body.classList.add('navbar-bg-transparent');
     } else {
-      document.body.classList.remove('home-navbar-bg');
+      document.body.classList.remove('navbar-bg-transparent');
     }
+  }, []);
+
+  useEffect(() => {
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      if (location.pathname !== '/' && location.pathname !== '/index.html') {
+        document.body.classList.add('navbar-bg-transparent');
+      } else {
+        document.body.classList.remove('navbar-bg-transparent');
+      }
+    }, 0);
   }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        document.body.classList.add('navbar-bg-transparent');
-      } else {
-        document.body.classList.remove('navbar-bg-transparent');
+      // Use a lower threshold on mobile
+      if (location.pathname === '/' || location.pathname === '/index.html') {
+        const isMobile = window.innerWidth <= 600;
+        const threshold = isMobile ? 80 : 200;
+        if (window.scrollY > threshold) {
+          document.body.classList.add('navbar-bg-transparent');
+        } else {
+          document.body.classList.remove('navbar-bg-transparent');
+        }
       }
     };
     window.addEventListener('scroll', handleScroll);
