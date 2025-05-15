@@ -29,5 +29,12 @@ const featuredCards: FeaturedCardData[] = [
   //   ctaLabel: 'Read blog',
   //   ctaHref: '/blog/verify-educates-cloud-install',
   // },
+  {
+    image: '/img/logo.svg',
+    title: 'Managing multiple versions of the Educates CLI',
+    description: 'Learn how to manage different versions of Educates CLI with our educatesenv tool',
+    ctaLabel: 'Read blog',
+    ctaHref: '/blog/managing-multiple-versions-of-educates-cli',
+  },
 ];
 export default featuredCards;
