@@ -171,6 +171,7 @@ const config: Config = {
           ],
         },
         { to: "/blog", label: "Blog", position: "left" },
+        { href: "https://hub.educates.dev", label: "Hub", position: "right" },
         { href: "https://docs.educates.dev", label: "Docs", position: "right" },
         {
           href: "https://github.com/educates/educates-training-platform",
@@ -212,6 +213,10 @@ const config: Config = {
         {
           title: "Community",
           items: [
+            {
+              label: "Educates Hub",
+              href: "https://hub.educates.dev",
+            },
             {
               label: "Slack",
               href: "https://kubernetes.slack.com/archives/C05UWT4SKRV",

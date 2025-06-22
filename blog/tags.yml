@@ -62,3 +62,13 @@ local:
   label: local
   permalink: /local
   description: Local development
+
+workshops:
+  label: Workshops
+  permalink: /workshops
+  description: Workshops
+
+hub:
+  label: Hub
+  permalink: /hub
+  description: Hub
