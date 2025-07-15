@@ -72,3 +72,8 @@ hub:
   label: Hub
   permalink: /hub
   description: Hub
+
+terraform:
+  label: Terraform
+  permalink: /terraform
+  description: Terraform
