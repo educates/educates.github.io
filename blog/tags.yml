@@ -77,3 +77,13 @@ terraform:
   label: Terraform
   permalink: /terraform
   description: Terraform
+
+resolver:
+  label: Resolver
+  permalink: /resolver
+  description: Resolver
+
+dns:
+  label: DNS
+  permalink: /dns
+  description: DNS
