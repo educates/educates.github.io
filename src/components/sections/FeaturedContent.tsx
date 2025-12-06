@@ -54,57 +54,57 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({
                   {/* <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 800, mx: 'auto' }}>
                     {description}
                   </Typography> */}
-             <Button
-               variant="outlined"
-               href={seeMoreHref}
-               sx={{ borderRadius: '2rem', fontWeight: 500, px: 3 }}
-             >
-               {seeMoreLabel}
-             </Button>
-                </Box>          
-          <Grid container spacing={4}>
-            {cards.map((card, idx) => (
-              // @ts-ignore
-              <Grid item xs={12} md={4} key={idx} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Card
-                  sx={{
-                    width: '100%',
-                    maxWidth: 370,
-                    bgcolor: 'background.paper',
-                    borderRadius: 3,
-                    boxShadow: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'stretch',
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="160"
-                    image={card.image || 'https://via.placeholder.com/370x160?text=Image'}
-                    alt={card.title}
-                    sx={{ objectFit: 'cover', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                  />
-                  <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <Typography variant="h5" component="h3" sx={{ mb: 1, fontWeight: 600 }}>
-                      {card.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                      {card.description}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      href={card.ctaHref}
-                      sx={{ borderRadius: '2rem', fontWeight: 500, mt: 'auto' }}
-                    >
-                      {card.ctaLabel}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          </Stack>
+                  <Button
+                    variant="outlined"
+                    href={seeMoreHref}
+                    sx={{ borderRadius: '2rem', fontWeight: 500, px: 3 }}
+                  >
+                    {seeMoreLabel}
+                  </Button>
+                </Box>
+                <Grid container spacing={4}>
+                  {cards.map((card, idx) => (
+                    // @ts-ignore
+                    <Grid item xs={12} md={4} key={idx} sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <Card
+                        sx={{
+                          width: '100%',
+                          maxWidth: 370,
+                          bgcolor: 'background.paper',
+                          borderRadius: 3,
+                          boxShadow: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'stretch',
+                        }}
+                      >
+                        <CardMedia
+                          component="img"
+                          height="160"
+                          image={card.image || 'https://via.placeholder.com/370x160?text=Image'}
+                          alt={card.title}
+                          sx={{ objectFit: 'cover', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
+                        />
+                        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                          <Typography variant="h5" component="h3" sx={{ mb: 1, fontWeight: 600 }}>
+                            {card.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                            {card.description}
+                          </Typography>
+                          <Button
+                            variant="outlined"
+                            href={card.ctaHref}
+                            sx={{ borderRadius: '2rem', fontWeight: 500, mt: 'auto' }}
+                          >
+                            {card.ctaLabel}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Stack>
             </Box>
           </Container>
         </Box>

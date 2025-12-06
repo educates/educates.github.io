@@ -74,6 +74,18 @@ const config: Config = {
       },
     ],
     [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "about-educates",
+        sidebarPath: "./sidebars.ts",
+        path: "./about-educates",
+        routeBasePath: "about-educates",
+        // Please change this to your repo.
+        // Remove this to remove the "edit this page" links.
+        editUrl: "https://github.com/educates/educates.github.io/tree/develop/",
+      },
+    ],
+    [
       "@docusaurus/plugin-ideal-image",
       {
         quality: 70,
@@ -98,8 +110,8 @@ const config: Config = {
         blog: {
           blogTitle: "Educates Training Platform blog!",
           blogDescription: "A blog about all things Educates!",
-          // blogSidebarTitle: "All posts",
-          // blogSidebarCount: "ALL",
+          blogSidebarTitle: "All posts",
+          blogSidebarCount: "ALL",
           // postsPerPage: "ALL",
           showReadingTime: true,
           feedOptions: {
@@ -163,6 +175,17 @@ const config: Config = {
           ],
         },
         { to: "/downloads", label: "Downloads", position: "left" },
+        {
+          type: "dropdown",
+          label: "About",
+          position: "left",
+          items: [
+            { to: "/about-educates", label: "Architecture" },
+            { to: "/about-educates/concepts", label: "Concepts" },
+            { to: "/about-educates/workflows", label: "Workflows" },
+            { to: "/about-educates/history", label: "History" },
+          ],
+        },
         {
           type: "dropdown",
           label: "Guides",
