@@ -1,8 +1,7 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
+title: Workflows
 ---
-
-# Workflows
 
 This page explains how Educates works from a workflow perspective, covering the lifecycle of workshops and sessions.
 

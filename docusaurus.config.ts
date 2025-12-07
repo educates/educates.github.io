@@ -181,9 +181,11 @@ const config: Config = {
           position: "left",
           items: [
             { to: "/about-educates", label: "Architecture" },
-            { to: "/about-educates/concepts", label: "Concepts" },
+            { to: "/about-educates/deployment", label: "Deployment" },
+            { to: "/about-educates/workshop-capabilities", label: "Workshop Capabilities" },
             { to: "/about-educates/workflows", label: "Workflows" },
-            { to: "/about-educates/history", label: "History" },
+            { to: "/about-educates/local-dev", label: "Local Development" },
+            { to: "/about-educates/history", label: "Educates History" },
           ],
         },
         {

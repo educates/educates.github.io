@@ -1,8 +1,7 @@
 ---
-sidebar_position: 4
+sidebar_position: 6
+title: Educates History
 ---
-
-# Educates History
 
 This page documents the evolution of the Educates project from its inception as an internal tool to becoming an independent open-source project.
 
@@ -11,15 +10,21 @@ This page documents the evolution of the Educates project from its inception as 
 The following timeline shows the major milestones in Educates' history:
 
 ```mermaid
-gitGraph
-    commit id: "Dec 2019 - Educates 1.x Born"
-    commit id: "Sept 2020 - Spring One Conference"
-    commit id: "Apr 2021 - Tanzu Learning Center"
-    commit id: "Feb 2022 - Educates 2.x Launch"
-    commit id: "Nov 2023 - Broadcom Acquisition"
-    commit id: "Aug 2024 - Educates 3.x Release"
-    commit id: "Oct 2024 - Independent OSS Project"
-    commit id: "Jun 2025 - Educates Hub Launch"
+---
+config:
+  timeline:
+    disableMulticolor: true
+---
+timeline
+    title: "Educates History"
+    Dec 2019: "Educates 1.x Born"
+    Sept 2020: "Spring One Conference"
+    Apr 2021: "Tanzu Learning Center"
+    Feb 2022: "Educates 2.x Launch"
+    Nov 2023: "Broadcom Acquisition"
+    Aug 2024: "Educates 3.x Release"
+    Oct 2024: "Independent OSS Project"
+    Jun 2025: "Educates Hub Launch"
 ```
 
 ## Key Milestones
@@ -38,7 +43,7 @@ Educates was originally created as an internal tool for the VMware Tanzu Develop
 Educates proved its scalability and reliability when it was used at the Spring One conference to run **over 5,000 workshop executions**. This large-scale deployment demonstrated that Educates could handle enterprise-level training scenarios and validated the platform's architecture and design decisions.
 
 **Achievements:**
-- Successfully scaled to support thousands of concurrent users
+- Successfully scaled to support hundreds of concurrent users
 - Validated the platform's reliability and performance
 - Demonstrated real-world applicability for large conferences
 
@@ -54,9 +59,9 @@ VMware launched **Tanzu Learning Center** using Educates 1.x as its foundation. 
 ### February 2022 - Educates 2.x Launch
 
 The Developer Advocates team resumed active development on Educates to create version 2.x, which was designed to power multiple learning platforms:
-- **Tanzu.academy** - VMware Tanzu training platform
-- **Kube.academy** - Kubernetes training platform
-- **Spring.academy** - Spring framework training platform
+- **[Tanzu.academy](https://tanzu.academy)** - VMware Tanzu training platform
+- **[Kube.academy](https://kube.academy)** - Kubernetes training platform
+- **[Spring.academy](https://spring.academy)** - Spring framework training platform
 
 **Version 2.x Improvements:**
 - Enhanced workshop authoring capabilities
