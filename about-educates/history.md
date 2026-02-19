@@ -16,20 +16,20 @@ config:
     disableMulticolor: true
 ---
 timeline
-    title: "Educates History"
-    Dec 2019: "Educates 1.x Born"
-    Sept 2020: "Spring One Conference"
-    Apr 2021: "Tanzu Learning Center"
-    Feb 2022: "Educates 2.x Launch"
-    Nov 2023: "Broadcom Acquisition"
-    Aug 2024: "Educates 3.x Release"
-    Oct 2024: "Independent OSS Project"
-    Jun 2025: "Educates Hub Launch"
+    title Educates History
+    Dec 2019: Educates 1.x
+    Sept 2020: Spring One Conference
+    Apr 2021: Tanzu Learning Center
+    Feb 2022: Educates 2.x
+    Nov 2023: Broadcom Acquisition
+    Aug 2024: Educates 3.x Release
+    Oct 2024: Independent OSS Project
+    Jun 2025: Educates Hub Launch
 ```
 
 ## Key Milestones
 
-### December 2019 - Educates 1.x is Born
+### December 2019 - Educates 1.x
 
 Educates was originally created as an internal tool for the VMware Tanzu Developer Advocates team. The team needed a platform to train users in Kubernetes and showcase developer tools and applications running on Kubernetes. This initial version laid the foundation for what would become a comprehensive training platform.
 

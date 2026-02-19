@@ -87,3 +87,8 @@ dns:
   label: DNS
   permalink: /dns
   description: DNS
+
+ai:
+  label: AI
+  permalink: /ai
+  description: AI

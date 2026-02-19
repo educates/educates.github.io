@@ -45,7 +45,10 @@ const config: Config = {
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  onBrokenAnchors: "warn",
+  // Set to "ignore" because navbar/footer link to homepage section anchors
+  // (e.g. /#use-cases, /#features) which are rendered by React components
+  // with id props. Docusaurus's static checker can't detect these.
+  onBrokenAnchors: "ignore",
 
   markdown: {
     mermaid: true,
@@ -59,6 +62,38 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
+
+  headTags: [
+    {
+      tagName: "script",
+      attributes: { type: "application/ld+json" },
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Educates Training Platform",
+        description:
+          "A system for hosting interactive workshop environments in Kubernetes, or on top of a local container runtime.",
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Kubernetes",
+        url: "https://educates.dev",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+        },
+        sourceOrganization: {
+          "@type": "Organization",
+          name: "Educates",
+          url: "https://educates.dev",
+          logo: "https://educates.dev/img/educates-social-card.png",
+          sameAs: [
+            "https://github.com/educates/educates-training-platform",
+            "https://www.youtube.com/@EducatesTrainingPlatform",
+          ],
+        },
+      }),
+    },
+  ],
 
   plugins: [
     [
@@ -140,7 +175,12 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: "img/logo.svg",
+    image: "img/educates-social-card.png",
+    metadata: [
+      { name: "keywords", content: "kubernetes, training, workshops, interactive learning, hands-on labs, developer education, cloud native, containers" },
+      { name: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
     colorMode: {
       defaultMode: "light",
       disableSwitch: true,

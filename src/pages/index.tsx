@@ -1,6 +1,7 @@
 import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
+import Head from '@docusaurus/Head';
 import Description from '../components/sections/Description';
 import Features from '../components/sections/Features';
 import UseCases from '../components/sections/UseCases';
@@ -19,8 +20,11 @@ export default function Home(): JSX.Element {
 
   return (
     <Layout
-      title={`${siteConfig.title}`}
-      description="Interactive workshop environments in Kubernetes. Educates provides a system for hosting interactive workshop environments in Kubernetes, or on top of a local container runtime.">
+      title="Interactive Workshop Environments on Kubernetes"
+      description="Educates provides a system for hosting interactive workshop environments in Kubernetes, or on top of a local container runtime. Use it for self-paced or supervised workshops and application demos.">
+      <Head>
+        <link rel="canonical" href="https://educates.dev/" />
+      </Head>
       <Description sectionType={getSectionType(index++)} />
       <UseCases sectionType={getSectionType(index++)} />
       <Features sectionType={getSectionType(index++)} />

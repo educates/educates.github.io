@@ -118,7 +118,7 @@ graph LR
 
 ### Content Development Process
 
-1. **Content Creation**: Workshop authors write content in Markdown or AsciiDoc
+1. **Content Creation**: Workshop authors write content in Markdown (using Hugo format)
 2. **Local Testing**: Content is tested using the local Educates environment
 3. **Image Building**: Content is packaged into an OCI container image
 4. **Image Publishing**: Image is pushed to a container registry
