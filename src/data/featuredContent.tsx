@@ -3,10 +3,10 @@ import { FeaturedCardData } from "../components/sections/FeaturedContent";
 const featuredCards: FeaturedCardData[] = [
   {
     image: '/img/logo.svg',
-    title: 'Educates is now independent',
-    description: 'The Educates Training Platform is is now available as an Open Source independent product. Learn more about it here.',
+    title: 'When AI content isn\'t slop',
+    description: 'The backlash against AI slop is justified, but risks dismissing purposeful content along with the noise.',
     ctaLabel: 'Read blog',
-    ctaHref: '/blog/educates-independent',
+    ctaHref: '/blog/when-ai-content-isnt-slop',
   },
   {
     image: '/img/logo.svg',
@@ -14,6 +14,13 @@ const featuredCards: FeaturedCardData[] = [
     description: 'Educates Hub is your new central destination for discovering, sharing, and managing resources for your workshops. Our goal is to create a vibrant ecosystem where the community can easily access high-quality content and tools to make the most out of Educates.',
     ctaLabel: 'Read blog',
     ctaHref: '/blog/announcing-educates-hub',
+  },
+  {
+    image: '/img/logo.svg',
+    title: 'Educates is now independent',
+    description: 'The Educates Training Platform is is now available as an Open Source independent product. Learn more about it here.',
+    ctaLabel: 'Read blog',
+    ctaHref: '/blog/educates-independent',
   },
   // {
   //   image: '/img/featured-content/working_locally.jpeg',
@@ -36,12 +43,12 @@ const featuredCards: FeaturedCardData[] = [
   //   ctaLabel: 'Read blog',
   //   ctaHref: '/blog/verify-educates-cloud-install',
   // },
-  {
-    image: '/img/logo.svg',
-    title: 'Managing multiple versions of the Educates CLI',
-    description: 'Learn how to manage different versions of Educates CLI with our educatesenv tool',
-    ctaLabel: 'Read blog',
-    ctaHref: '/blog/managing-multiple-versions-of-educates-cli',
-  },
+  // {
+  //   image: '/img/logo.svg',
+  //   title: 'Managing multiple versions of the Educates CLI',
+  //   description: 'Learn how to manage different versions of Educates CLI with our educatesenv tool',
+  //   ctaLabel: 'Read blog',
+  //   ctaHref: '/blog/managing-multiple-versions-of-educates-cli',
+  // },
 ];
 export default featuredCards;
