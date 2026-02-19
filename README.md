@@ -125,8 +125,8 @@ To deconstruct the above command:
 - You need to pull down `main` branch and merge it into `develop` locally for your next iteration.
   ```
   git checkout main
-  git pull
+  git pull origin main
   git checkout develop
   git merge main
-  git push
+  git push origin develop
   ```
