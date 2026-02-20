@@ -2,152 +2,118 @@
 slug: fixed-ip-bridge-macos
 title: Maintaining a Fixed IP for Educates Local Clusters on macOS
 authors: [jorge]
-tags: [educates, local, networking, macos, kind]
+tags: [educates, local, tips-and-tricks, dns, macos]
 ---
 
-When running Educates locally on macOS, your cluster's accessibility depends on your machine's IP address. Network transitions—moving between WiFi networks, connecting to different Ethernet ports, or even system wakeup—can change your IP address, breaking DNS resolution and cluster access. While solutions exist to update DNS resolvers when IPs change, a more robust approach is to maintain a fixed IP address that persists across network changes.
+When running Educates locally on macOS, your cluster's accessibility depends on your machine's IP address. Every time you move between networks — home, office, conference WiFi — your IP changes. DNS resolution breaks, cluster ingresses stop responding, and workshop URLs go stale. This can be a hassle — especially when you don't immediately realize the IP changed and spend time debugging something else entirely. You end up manually updating the resolver configuration before you can get back to work.
 
-This post explains why a fixed IP matters for local Educates clusters and how to achieve it using a virtual bridge interface on macOS, with automatic recreation via a LaunchDaemon that triggers on network activation—not just system startup, but also on wakeup.
+In the [How to best work locally post](/blog/how-to-best-work-locally/), we showed how to configure a local DNS resolver with a recognizable domain like `educates.test`.  And in [Automating DNS Resolver Updates](/blog/sync-resolver-macos), we covered how to detect IP changes and re-sync the resolver automatically. Both of those approaches react to the IP change after it happens. The approach in this post eliminates the change altogether. A better approach is to prevent the problem entirely: give your machine a fixed IP that never changes, regardless of which physical network you're on.
 
 <!-- truncate -->
 
 ## Why a Fixed IP Matters
 
-Educates local clusters rely on DNS resolution to map domain names like `educates.test` to your machine's IP address. When your IP changes:
+Educates local clusters use DNS resolution to map a domain like `educates.test` to your machine's IP. When that IP changes:
 
-- DNS resolver configurations become stale, pointing to old IPs
-- Cluster ingresses become inaccessible via their configured hostnames
-- Workshop URLs break, requiring manual DNS updates
-- Development workflow is disrupted
+- The DNS resolver points to a stale address
+- Cluster ingresses become unreachable via their configured hostnames
+- Workshop URLs break mid-session
+- The `dnsmasq` container needs to be reconfigured and restarted
 
-A fixed IP eliminates these issues by ensuring your cluster always resolves to the same address, regardless of which physical network interface is active or how your system's network configuration changes.
+If you configure Educates to use a fixed IP — one that's independent of your physical network interface — none of this happens. Your cluster always resolves to the same address, whether you're on WiFi, Ethernet, or just woke your laptop from sleep.
 
-## Creating a Virtual Bridge Interface
+## Virtual Bridge Interfaces on macOS
 
-macOS supports virtual bridge interfaces that can be configured with a static IP address. This bridge acts as a stable network endpoint that persists across network changes.
+macOS supports virtual bridge interfaces — software-defined network interfaces that exist independently of your physical hardware. You can assign a static IP to a bridge, and it will remain stable regardless of what happens on `en0` or `en1`.
 
-### Step 1: Create the Bridge Interface
+The key insight is that this bridge doesn't need to route traffic to the outside world. It only needs to be reachable from your local machine, which is exactly what Educates needs.
+
+### Creating the Bridge
 
 Create a bridge interface using `ifconfig`:
 
 ```bash
-sudo ifconfig bridge100 create
+sudo ifconfig bridge1 create
 ```
 
-This creates a bridge interface named `bridge100`. You can verify it exists:
+Assign a static IP in a range that won't conflict with your common networks — `10.10.10.1` works well for this since it's unlikely to collide with typical home or office networks:
 
 ```bash
-ifconfig bridge100
-```
-
-The output will show an interface with no IP address yet:
-
-```
-bridge100: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
-	ether 02:42:ac:11:00:01
-	inet6 fe80::42:acff:fe11:1%bridge100 prefixlen 64 scopeid 0x1a
-	nd6 options=201<PERFORMNUD,DAD>
-	media: autoselect
-	status: active
-```
-
-### Step 2: Configure a Static IP Address
-
-Assign a static IP address to the bridge. Choose an IP in a range that won't conflict with your common networks—`192.168.100.1` is a good default:
-
-```bash
-sudo ifconfig bridge100 192.168.100.1 netmask 255.255.255.0
+sudo ifconfig bridge1 inet 10.10.10.1/24
 ```
 
 Verify the configuration:
 
 ```bash
-ifconfig bridge100
+ifconfig bridge1
 ```
 
-You should now see:
+You should see output like:
 
 ```
-bridge100: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
-	ether 02:42:ac:11:00:01
-	inet 192.168.100.1 netmask 0xffffff00 broadcast 192.168.50.255
-	inet6 fe80::42:acff:fe11:1%bridge100 prefixlen 64 scopeid 0x1a
-	nd6 options=201<PERFORMNUD,DAD>
-	media: autoselect
-	status: active
+bridge1: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	options=63<RXCSUM,TXCSUM,TSO4,TSO6>
+	ether 86:2f:57:13:e3:01
+	inet 10.10.10.1 netmask 0xffffff00 broadcast 10.10.10.255
+	Configuration:
+		id 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0
+		maxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200
+		root id 0:0:0:0:0:0 priority 0 ifcost 0 port 0
+		ipfilter disabled flags 0x0
+	media: <unknown type>
+	status: inactive
 ```
 
-### Step 3: Configure Educates to Use the Bridge IP
+The `status: inactive` is expected — the bridge isn't connected to any physical interface, and it doesn't need to be. The `inet 10.10.10.1` line is what matters.
 
-Update your Educates local configuration to use this fixed IP. First, check your current configuration:
+### Configuring Educates to Use the Bridge IP
 
-```bash
-educates local config view
-```
-
-Then edit the configuration:
+Update your Educates local configuration to use the bridge IP:
 
 ```bash
 educates local config edit
 ```
 
-Add or update the resolver configuration to use the bridge IP:
+Set the domain and resolver host IP:
 
 ```yaml
 clusterIngress:
   domain: educates.test
 resolver:
-  hostIP: 192.168.100.1
+  hostIP: 10.10.10.1
 ```
 
-If you haven't deployed the resolver yet, deploy it:
+Then deploy or update your resolver:
 
 ```bash
+# If you haven't deployed the resolver yet
 educates local resolver deploy
-```
 
-If the resolver is already running, update it:
-
-```bash
+# If the resolver is already running
 educates local resolver update
 ```
 
-## Automating Bridge Creation with LaunchDaemon
+From this point on, your `educates.test` domain will always resolve to `10.10.10.1` — a fixed address that doesn't depend on your network connection.
 
-The bridge interface created manually will not persist across reboots or network changes. To ensure it's always available, we'll create a LaunchDaemon that recreates the bridge whenever the network becomes active—on system startup, wakeup, and network interface activation.
+## The Problem: Bridges Don't Survive Reboots
 
-### Step 1: Create the Bridge Creation Script
+The bridge you just created is ephemeral. Reboot your Mac, and it's gone. Wake from sleep after a long period, and the network stack may have reset it. This is where automation comes in.
 
-Create a script that checks for the bridge and creates it if missing:
+## Automating Bridge Creation with a LaunchDaemon
 
-```bash
-#!/bin/zsh
-set -euo pipefail
+A LaunchDaemon runs as root and starts before any user logs in — exactly what we need for a network interface. Unlike a LaunchAgent (which runs in user space), a LaunchDaemon has the privileges to create and configure network interfaces without `sudo`.
 
-BRIDGE_NAME="bridge100"
-BRIDGE_IP="192.168.100.1"
-BRIDGE_NETMASK="255.255.255.0"
+### The Bridge Creation Script
 
-# Check if bridge exists
-if ! ifconfig "${BRIDGE_NAME}" >/dev/null 2>&1; then
-    # Create bridge if it doesn't exist
-    ifconfig "${BRIDGE_NAME}" create
-fi
-
-# Check if bridge has the correct IP
-current_ip=$(ifconfig "${BRIDGE_NAME}" | grep "inet " | awk '{print $2}' || echo "")
-
-if [[ "${current_ip}" != "${BRIDGE_IP}" ]]; then
-    # Configure bridge with static IP
-    ifconfig "${BRIDGE_NAME}" "${BRIDGE_IP}" netmask "${BRIDGE_NETMASK}" up
-fi
-```
-
-Save this script to `/usr/local/sccripts/educates-bridge-setup.sh` and make it executable:
+Create the script that will manage the bridge interface:
 
 ```bash
 sudo mkdir -p /usr/local/scripts
-sudo tee /usr/local/scripts/educates-bridge-setup.sh > /dev/null << 'EOF'
+```
+
+Create `/usr/local/scripts/configure_bridge.sh` with the following content:
+
+```bash
 #!/bin/bash
 
 # --- SELF-LOGGING START ---
@@ -204,38 +170,46 @@ else
 fi
 
 exit 0
-fi
-EOF
-
-sudo chmod +x /usr/local/scripts/educates-bridge-setup.sh
 ```
 
-### Step 2: Create the LaunchDaemon
-
-Create a LaunchDaemon plist file that runs the script on network activation:
+Make it executable:
 
 ```bash
-sudo tee /Library/LaunchDaemons/com.educates.bridge.plist > /dev/null << 'EOF'
+sudo chmod +x /usr/local/scripts/configure_bridge.sh
+```
+
+A few things worth noting about this script:
+
+- It uses absolute paths for `ifconfig` (`/sbin/ifconfig`) because LaunchDaemons run with a minimal `PATH`
+- It handles the log rotation itself, keeping the log file under 1MB
+- It's idempotent — if the bridge already exists with the correct IP, it reconfigures it without error
+- Each execution is timestamped in the log for easy debugging
+
+### The LaunchDaemon Configuration
+
+Create the plist file at `/Library/LaunchDaemons/com.educates.staticbridge.plist`:
+
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.educates.bridge</string>
-    
+    <string>com.educates.staticbridge</string>
+
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/local/scripts/educates-bridge-setup.sh</string>
+        <string>/usr/local/scripts/configure_bridge.sh</string>
     </array>
-    
+
     <key>RunAtLoad</key>
     <true/>
-    
+
     <key>KeepAlive</key>
     <false/>
     
     <key>StartInterval</key>
-    <integer>30</integer>
+    <integer>60</integer>
     
     <key>WatchPaths</key>
     <array>
@@ -252,94 +226,88 @@ sudo tee /Library/LaunchDaemons/com.educates.bridge.plist > /dev/null << 'EOF'
 </plist>
 ```
 
-This LaunchDaemon configuration includes:
+This configuration does two things:
 
-- **RunAtLoad**: Runs immediately when loaded
-- **StartInterval**: Checks every 30 seconds to catch network changes
+- **RunAtLoad** ensures the bridge is created immediately on system startup
+- **StartInterval** re-runs the script every 60 seconds, catching cases where the bridge was destroyed — after wakeup from sleep, network stack resets, or any other event that removes the interface
 - **WatchPaths**: Monitors network configuration files for changes, triggering on network activation
 - **KeepAlive**: Set to `false` since we're polling and watching paths
 
-### Step 3: Load the LaunchDaemon
+The 60-second interval is a pragmatic choice. macOS doesn't provide a reliable single event for "the network stack just reset your interfaces." Different macOS versions, different hardware, different sleep/wake scenarios — they all behave slightly differently. Polling every 60 seconds with an idempotent script is simple, reliable, and has negligible system overhead.
 
-Load the LaunchDaemon:
-
-```bash
-sudo launchctl load /Library/LaunchDaemons/com.educates.bridge.plist
-```
-
-Verify it's running:
+### Loading the LaunchDaemon
 
 ```bash
-sudo launchctl list | grep educates
+sudo launchctl load /Library/LaunchDaemons/com.educates.staticbridge.plist
 ```
 
-You should see `com.educates.bridge` in the list.
-
-### Step 4: Test the Setup
-
-Test that the bridge is created and persists:
+Verify it's loaded:
 
 ```bash
-# Check bridge exists
-ifconfig bridge100
-
-# Simulate network change by bringing interface down and up
-sudo ifconfig bridge100 down
-sleep 2
-# The LaunchDaemon should recreate it within 30 seconds
-sleep 35
-ifconfig bridge100
+sudo launchctl list | grep staticbridge
 ```
 
-Check the logs to verify the LaunchDaemon is working:
+You should see the daemon in the output with a `0` exit status (or `-` if it hasn't run yet).
+
+## Verifying the Setup
+
+After loading the daemon, confirm everything is working:
 
 ```bash
-sudo tail -f /var/log/educates-bridge.log
+# Check the bridge exists and has the correct IP
+ifconfig bridge1 | grep "inet "
+
+# Test DNS resolution through the Educates resolver
+dig @10.10.10.1 test.educates.test
+
+# Check the daemon logs
+cat /var/log/educates-bridge.log
 ```
 
-## Verification
-
-After setting up the bridge and LaunchDaemon, verify your Educates cluster can use the fixed IP:
+To test resilience, you can destroy the bridge and wait for it to be recreated:
 
 ```bash
-# Verify bridge has correct IP
-ifconfig bridge100 | grep "inet "
+# Destroy the bridge
+sudo ifconfig bridge1 destroy
 
-# Verify Educates resolver is using the bridge IP
-educates local resolver status
+# Wait 60 seconds for the daemon to recreate it
+sleep 65
 
-# Test DNS resolution
-dig @127.0.0.1 educates.test
+# Verify it's back
+ifconfig bridge1 | grep "inet "
 ```
 
-The resolver should be configured to use `192.168.100.1` for DNS resolution, and your cluster should remain accessible even after network changes or system wakeup.
+## Removing the Setup
+
+To remove the LaunchDaemon and bridge:
+
+```bash
+sudo launchctl unload /Library/LaunchDaemons/com.educates.staticbridge.plist
+sudo rm /Library/LaunchDaemons/com.educates.staticbridge.plist
+sudo rm /usr/local/scripts/configure_bridge.sh
+sudo ifconfig bridge1 destroy
+```
 
 ## Design Rationale
 
-This approach uses a virtual bridge interface rather than modifying physical network interfaces because:
+This approach uses a virtual bridge rather than aliasing an IP on an existing interface because:
 
-- **Isolation**: The bridge doesn't interfere with your primary network configuration
+- **Isolation**: The bridge doesn't interfere with your primary network configuration — no risk of IP conflicts on your actual interfaces
 - **Persistence**: Virtual bridges can be recreated programmatically without affecting system network settings
-- **Compatibility**: Works regardless of which physical interface is active (WiFi, Ethernet, etc.)
-- **Simplicity**: No need to modify system network preferences or DHCP settings
+- **Independence**: It works regardless of which physical interface is active — WiFi, Ethernet, Thunderbolt adapter, or none at all
+- **Simplicity**: No need to hook into macOS network preferences, DHCP, or System Settings
 
-The LaunchDaemon uses both polling (`StartInterval`) and file watching (`WatchPaths`) because macOS network change events can be inconsistent across different system versions and network types. This dual approach ensures the bridge is recreated reliably on network activation, system wakeup, and startup.
+The polling-based LaunchDaemon is intentionally simple. macOS offers `WatchPaths` and network change notifications, but in practice they don't fire reliably for all the scenarios that can destroy a bridge interface. `WatchPaths` handles the majority of transitions reliably, but a periodic check provides a safety net for edge cases — particularly USB-C docking stations and VPN connections that don't always trigger a SystemConfiguration update. A 60-second poll with an idempotent script trades theoretical elegance for real-world reliability — and the resource cost is effectively zero.
 
-## Unloading the Service
+We chose a LaunchDaemon (system-level, runs as root) rather than a LaunchAgent (user-level) because `ifconfig` requires root privileges. A LaunchAgent would need workarounds for privilege escalation that add complexity without benefit.
 
-To remove the LaunchDaemon:
+If you're combining this with the local resolver and CA setup from [How to best work locally](/blog/how-to-best-work-locally/), the fixed IP simplifies the overall stack. With a stable address, the auto-sync script from the [Automating DNS Resolver Updates post](/blog/sync-resolver-macos) becomes optional — your IP never changes, so the resolver never goes stale. The full recommended stack becomes:
 
-```bash
-sudo launchctl unload /Library/LaunchDaemons/com.educates.bridge.plist
-sudo rm /Library/LaunchDaemons/com.educates.bridge.plist
-sudo rm /usr/local/scripts/educates-bridge-setup.sh
-```
+1. Loopback alias via LaunchDaemon (this post)
+2. Local CA with `mkcert` ([How to best work locally](/blog/how-to-best-work-locally/))
+3. DNS resolver with `educates.test` pointing to the fixed IP
 
-To remove the bridge interface:
-
-```bash
-sudo ifconfig bridge100 destroy
-```
+Once you have all three in place, you can destroy and create clusters freely, switch between networks, and your workshops will always be available at the same URLs.
 
 ## Bonus points
 
@@ -347,8 +315,3 @@ You can even create a [SwiftBar plugin](https://swiftbar.app/) to have some of y
 Educates local commands. But if you want to know how, ask us, and we'll write about that.
 
 ![SwiftBar Plugin](swiftbar-plugin.png)
-
-
-## Conclusion
-
-Using a virtual bridge interface with a fixed IP address provides a stable network endpoint for your Educates local cluster. Combined with a LaunchDaemon that recreates the bridge on network activation, this setup ensures your cluster remains accessible via consistent DNS resolution regardless of network changes, system wakeup, or reboots. This eliminates the need for manual DNS resolver updates and provides a more reliable local development experience.
