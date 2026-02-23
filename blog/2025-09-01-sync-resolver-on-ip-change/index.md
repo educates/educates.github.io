@@ -2,7 +2,7 @@
 slug: sync-resolver-macos
 title: Automating DNS Resolver Updates for Dynamic IP Addresses on macOS
 authors: [jorge]
-tags: [educates, resolver, dns]
+tags: [educates, resolver, dns, tips-and-tricks, macos]
 ---
 
 When developing with Educates on a local machine, many developers rely on the local DNS resolver functionality to provide their Educates cluster with a meaningful hostname. A common approach is to use a domain like `educates.test` for consistent local cluster access.

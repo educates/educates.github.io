@@ -92,3 +92,8 @@ ai:
   label: AI
   permalink: /ai
   description: AI
+
+macos:
+  label: macOS
+  permalink: /macos
+  description: macOS
