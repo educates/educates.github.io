@@ -2,13 +2,13 @@
 title: "Teaching an AI about Educates"
 slug: teaching-an-ai-about-educates
 description: "Using an AI agent skill to generate interactive Educates workshops."
-tags: ["ai", "educates", "authoring"]
+tags: ["ai", "educates", "authoring", "python"]
 authors: [graham]
 ---
 
 The way we direct AI coding agents has changed significantly over the past couple of years. Early on, the interaction was purely conversational. You'd open a chat, explain what you wanted, provide whatever context seemed relevant, and hope the model could work with it. If it got something wrong or went down the wrong path, you'd correct it and try again. It worked, but it was ad hoc. Every session started from scratch. Every conversation required re-establishing context.
 
-What's happened since then is a steady progression toward giving agents more structured, persistent knowledge to work with. Each step in that progression has made agents meaningfully more capable, to the point where they can now handle tasks that would have been unrealistic even a year ago. We've been putting these capabilities to work on a specific challenge: getting an AI to author interactive workshops for the [Educates](https://github.com/educates/educates-training-platform/) training platform. In our [previous posts](/blogs/when-ai-content-isnt-slop/) we talked about why workshop content is actually a good fit for AI generation. Here we want to explain how we've been making that work in practice.
+What's happened since then is a steady progression toward giving agents more structured, persistent knowledge to work with. Each step in that progression has made agents meaningfully more capable, to the point where they can now handle tasks that would have been unrealistic even a year ago. We've been putting these capabilities to work on a specific challenge: getting an AI to author interactive workshops for the [Educates](https://github.com/educates/educates-training-platform/) training platform. In our [previous posts](/blog/when-ai-content-isnt-slop/) we talked about why workshop content is actually a good fit for AI generation. Here we want to explain how we've been making that work in practice.
 
 <!-- truncate -->
 
@@ -30,7 +30,7 @@ Large language models know something about most topics. If you ask an AI about E
 
 Educates workshops have specific YAML structures for their configuration files. The interactive instructions use a system of clickable actions with particular syntax for each action type. There are conventions around how learners interact with terminals and editors, how dashboard tabs are managed, how Kubernetes resources are configured, and how data variables are used for parameterisation. Getting any of these wrong doesn't just produce suboptimal content, it produces content that simply won't work when someone tries to use it.
 
-I covered the clickable actions system in detail in our [previous post](/posts/clickable-actions-in-workshops/). There are eight categories of actions covering terminal execution, file viewing and editing, YAML-aware modifications, validation, and more. Each has its own syntax and conventions. An AI that generates workshop content needs to use all of these correctly, not approximately, not most of the time, but reliably.
+I covered the clickable actions system in detail in our [previous post](/blog/clickable-actions-in-workshops/). There are eight categories of actions covering terminal execution, file viewing and editing, YAML-aware modifications, validation, and more. Each has its own syntax and conventions. An AI that generates workshop content needs to use all of these correctly, not approximately, not most of the time, but reliably.
 
 This is where skills make the difference. Rather than hoping the model has absorbed enough Educates documentation during its training to get these details right, you give it the specific knowledge it needs. The skill becomes the agent's reference manual for the domain, structured in a way that supports the workflow rather than dumping everything into context at once.
 
