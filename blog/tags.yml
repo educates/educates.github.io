@@ -97,3 +97,8 @@ macos:
   label: macOS
   permalink: /macos
   description: macOS
+
+python:
+  label: Python
+  permalink: /python
+  description: Python
