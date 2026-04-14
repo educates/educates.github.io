@@ -112,7 +112,7 @@ To deconstruct the above command:
 - -p 8080:80 - This is an optional flag that will map port 8080 on the host to port 80 in the container.
 - <tag> - This is the name and tag of the image that will be run. Make sure to use the same tag that you used when building the image.
 
-## Publishing workflow for GitHub
+## Publishing workflow for GitHub
 
 - Develop your code in branch `develop`
 - Once you're done with your changes, commit them, push them and create a PR to incorporate the changes in `main`.
