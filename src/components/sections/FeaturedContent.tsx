@@ -76,6 +76,11 @@ const FeaturedContent: React.FC<FeaturedContentProps> = ({
                           display: 'flex',
                           flexDirection: 'column',
                           alignItems: 'stretch',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-5px)',
+                            boxShadow: 4,
+                         },
                         }}
                       >
                         <CardMedia

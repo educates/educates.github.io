@@ -41,7 +41,7 @@ const References: React.FC<{ sectionType: 'even' | 'odd' }> = ({ sectionType }) 
                           p: 3,
                           textAlign: 'center',
                           filter: 'grayscale(1)',
-                          transition: 'all 0.3s',
+                          transition: 'all 0.3s ease',
                           '&:hover': { filter: 'grayscale(0)' },
                         }}
                       >

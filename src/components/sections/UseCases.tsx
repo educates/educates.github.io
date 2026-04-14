@@ -17,7 +17,7 @@ const UseCaseCard: React.FC<UseCase & { onClick: () => void; isSelected: boolean
       borderRadius: 3,
       boxShadow: 2,
       textAlign: 'center',
-      transition: 'all 0.3s',
+      transition: 'all 0.3s ease',
       width: { xs: '100%', sm: 400 },
       maxWidth: 400,
       minWidth: 280,

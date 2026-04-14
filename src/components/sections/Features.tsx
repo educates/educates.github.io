@@ -15,7 +15,7 @@ const Feature: React.FC<FeatureProps> = ({ title, description, icon: Icon }) => 
       bgcolor: 'white',
       borderRadius: 3,
       boxShadow: 1,
-      transition: 'all 0.3s',
+      transition: 'all 0.3s ease',
       width: { xs: '100%' },
       maxWidth: 900,
       m: 0,
