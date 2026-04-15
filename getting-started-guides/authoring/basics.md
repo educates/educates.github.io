@@ -43,6 +43,12 @@ demo-workshop
 * The `content/` folder with our actual, written content in Markdown. It
    may also include more nested directories to structure content further.
 
+Make sure to change your current directory to the new `demo-workshop` directory:
+
+```sh title="Change directory to demo-workshop"
+cd demo-workshop
+```
+
 ## Writing Workshop Content
 
 The contents in `workshop/content/**/*.md` are what's going to get rendered into our workshop
