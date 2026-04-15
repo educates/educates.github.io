@@ -21,7 +21,7 @@ const TeamMemberCard: React.FC<TeamMember> = ({ name, role, image, github, twitt
       p: 3,
       borderRadius: 3,
       boxShadow: 2,
-      transition: 'all 0.3s',
+      transition: 'all 0.3s ease',
       width: { xs: '100%', sm: 400 },
       maxWidth: 400,
       minWidth: 280,

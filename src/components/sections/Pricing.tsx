@@ -28,6 +28,11 @@ const PriceCard: React.FC<PricingPlan & { githubUrl: string, slackUrl: string }>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+       transform: isPopular ? 'translateY(-5px) scale(1.05)' : 'translateY(-5px)',
+       boxShadow: isPopular ? 8 : 4,
+      },
     }}
   >
     {isPopular && (
