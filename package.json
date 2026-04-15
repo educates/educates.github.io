@@ -16,11 +16,11 @@
     "docker-build": "docker buildx build --platform linux/amd64,linux/arm64 -t educates-dev ."
   },
   "dependencies": {
-    "@docusaurus/core": "^3.9.2",
-    "@docusaurus/plugin-google-gtag": "^3.9.2",
-    "@docusaurus/plugin-ideal-image": "^3.9.2",
-    "@docusaurus/preset-classic": "^3.9.2",
-    "@docusaurus/theme-mermaid": "^3.9.2",
+    "@docusaurus/core": "^3.10.0",
+    "@docusaurus/plugin-google-gtag": "^3.10.0",
+    "@docusaurus/plugin-ideal-image": "^3.10.0",
+    "@docusaurus/preset-classic": "^3.10.0",
+    "@docusaurus/theme-mermaid": "^3.10.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mdx-js/react": "^3.1.1",
@@ -33,20 +33,24 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "sharp": "^0.34.5"
+    "seroval": ">=1.4.1",
+    "seroval-plugins": ">=1.4.1",
+    "sharp": "^0.34.5",
+    "webpackbar": "7.0.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.9.2",
-    "@docusaurus/tsconfig": "^3.9.2",
-    "@docusaurus/types": "^3.9.2",
+    "@docusaurus/module-type-aliases": "^3.10.0",
+    "@docusaurus/tsconfig": "^3.10.0",
+    "@docusaurus/types": "^3.10.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "typescript": "~5.9.3"
   },
   "resolutions": {
-    "lodash-es": ">=4.17.23",
+    "lodash-es": ">=4.18.0",
     "seroval": ">=1.4.1",
-    "seroval-plugins": ">=1.4.1"
+    "seroval-plugins": ">=1.4.1",
+    "webpackbar": "^7.0.0"
   },
   "browserslist": {
     "production": [

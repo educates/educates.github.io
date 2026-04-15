@@ -151,9 +151,9 @@ You'll need the following before you start:
 
 7.  **Educates CLI**:
     We'll need to deploy/manage a workshop to verify the cluster by either method:
-    - Download the [Educates CLI directly](https://github.com/educates/educates-training-platform/releases/tag/3.3.2),
+    - Download the [Educates CLI directly](https://github.com/educates/educates-training-platform/releases/tag/3.7.1),
     - Use the [Educatesenv tool to manage the installation of Educates](/blog/managing-multiple-versions-of-educates-cli).
-    Here we will deploy Educates 3.3.2.
+    Here we will deploy Educates 3.7.1.
 
 ### Root Module Reference implementations
 

@@ -44,7 +44,6 @@ const config: Config = {
   },
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
   // Set to "ignore" because navbar/footer link to homepage section anchors
   // (e.g. /#use-cases, /#features) which are rendered by React components
   // with id props. Docusaurus's static checker can't detect these.
@@ -52,6 +51,9 @@ const config: Config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+        onBrokenMarkdownLinks: "warn",
+    },
   },
   themes: ["@docusaurus/theme-mermaid"],
 

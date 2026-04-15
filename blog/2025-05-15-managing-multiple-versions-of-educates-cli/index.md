@@ -63,7 +63,7 @@ educatesenv list-remote --recents
 Install a specific version:
 
 ```sh
-educatesenv install 3.3.2
+educatesenv install 3.7.1
 ```
 
 Or always get the latest released version available at the time:
@@ -77,7 +77,7 @@ Installing a version doesn't make it readily available to use. For that there's 
 Set the installed version as active immediately:
 
 ```sh
-educatesenv install 3.3.2 --use
+educatesenv install 3.7.1 --use
 ```
 
 ### List installed versions
@@ -93,7 +93,7 @@ educatesenv list
 In order to switch between all your installed versions and make it the active one:
 
 ```sh
-educatesenv use 3.3.2
+educatesenv use 3.7.1
 ```
 
 ### Uninstall a version
@@ -101,7 +101,7 @@ educatesenv use 3.3.2
 When you no longer need a specific version, and to keep your local computer free of old software, you can remove a version you no longer need:
 
 ```sh
-educatesenv uninstall 3.3.2
+educatesenv uninstall 3.7.1
 ```
 
 ### Bonus for Educates Developers

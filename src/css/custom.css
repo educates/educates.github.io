@@ -45,7 +45,7 @@
 }
 
 .no-copy button {
-  display: none;
+  display: none !important;
 }
 
 /* Navbar Login/Sign Up Button */
