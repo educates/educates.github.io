@@ -1,18 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { openGraphImages } from "../rules/open-graph-images.ts";
 import { checkSite } from "../site-check.ts";
-import { fixtureBuild, page, redirectPage } from "./fixture-build.ts";
+import {
+  fixtureBuild,
+  openGraphImageTags as imageTags,
+  page,
+  redirectPage,
+} from "./fixture-build.ts";
 
 const origin = "https://educates.dev";
 const png = "\x89PNG";
 
 function check(files: Record<string, string>) {
   return checkSite(fixtureBuild(files), [openGraphImages({ origin })]);
-}
-
-/** The Open Graph image tags the base layout writes, for `url`. */
-function imageTags(url: string, width = "1200", height = "630"): string {
-  return `<meta property="og:image" content="${url}"><meta property="og:image:width" content="${width}"><meta property="og:image:height" content="${height}">`;
 }
 
 describe("open-graph-images rule", () => {

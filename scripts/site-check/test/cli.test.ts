@@ -2,7 +2,12 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { redirects, staticRedirects } from "../../../src/redirects.ts";
-import { fixtureBuild, page, redirectPage } from "./fixture-build.ts";
+import {
+  fixtureBuild,
+  openGraphImageTags,
+  page,
+  redirectPage,
+} from "./fixture-build.ts";
 
 const cli = fileURLToPath(new URL("../cli.ts", import.meta.url));
 
@@ -17,7 +22,7 @@ describe("site-check command", () => {
   it("passes a build with warnings only, and lists them", () => {
     const { status, output } = runSiteCheck(
       fixtureBuild({
-        "index.html": page("https://educates.dev/"),
+        ...sitePage("index.html", "https://educates.dev/"),
         "sitemap.xml": sitemap("https://educates.dev/"),
         ...redirectsAndTargets(),
       }),
@@ -69,10 +74,26 @@ function redirectsAndTargets(): Record<string, string> {
       : `${source.slice(1)}.html`;
     files[file] = redirectPage(target);
     if (target.startsWith("/")) {
-      files[`${target.slice(1)}.html`] = page(`https://educates.dev${target}`);
+      Object.assign(
+        files,
+        sitePage(`${target.slice(1)}.html`, `https://educates.dev${target}`),
+      );
     }
   }
   return files;
+}
+
+/**
+ * A page at `file`, served at `url`, with the Open Graph image the base
+ * layout points to and the image itself.
+ */
+function sitePage(file: string, url: string): Record<string, string> {
+  const path = new URL(url).pathname;
+  const image = `og${path === "/" ? "/index" : path}.png`;
+  return {
+    [file]: page(url, openGraphImageTags(`https://educates.dev/${image}`)),
+    [image]: "PNG",
+  };
 }
 
 function sitemap(...urls: string[]): string {
