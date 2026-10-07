@@ -145,12 +145,6 @@ export const stubs: readonly Stub[] = [
     section: guides,
   },
   {
-    path: "/community",
-    title: "Community",
-    description:
-      "The people behind Educates, how to contribute, and where to talk to us.",
-  },
-  {
     path: "/downloads",
     title: "Downloads",
     description:
