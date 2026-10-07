@@ -1,5 +1,7 @@
+import type { ImageMetadata } from "astro";
 import { getCollection } from "astro:content";
 import { site } from "../site.ts";
+import { entryFileUrl } from "./entry-files.ts";
 import { currentFeatures, featureLinks } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
 import { hubWorkshopLinks } from "./hub-workshops.ts";
@@ -72,4 +74,30 @@ export async function hubWorkshops(ids: readonly string[], usedBy: string) {
     ...entry.data,
   }));
   return hubWorkshopLinks(ids, links, usedBy);
+}
+
+/**
+ * The videos next to Feature entries, by their path from the project root,
+ * with the URL each has in the build.
+ */
+const featureVideos = import.meta.glob<string>(
+  "/src/content/features/**/*.{mp4,webm}",
+  { query: "?url", import: "default", eager: true },
+);
+
+/**
+ * A Feature loop's recording, for the VideoLoop component: its video's built
+ * URL and its poster, or `undefined` until it is captured. `entryFilePath`
+ * is the Feature entry's `filePath`; a video it names that is not there
+ * fails the build.
+ */
+export function loopMedia(
+  loop: { video?: string | undefined; poster?: ImageMetadata | undefined },
+  entryFilePath: string,
+) {
+  if (loop.video === undefined || loop.poster === undefined) return undefined;
+  return {
+    src: entryFileUrl(loop.video, entryFilePath, featureVideos),
+    poster: loop.poster,
+  };
 }

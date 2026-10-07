@@ -1,4 +1,4 @@
-import { defineCollection } from "astro:content";
+import { defineCollection, type SchemaContext } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { jobIds } from "./lib/features.ts";
@@ -8,6 +8,32 @@ const useCasePoint = z.object({
   title: z.string(),
   text: z.string(),
 });
+
+/**
+ * A short muted recording on a Feature's deep page: what it shows and, once
+ * it is captured, its video and poster, named relative to the entry like an
+ * image. Until then the page shows a placeholder loop.
+ */
+const featureLoop = (image: SchemaContext["image"]) =>
+  z
+    .object({
+      /**
+       * What the recording shows, in a sentence: its accessible name, and
+       * until it is captured, what to capture.
+       */
+      alt: z.string(),
+      /** The video, an MP4 or WebM file, such as `./clickable-actions/run.mp4`. */
+      video: z.string().optional(),
+      /** The frame shown before it plays. */
+      poster: image().optional(),
+    })
+    .refine(
+      (loop) => (loop.video === undefined) === (loop.poster === undefined),
+      {
+        message:
+          "a loop needs both its video and its poster, or neither until it is captured",
+      },
+    );
 
 /**
  * Use cases: one Markdown file per page under `src/content/use-cases/`. The
@@ -150,12 +176,23 @@ const hubWorkshops = defineCollection({
  * under its job. A flagship Feature also has a deep page at
  * `/features/<slug>`, listed in the header menu and the footer.
  *
- * The site describes the Educates release current at launch: copy and docs
- * links hold against that release's docs, or for a tool outside the
- * platform, against the README of its repository.
+ * A flagship with a `page` has its deep page on the deep page template,
+ * src/layouts/FeatureLayout.astro, and its Markdown body is the page's "How
+ * you use it" section: the real snippet that turns the Feature on, from the
+ * docs. A flagship without a `page` is a stub.
+ *
+ * The site describes the Educates release current at launch: copy, snippets
+ * and docs links hold against that release's docs, or for a tool outside
+ * the platform, against the README of its repository.
  */
 const features = defineCollection({
-  loader: glob({ pattern: "*.{md,mdx}", base: "./src/content/features" }),
+  loader: glob({
+    pattern: "*.{md,mdx}",
+    base: "./src/content/features",
+    // Rendered when its deep page renders, where an error in the Markdown
+    // pipeline fails the build.
+    deferRender: true,
+  }),
   schema: ({ image }) =>
     z.object({
       /** The Feature's name, as menus and the overview show it. */
@@ -199,6 +236,54 @@ const features = defineCollection({
        * Feature without one is not on the homepage.
        */
       homepage: z.number().int().min(1).max(4).optional(),
+      /** A flagship's deep page, in the template's order. */
+      page: z
+        .object({
+          /** The page's heading: what the Feature does for the reader. */
+          headline: z.string(),
+          /** What it is: a paragraph below the headline. */
+          what: z.string(),
+          /** The recording beside it, of the Feature at work. */
+          loop: featureLoop(image),
+          /**
+           * Three to five things you can do with it, each with a
+           * screenshot (`visual`) or a recording (`loop`). One with
+           * neither shows a placeholder frame until it is captured.
+           */
+          things: z
+            .array(
+              useCasePoint.extend({
+                visual: z.object({ src: image(), alt: z.string() }).optional(),
+                loop: featureLoop(image).optional(),
+              }),
+            )
+            .min(3)
+            .max(5),
+          /**
+           * Its limits, in the voice of a use case's "What you bring": what
+           * it does not do, and what it needs from you, each with the docs
+           * page that says so where there is one.
+           */
+          limits: z
+            .array(useCasePoint.extend({ docs: z.url().optional() }))
+            .min(1),
+          /**
+           * Workshops to deploy from the Hub that show it, by their ids in
+           * src/content/hub-workshops.yml.
+           */
+          hubWorkshops: z.array(z.string()).default([]),
+          /** What to read next: docs sections, Blog posts and guides. */
+          reading: z
+            .array(
+              z.object({
+                title: z.string(),
+                href: z.string(),
+                kind: z.enum(["Docs", "Blog post", "Guide"]),
+              }),
+            )
+            .min(1),
+        })
+        .optional(),
     }),
 });
 
