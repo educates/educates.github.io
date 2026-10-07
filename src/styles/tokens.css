@@ -1,0 +1,83 @@
+/*
+ * Design tokens for educates.dev, named by role. This file holds custom
+ * properties only, under three selectors: `:root` for the light theme, and
+ * the dark theme twice, once for a system that prefers dark (unless the
+ * visitor chose light) and once for a visitor who chose dark. Keep the two
+ * dark blocks identical; src/styles/tokens.ts reads this file and refuses
+ * any other selector or a mismatch.
+ */
+
+:root {
+  --color-scheme: light;
+
+  --color-background: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-ink: #0e1a2b;
+  --color-ink-muted: #4f5e74;
+  --color-line: #dfe5ee;
+  --color-accent: #326ce5;
+  --color-accent-strong: #2553b8;
+  --color-on-accent: #ffffff;
+  --color-accent-soft: #e9f0fd;
+  --color-highlight: #fff4c2;
+  --color-highlight-ink: #5a4600;
+  --color-chrome: #e8edf4;
+  --color-shadow: rgba(14, 26, 43, 0.08);
+
+  /* The Session dashboard's own colors, the same in both themes. */
+  --color-dashboard-bar: #2a6bd6;
+  --color-terminal: #0d1117;
+  --color-terminal-ink: #d6e2ec;
+  --color-terminal-success: #56d364;
+  --color-editor: #1e1e1e;
+  --color-editor-key: #569cd6;
+  --color-editor-string: #ce9178;
+  --color-editor-number: #b5cea8;
+  --color-editor-selection: #264f78;
+
+  --font-sans: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --space-gutter: clamp(16px, 4vw, 40px);
+  --width-content: 1200px;
+  --radius-control: 10px;
+  --radius-card: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-scheme: dark;
+
+    --color-background: #0c1420;
+    --color-surface: #131e2e;
+    --color-ink: #e7edf6;
+    --color-ink-muted: #9aa9be;
+    --color-line: #233149;
+    --color-accent: #6f9cff;
+    --color-accent-strong: #9dbcff;
+    --color-on-accent: #0a1220;
+    --color-accent-soft: #17284a;
+    --color-highlight: #3b3313;
+    --color-highlight-ink: #f3e3a0;
+    --color-chrome: #1b2738;
+    --color-shadow: rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-scheme: dark;
+
+  --color-background: #0c1420;
+  --color-surface: #131e2e;
+  --color-ink: #e7edf6;
+  --color-ink-muted: #9aa9be;
+  --color-line: #233149;
+  --color-accent: #6f9cff;
+  --color-accent-strong: #9dbcff;
+  --color-on-accent: #0a1220;
+  --color-accent-soft: #17284a;
+  --color-highlight: #3b3313;
+  --color-highlight-ink: #f3e3a0;
+  --color-chrome: #1b2738;
+  --color-shadow: rgba(0, 0, 0, 0.45);
+}

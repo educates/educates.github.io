@@ -1,0 +1,55 @@
+---
+// The light and dark theme toggle. Hidden without JavaScript, where the page
+// follows the system theme.
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  data-theme-toggle
+  aria-pressed="false"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle
+      cx="12"
+      cy="12"
+      r="8.5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    ></circle>
+    <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"></path>
+  </svg>
+  <span class="sr-only">Dark theme</span>
+</button>
+
+<script>
+  import { setUpThemeToggles } from "../scripts/theme.ts";
+  setUpThemeToggles();
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-ink-muted);
+    cursor: pointer;
+  }
+  .theme-toggle:hover {
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+  :global(html:not(.js)) .theme-toggle {
+    display: none;
+  }
+</style>

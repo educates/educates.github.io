@@ -1,0 +1,20 @@
+---
+// Runs in <head> before first paint. It applies the theme the visitor chose
+// with the toggle, if any, so the page never flashes the other theme; with
+// no choice stored, tokens.css follows prefers-color-scheme. It also marks
+// the root element `js`, which shows the toggle. Blocked storage leaves the
+// page on the system theme.
+import { THEME_STORAGE_KEY } from "../scripts/theme.ts";
+---
+
+<script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
+  document.documentElement.classList.add("js");
+  try {
+    const theme = localStorage.getItem(storageKey);
+    if (theme === "light" || theme === "dark") {
+      document.documentElement.dataset.theme = theme;
+    }
+  } catch {
+    // Storage is blocked: follow the system theme.
+  }
+</script>
