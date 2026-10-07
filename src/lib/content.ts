@@ -1,4 +1,20 @@
 import { getCollection } from "astro:content";
+import { site } from "../site.ts";
+import { currentFeatures } from "./features.ts";
+import { guidePath } from "./guide-path.ts";
+
+/** The Getting Started Guides' pages, and the path they make. */
+export async function guides() {
+  const entries = await getCollection("guides");
+  const path = guidePath(
+    entries.map((entry) => ({
+      id: entry.id,
+      title: entry.data.title,
+      order: entry.data.order,
+    })),
+  );
+  return { entries, path };
+}
 
 /** The use cases, in their menu order. */
 export async function useCases() {
@@ -7,9 +23,13 @@ export async function useCases() {
   );
 }
 
-/** The Features, in their menu order. */
+/**
+ * The Features of the release the site describes (see `currentFeatures()`
+ * and `site.educates4Released`), in their menu order. Group them with
+ * `featuresByJob()` or `homepageFeaturesByJob()` from `./features.ts`.
+ */
 export async function features() {
-  return (await getCollection("features")).sort(
+  return currentFeatures(await getCollection("features"), site).sort(
     (a, b) => a.data.order - b.data.order,
   );
 }

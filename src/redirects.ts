@@ -12,4 +12,12 @@ export const redirects: Readonly<Record<string, string>> = {
   "/docs": "https://docs.educates.dev",
   "/team": "/community",
   "/resources": "/learn",
+  // The guides' Components and CRDs pages became "What you just installed",
+  // and their workflow page moved to About Educates.
+  "/getting-started-guides/about/components": "/getting-started-guides/about",
+  "/getting-started-guides/about/crds": "/getting-started-guides/about",
+  "/getting-started-guides/about/workflow": "/about-educates/workflows",
+  // Next steps replaced the guides' list of questions to explore a Session.
+  "/getting-started-guides/authoring/explore":
+    "/getting-started-guides/next-steps",
 };

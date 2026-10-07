@@ -4,7 +4,6 @@
 *.mdx
 blog/
 about-educates/
-getting-started-guides/
 docs/
 
 # Generated
