@@ -17,4 +17,7 @@ export const redirects: Readonly<Record<string, string>> = {
   "/getting-started-guides/about/components": "/getting-started-guides/about",
   "/getting-started-guides/about/crds": "/getting-started-guides/about",
   "/getting-started-guides/about/workflow": "/about-educates/workflows",
+  // Next steps replaced the guides' list of questions to explore a Session.
+  "/getting-started-guides/authoring/explore":
+    "/getting-started-guides/next-steps",
 };

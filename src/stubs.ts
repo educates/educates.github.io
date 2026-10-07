@@ -19,8 +19,6 @@ export interface Stub {
   section?: string;
 }
 
-const guides = "Getting Started Guides";
-
 export const stubs: readonly Stub[] = [
   {
     path: "/features",
@@ -60,13 +58,6 @@ export const stubs: readonly Stub[] = [
     description:
       "Where Educates came from, and how it became an independent open source project.",
     section: "About Educates",
-  },
-  {
-    path: "/getting-started-guides/next-steps",
-    title: "Next steps",
-    description:
-      "Deploy a workshop from the Hub, find the reference docs, and get help.",
-    section: guides,
   },
   {
     path: "/privacy",
