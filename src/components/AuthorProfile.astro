@@ -2,6 +2,7 @@
 // An author's picture, title and profiles elsewhere. In the index of
 // authors it also shows the name as a heading linking to their page; on
 // the author's own page the page heading is the name.
+import { Image } from "astro:assets";
 import { authorPath, type Author } from "../lib/posts.ts";
 
 export interface Props {
@@ -11,7 +12,7 @@ export interface Props {
 }
 
 const { author, headingLevel } = Astro.props;
-const { name, title, image_url, socials } = author.data;
+const { name, title, image, socials } = author.data;
 
 /** Profile URLs for the social keys of `authors.yml`, by key. */
 const profiles: Record<string, { label: string; url: (id: string) => string }> =
@@ -31,14 +32,7 @@ const Heading = headingLevel ? (`h${headingLevel}` as const) : undefined;
 ---
 
 <div class="profile">
-  <img
-    src={image_url}
-    alt=""
-    width="72"
-    height="72"
-    loading="lazy"
-    decoding="async"
-  />
+  <Image src={image} alt="" width={72} height={72} densities={[1, 2]} />
   <div>
     {Heading && (
       <Heading class="name">

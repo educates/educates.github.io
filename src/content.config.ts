@@ -515,16 +515,20 @@ const topics = defineCollection({
 /** The authors of blog posts, by key, with the keys of Docusaurus's `authors.yml`. */
 const authors = defineCollection({
   loader: file("./src/content/authors.yml"),
-  schema: z.object({
-    name: z.string(),
-    title: z.string(),
-    url: z.url(),
-    /** The author's picture. */
-    image_url: z.url(),
-    /** Whether the author has a page at `/blog/authors/<key>`. */
-    page: z.boolean().default(false),
-    socials: z.record(z.string(), z.string()).default({}),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string(),
+      title: z.string(),
+      url: z.url(),
+      /**
+       * The author's picture, kept in the repository so a post loads
+       * nothing from another site: a path from `authors.yml`.
+       */
+      image: image(),
+      /** Whether the author has a page at `/blog/authors/<key>`. */
+      page: z.boolean().default(false),
+      socials: z.record(z.string(), z.string()).default({}),
+    }),
 });
 
 /** The tags of blog posts, by key, with the keys of Docusaurus's `tags.yml`. */

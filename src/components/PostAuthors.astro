@@ -1,6 +1,7 @@
 ---
 // The authors of a post with their pictures, names and titles. A name links
 // to the author's page when they have one, else to their own site.
+import { Image } from "astro:assets";
 import { authorPath, type Author } from "../lib/posts.ts";
 
 export interface Props {
@@ -13,13 +14,12 @@ const { authors } = Astro.props;
 <ul class="authors">
   {authors.map((author) => (
     <li>
-      <img
-        src={author.data.image_url}
+      <Image
+        src={author.data.image}
         alt=""
-        width="48"
-        height="48"
-        loading="lazy"
-        decoding="async"
+        width={48}
+        height={48}
+        densities={[1, 2]}
       />
       <span class="who">
         <a href={author.data.page ? authorPath(author) : author.data.url}>

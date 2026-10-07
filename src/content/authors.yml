@@ -2,7 +2,7 @@ jorge:
   name: Jorge Morales Pou
   title: Lead Software Engineer
   url: https://github.com/jorgemoralespou
-  image_url: https://github.com/jorgemoralespou.png
+  image: ../assets/team/jorge-morales.jpg
   page: true
   socials:
     # x: jorgemoralespou
@@ -13,7 +13,7 @@ graham:
   name: Graham Dumpleton
   title: Lead Software Engineer
   url: https://github.com/grahamdumpleton
-  image_url: https://github.com/grahamdumpleton.png
+  image: ../assets/team/graham-dumpleton.jpg
   page: true
     # # customize the url of the author page at /blog/authors/<permalink>
     # permalink: '/all-grahamdumpleton-articles'
@@ -27,7 +27,7 @@ bill:
   name: Bill Kable
   title: Engineer
   url: https://github.com/spinguard
-  image_url: https://github.com/billkable.png
+  image: ../assets/team/bill-kable.jpg
   page: true
     # # customize the url of the author page at /blog/authors/<permalink>
     # permalink: '/all-grahamdumpleton-articles'
