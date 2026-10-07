@@ -23,5 +23,6 @@ export function page(url: string, extraHead = ""): string {
 
 /** An HTML redirect page in the form Astro's `redirects` writes. */
 export function redirectPage(target: string): string {
-  return `<!doctype html><title>Redirecting to: ${target}</title><meta http-equiv="refresh" content="0;url=${target}"><meta name="robots" content="noindex"><link rel="canonical" href="https://educates.dev${target}"><body><a href="${target}">Redirecting to <code>${target}</code></a></body>`;
+  const canonical = new URL(target, "https://educates.dev").href;
+  return `<!doctype html><title>Redirecting to: ${target}</title><meta http-equiv="refresh" content="0;url=${target}"><meta name="robots" content="noindex"><link rel="canonical" href="${canonical}"><body><a href="${target}">Redirecting to <code>${target}</code></a></body>`;
 }
