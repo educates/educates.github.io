@@ -8,6 +8,7 @@ import mermaid from "astro-mermaid";
 import { openGraphImages } from "./src/integrations/open-graph-images.ts";
 import { singleSitemap } from "./src/integrations/single-sitemap.ts";
 import { admonitions } from "./src/markdown/admonitions.ts";
+import { taskListLabels } from "./src/markdown/task-list-labels.ts";
 import { redirects } from "./src/redirects.ts";
 import { site } from "./src/site.ts";
 
@@ -35,6 +36,8 @@ export default defineConfig({
         smartPunctuation: false,
       },
       mdastPlugins: [admonitions()],
+      // A task list's checkboxes, named by their items' text.
+      hastPlugins: [taskListLabels()],
     }),
   },
   // Integrations run in this order. expressiveCode(), configured in
