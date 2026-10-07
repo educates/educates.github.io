@@ -1,6 +1,17 @@
 ---
+// The sticky site header. On wide screens: the brand and the Use cases,
+// Features and Learn menus on the left; Docs and the Hub (both external),
+// GitHub, the theme toggle and "Get started" on the right. On phones: the
+// brand, the theme toggle and the menu button, which opens the phone sheet.
+import { headerMenus, elsewhere, getStarted } from "../lib/navigation.ts";
+import { pagePath } from "../lib/urls.ts";
 import { site } from "../site.ts";
+import Icon from "./Icon.astro";
+import PhoneSheet from "./PhoneSheet.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+
+const menus = await headerMenus();
+const current = pagePath(Astro.url.pathname);
 ---
 
 <header class="site-header">
@@ -9,11 +20,60 @@ import ThemeToggle from "./ThemeToggle.astro";
       <img src="/img/logo.svg" alt="" width="30" height="30" />
       {site.name}
     </a>
+    <nav class="menus" aria-label="Main">
+      <ul>
+        {menus.map((menu) => (
+          <li>
+            <details class="menu" data-menu>
+              <summary>
+                {menu.label}
+                <Icon name="chevron-down" />
+              </summary>
+              <ul class="menu-panel">
+                {menu.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      aria-current={link.href === current ? "page" : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </li>
+        ))}
+      </ul>
+    </nav>
     <div class="actions">
+      {[elsewhere.docs, elsewhere.hub].map((link) => (
+        <a class="external wide-only" href={link.href}>
+          {link.label}
+          <Icon name="external" />
+          <span class="sr-only">{" (external site)"}</span>
+        </a>
+      ))}
+      <a class="icon-link wide-only" href={elsewhere.github.href}>
+        <Icon name="github" />
+        <span class="sr-only">Educates on GitHub</span>
+      </a>
       <ThemeToggle />
+      <a
+        class="button button-primary get-started wide-only"
+        href={getStarted.href}
+      >
+        {getStarted.label}
+      </a>
+      <PhoneSheet menus={menus} />
     </div>
   </div>
 </header>
+
+<script>
+  import { setUpHeaderMenus } from "../scripts/site-menus.ts";
+  setUpHeaderMenus();
+</script>
 
 <style>
   .site-header {
@@ -32,6 +92,7 @@ import ThemeToggle from "./ThemeToggle.astro";
   }
   .brand {
     display: flex;
+    flex: none;
     align-items: center;
     gap: 10px;
     color: var(--color-ink);
@@ -39,10 +100,126 @@ import ThemeToggle from "./ThemeToggle.astro";
     font-weight: 700;
     text-decoration: none;
   }
+  .menus > ul {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .menu {
+    position: relative;
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: var(--radius-control);
+    color: var(--color-ink-muted);
+    font-size: 15px;
+    font-weight: 500;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover,
+  .menu[open] > summary {
+    color: var(--color-ink);
+  }
+  summary :global(.icon) {
+    font-size: 14px;
+    transition: transform 0.15s ease;
+  }
+  .menu[open] > summary :global(.icon) {
+    transform: rotate(180deg);
+  }
+  .menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: -2px;
+    z-index: 30;
+    display: grid;
+    gap: 2px;
+    width: max-content;
+    min-width: 240px;
+    max-width: 340px;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: 0 12px 32px var(--color-shadow);
+    list-style: none;
+  }
+  .menu-panel a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--color-ink);
+    font-size: 15px;
+    text-decoration: none;
+  }
+  .menu-panel a:hover {
+    background: var(--color-accent-soft);
+  }
+  .menu-panel a[aria-current="page"] {
+    color: var(--color-accent-strong);
+    font-weight: 600;
+  }
   .actions {
     display: flex;
     align-items: center;
     gap: 6px;
     margin-left: auto;
+    font-size: 15px;
+  }
+  .external {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-radius: var(--radius-control);
+    color: var(--color-ink-muted);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .external :global(.icon) {
+    font-size: 13px;
+  }
+  .external:hover,
+  .icon-link:hover {
+    color: var(--color-ink);
+  }
+  .icon-link {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-control);
+    color: var(--color-ink-muted);
+    font-size: 20px;
+  }
+  .icon-link:hover {
+    background: var(--color-accent-soft);
+  }
+  .get-started {
+    margin-left: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+  }
+
+  /* The phone layout; PHONE_LAYOUT in src/scripts/site-menus.ts matches it. */
+  @media (max-width: 960px) {
+    .menus,
+    .wide-only {
+      display: none;
+    }
+    .wrap {
+      gap: 12px;
+    }
   }
 </style>

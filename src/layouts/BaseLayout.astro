@@ -1,7 +1,7 @@
 ---
 // The page shell every page uses: the document head (title, description,
 // canonical URL, Open Graph tags, fonts, tokens, theme), the site header,
-// and the page's content inside <main>.
+// the page's content inside <main>, and the footer.
 import "@fontsource/onest/400.css";
 import "@fontsource/onest/600.css";
 import "@fontsource/onest/700.css";
@@ -10,6 +10,7 @@ import "@fontsource/jetbrains-mono/600.css";
 import "@fontsource/jetbrains-mono/700.css";
 import "../styles/tokens.css";
 import "../styles/global.css";
+import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import ThemeScript from "../components/ThemeScript.astro";
 import { canonicalUrl } from "../lib/urls.ts";
@@ -85,10 +86,20 @@ const structuredData = {
     <main id="main">
       <slot />
     </main>
+    <SiteFooter />
   </body>
 </html>
 
 <style>
+  /* The footer sits at the bottom of the window on short pages. */
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  main {
+    flex: 1;
+  }
   .skip-link {
     position: absolute;
     top: 8px;
