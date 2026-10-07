@@ -19,7 +19,7 @@ export const kubernetesSlackInvite = "https://slack.k8s.io";
 
 /** Paid help: what the team takes on, and who to email for it. */
 export const paidHelp = {
-  email: "jorge@educates.dev",
+  email: "contact@educates.dev",
   offers: [
     "Installing and running Educates on your own clusters",
     "Building a Demo Platform on Educates",
