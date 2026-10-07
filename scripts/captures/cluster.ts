@@ -601,6 +601,17 @@ export function teardown(log: (message: string) => void = console.log) {
     partOfSelector,
     "--ignore-not-found",
   ]);
+  // The workshop definitions `educates deploy-workshop` created for the
+  // portal, which it names after it, and which outlive the portal.
+  const definitions = kubectl(["get", "workshops", "-o", "name"])
+    .split("\n")
+    .filter((name) =>
+      name.startsWith(`workshop.training.educates.dev/${portal}--`),
+    );
+  if (definitions.length > 0) {
+    log(`teardown: deleting ${definitions.length} workshop definitions`);
+    kubectl(["delete", ...definitions, "--ignore-not-found"]);
+  }
   log(
     "teardown: deleting Example Academy and the lookup service configuration",
   );

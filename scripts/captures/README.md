@@ -120,11 +120,16 @@ and only for the run.
    npm run captures -- teardown
    ```
 
-   It deletes the `site-captures` portal with its workshops and Sessions,
-   the portal the branding shot creates for itself,
-   Example Academy's namespace, and the lookup service resources and
-   cluster-wide resources labelled `app.kubernetes.io/part-of=site-captures`.
-   It leaves other portals alone.
+   It deletes the `site-captures` portal with its Sessions, the workshop
+   definitions deployed to it, the portal the branding shot creates for
+   itself, Example Academy's namespace, and the lookup service resources
+   and cluster-wide resources labelled
+   `app.kubernetes.io/part-of=site-captures`, among them the
+   `educates-config` namespace when `setup` created it. It leaves other
+   portals alone. The workshop content images it published stay in the
+   local registry, `localhost:5001/lab-site-captures-files` and
+   `localhost:5001/lab-new-workshop-files`, as do the images the cluster
+   pulled.
 
 ## Changing a shot
 
