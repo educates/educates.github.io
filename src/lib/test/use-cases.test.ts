@@ -100,7 +100,7 @@ describe("useCasesRelyingOn", () => {
   it("lists each use case whose page names the Feature, once, in the order given", () => {
     expect(
       useCasesRelyingOn(
-        "isolated-sessions",
+        ["isolated-sessions"],
         [handsOnEvents, demoPlatform, teamTraining],
         before4,
       ),
@@ -121,7 +121,7 @@ describe("useCasesRelyingOn", () => {
   it("leaves out use cases that do not name the Feature, and stubs without a page", () => {
     expect(
       useCasesRelyingOn(
-        "portal-rest-api",
+        ["portal-rest-api"],
         [handsOnEvents, demoPlatform, teamTraining],
         before4,
       ),
@@ -134,11 +134,44 @@ describe("useCasesRelyingOn", () => {
     ]);
     expect(
       useCasesRelyingOn(
-        "examiner-checks",
+        ["examiner-checks"],
         [handsOnEvents, demoPlatform, teamTraining],
         before4,
       ),
     ).toEqual([]);
+  });
+
+  it("lists each use case that names any of several Features, once, for a page that covers more than one", () => {
+    const enablement = {
+      id: "customer-and-partner-enablement",
+      data: {
+        name: "Customer and partner enablement",
+        promise: "Hands-on training for the people who use your product.",
+        page: {
+          capabilities: [
+            resting("portal-rest-api", "embedding", "lookup-service"),
+          ],
+        },
+      },
+    };
+    expect(
+      useCasesRelyingOn(
+        ["lookup-service", "portal-rest-api"],
+        [handsOnEvents, demoPlatform, enablement],
+        before4,
+      ),
+    ).toEqual([
+      {
+        name: "Build your own Demo Platform",
+        promise: "One-click Demos for your field team.",
+        href: "/use-cases/demo-platform",
+      },
+      {
+        name: "Customer and partner enablement",
+        promise: "Hands-on training for the people who use your product.",
+        href: "/use-cases/customer-and-partner-enablement",
+      },
+    ]);
   });
 
   it("counts a Feature a capability names only from Educates 4.0 once 4.0 is released", () => {
@@ -151,12 +184,12 @@ describe("useCasesRelyingOn", () => {
       },
     };
     expect(
-      useCasesRelyingOn("air-gapped-install", [selfHostedTraining], {
+      useCasesRelyingOn(["air-gapped-install"], [selfHostedTraining], {
         educates4Released: false,
       }),
     ).toEqual([]);
     expect(
-      useCasesRelyingOn("air-gapped-install", [selfHostedTraining], {
+      useCasesRelyingOn(["air-gapped-install"], [selfHostedTraining], {
         educates4Released: true,
       }),
     ).toEqual([
