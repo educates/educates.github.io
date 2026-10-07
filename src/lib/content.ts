@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import { site } from "../site.ts";
+import { aboutSection } from "./about-section.ts";
 import { currentFeatures } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
 
@@ -14,6 +15,19 @@ export async function guides() {
     })),
   );
   return { entries, path };
+}
+
+/** The About Educates pages, and the section they make. */
+export async function aboutPages() {
+  const entries = await getCollection("about");
+  const section = aboutSection(
+    entries.map((entry) => ({
+      id: entry.id,
+      title: entry.data.title,
+      order: entry.data.order,
+    })),
+  );
+  return { entries, section };
 }
 
 /** The use cases, in their menu order. */

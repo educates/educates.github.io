@@ -106,6 +106,31 @@ const guides = defineCollection({
 });
 
 /**
+ * About Educates: one Markdown page per file under `src/content/about/`,
+ * served at `/about-educates/<name>`. `index.md` is Architecture, at
+ * `/about-educates`. The sidebar lists the pages by `order`;
+ * `aboutSection()` in src/lib/about-section.ts arranges them. A `mermaid`
+ * fence in a page becomes a diagram.
+ */
+const about = defineCollection({
+  loader: glob({
+    pattern: "*.md",
+    base: "./src/content/about",
+    // Rendered when a page renders, where an error in the Markdown
+    // pipeline, such as an unknown directive, fails the build.
+    deferRender: true,
+  }),
+  schema: z.object({
+    /** The page's heading and title. */
+    title: z.string(),
+    /** One or two sentences for search results and shared links. */
+    description: z.string(),
+    /** Where it sits in the section's sidebar. */
+    order: z.number().int(),
+  }),
+});
+
+/**
  * Blog posts: one Markdown file per post under `src/content/posts/`, in a
  * folder with its images when it has any, or `.mdx` when it uses a
  * component. The entry's id is its `slug`, and its page is `/blog/<slug>`.
@@ -171,6 +196,7 @@ export const collections = {
   useCases,
   features,
   guides,
+  about,
   posts,
   authors,
   tags,
