@@ -110,10 +110,19 @@ const useCases = defineCollection({
           .max(4),
         /**
          * What you bring: what Educates does not do for this use case, each
-         * with the docs page that says so where there is one.
+         * with the docs page that says so where there is one, and an
+         * example built on Educates to start from where there is one, by its
+         * link text and URL.
          */
         bring: z
-          .array(useCasePoint.extend({ docs: z.url().optional() }))
+          .array(
+            useCasePoint.extend({
+              docs: z.url().optional(),
+              example: z
+                .object({ title: z.string(), href: z.url() })
+                .optional(),
+            }),
+          )
           .min(1),
         /** Proof: what backs the page's claims. */
         proof: z.object({
@@ -129,8 +138,10 @@ const useCases = defineCollection({
             .default([]),
           /**
            * What to read, by title and URL: Content, docs pages, the
-           * Features overview, or a section of the page itself, such as
-           * `#how-it-works`.
+           * Features overview, a section of the page itself, such as
+           * `#how-it-works`, or an Example: something built on Educates
+           * outside the project's own publications, such as a site or a
+           * repository to study.
            */
           content: z
             .array(
@@ -144,6 +155,7 @@ const useCases = defineCollection({
                   "Features",
                   "Docs",
                   "On this page",
+                  "Example",
                 ]),
               }),
             )

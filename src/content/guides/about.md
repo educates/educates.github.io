@@ -37,13 +37,11 @@ kube-system          kube-proxy-rpwb8
 kube-system          kube-scheduler-educates-control-plane
 kyverno              kyverno-admission-controller-d49646b75-6qhf2
 kyverno              kyverno-background-controller-6f9b5b9d57-ljm66
-kyverno              kyverno-cleanup-admission-reports-28816380-zt8b2
-kyverno              kyverno-cleanup-cluster-admission-reports-28816380-cf5m9
 kyverno              kyverno-cleanup-controller-5d44984995-dghtb
 kyverno              kyverno-reports-controller-7b4c74c6c5-k7gkk
 local-path-storage   local-path-provisioner-988d74bc-gt7xr
 projectcontour       contour-7fb9b8fd87-9w4mc
-projectcontour       contour-certgen-v1-28-5-d9hqt
+projectcontour       contour-certgen-v1-30-2-d9hqt
 projectcontour       envoy-2fzc7
 ```
 
@@ -89,24 +87,23 @@ kubectl get clusterpolicies
 There are quite a few:
 
 ```text title="Output"
-NAME                                                ADMISSION   BACKGROUND   VALIDATE ACTION   READY   AGE   MESSAGE
-educates-baseline-disallow-capabilities             true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-host-namespaces          true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-host-path                true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-host-ports               true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-host-ports-range         true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-host-process             true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-privileged-containers    true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-proc-mount               true        true         Enforce           True    22h   Ready
-educates-baseline-disallow-selinux                  true        true         Enforce           True    22h   Ready
-educates-baseline-restrict-apparmor-profiles        true        true         Enforce           True    22h   Ready
-educates-baseline-restrict-seccomp                  true        true         Enforce           True    22h   Ready
-educates-baseline-restrict-sysctls                  true        true         Enforce           True    22h   Ready
-educates-restricted-disallow-capabilities-strict    true        true         Enforce           True    22h   Ready
-educates-restricted-disallow-privilege-escalation   true        true         Enforce           True    22h   Ready
-educates-restricted-require-run-as-non-root-user    true        true         Enforce           True    22h   Ready
-educates-restricted-require-run-as-nonroot          true        true         Enforce           True    22h   Ready
-educates-restricted-restrict-volume-types           true        true         Enforce           True    22h   Ready
+NAME                                                ADMISSION   BACKGROUND   READY   AGE   MESSAGE
+educates-baseline-disallow-capabilities             true        true         True    22h   Ready
+educates-baseline-disallow-host-namespaces          true        true         True    22h   Ready
+educates-baseline-disallow-host-path                true        true         True    22h   Ready
+educates-baseline-disallow-host-ports               true        true         True    22h   Ready
+educates-baseline-disallow-host-ports-range         true        true         True    22h   Ready
+educates-baseline-disallow-host-process             true        true         True    22h   Ready
+educates-baseline-disallow-privileged-containers    true        true         True    22h   Ready
+educates-baseline-disallow-proc-mount               true        true         True    22h   Ready
+educates-baseline-disallow-selinux                  true        true         True    22h   Ready
+educates-baseline-restrict-seccomp                  true        true         True    22h   Ready
+educates-baseline-restrict-sysctls                  true        true         True    22h   Ready
+educates-restricted-disallow-capabilities-strict    true        true         True    22h   Ready
+educates-restricted-disallow-privilege-escalation   true        true         True    22h   Ready
+educates-restricted-require-run-as-non-root-user    true        true         True    22h   Ready
+educates-restricted-require-run-as-nonroot          true        true         True    22h   Ready
+educates-restricted-restrict-volume-types           true        true         True    22h   Ready
 ```
 
 The docs explain why Educates uses Kyverno rather than Kubernetes' own pod

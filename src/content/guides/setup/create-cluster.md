@@ -27,17 +27,16 @@ This will do the following, in sequence:
 The output of this command will look like this:
 
 ```text title="Installation progress"
-Cluster config used is saved to:
-~/Library/Application Support/educates/educates-cluster-config.yaml
+Cluster config used is saved to:  /Users/you/Library/Application Support/educates/educates-cluster-config.yaml
 Creating cluster "educates" ...
-✓ Ensuring node image (kindest/node:v1.30.0) 🖼
-✓ Preparing nodes 📦
+ ✓ Ensuring node image (kindest/node:v1.36.1) 🖼
+ ✓ Preparing nodes 📦
  ✓ Writing configuration 📜
-✓ Starting control-plane 🕹️
-✓ Installing CNI 🔌
-✓ Installing StorageClass 💾
-✓ Waiting ≤ 1m0s for control-plane = Ready ⏳
-• Ready after 14s 💚
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+ ✓ Waiting ≤ 1m0s for control-plane = Ready ⏳
+ • Ready after 14s 💚
 Set kubectl context to "kind-educates"
 You can now use your cluster with:
 

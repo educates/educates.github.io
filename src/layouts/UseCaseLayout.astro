@@ -150,6 +150,13 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
                   </ArrowLink>
                 </p>
               )}
+              {item.example && (
+                <p class="example">
+                  <ArrowLink href={item.example.href} external>
+                    {item.example.title}
+                  </ArrowLink>
+                </p>
+              )}
             </Card>
           ))}
         </ul>

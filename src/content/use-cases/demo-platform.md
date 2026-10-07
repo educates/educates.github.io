@@ -32,9 +32,15 @@ page:
     - title: The front end
       text: Educates gives you the API, not your field team's app. The catalog Presenters browse, how they sign in, and which Demo goes with which customer live in a front end you build on the REST API.
       docs: https://docs.educates.dev/en/stable/lookup-service/portal-integration.html
+      example:
+        title: An Apache 2.0 front end to start from
+        href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     - title: Sign-in through your identity provider
       text: The training portal knows its own accounts and anonymous users, nothing else. Single sign-on comes from your front end, which calls the REST API with its own credentials and passes its own user IDs.
       docs: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
+      example:
+        title: An Apache 2.0 front end with OAuth sign-in to start from
+        href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     - title: CRM links and reporting
       text: Educates does not connect to Salesforce or HubSpot, and nothing stores its webhook events for you. Tying a Demo to an opportunity, and reporting on who showed what to whom, is yours to build.
       docs: https://docs.educates.dev/en/stable/project-details/platform-comparison.html#where-educates-fits
@@ -61,6 +67,12 @@ page:
       - kind: Docs
         title: Portal integration, for a custom front end
         href: https://docs.educates.dev/en/stable/lookup-service/portal-integration.html
+      - kind: Example
+        title: Graham Dumpleton's labs, with GitHub sign-in and time windows
+        href: https://grahamdumpleton.me/labs/
+      - kind: Example
+        title: A Next.js front end with OAuth sign-in, on the lookup service
+        href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     hubWorkshops:
       - lab-lookup-installation
       - lab-lookup-configuration

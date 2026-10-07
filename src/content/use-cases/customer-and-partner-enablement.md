@@ -38,6 +38,9 @@ page:
     - title: Sign-in through your identity provider
       text: A portal has its own accounts, or anonymous access, and nothing else. For customers and partners to sign in with the accounts they already have with you, your front end handles sign-in and calls the REST API with its own credentials.
       docs: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
+      example:
+        title: An Apache 2.0 front end with OAuth sign-in to start from
+        href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     - title: CRM links and partner reporting
       text: Educates does not connect to Salesforce or HubSpot, and nothing collects its webhook events for you. Tying training to an account, and reporting to each partner on their engineers, is yours to build.
       docs: https://docs.educates.dev/en/stable/project-details/platform-comparison.html#where-educates-fits
@@ -58,6 +61,9 @@ page:
       - kind: Docs
         title: The portal REST API, for your own front end
         href: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
+      - kind: Example
+        title: Graham Dumpleton's labs, a public academy running on Educates
+        href: https://grahamdumpleton.me/labs/
     hubWorkshops:
       - lab-spring-boot-on-k8s
       - creating-a-spring-application
