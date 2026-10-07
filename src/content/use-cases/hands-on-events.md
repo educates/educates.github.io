@@ -1,6 +1,7 @@
 ---
 name: Hands-on events
 promise: Every Attendee in a working environment before you start talking, and nothing to clean up after.
+icon: calendar
 order: 1
 page:
   headline: Every Attendee in a working environment within seconds of sitting down

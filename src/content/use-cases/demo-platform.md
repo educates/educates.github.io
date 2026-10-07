@@ -1,6 +1,7 @@
 ---
 name: Build your own Demo Platform
 promise: Give your field team one-click Demos, each in its own fresh environment.
+icon: presentation
 order: 2
 page:
   headline: Any Presenter launches a ready, isolated Demo for any customer in one click

@@ -1,6 +1,7 @@
 ---
 name: Customer and partner enablement
 promise: Let customers and partners learn your product by using it, under your brand.
+icon: people
 order: 3
 page:
   headline: Customers and partners learn your product hands-on, under your brand

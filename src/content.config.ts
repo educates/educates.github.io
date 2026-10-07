@@ -64,6 +64,11 @@ const useCases = defineCollection({
     name: z.string(),
     /** The one-line promise to the reader, shown on its homepage tile. */
     promise: z.string(),
+    /**
+     * The line icon on its homepage tile, by its name in
+     * src/components/Icon.astro.
+     */
+    icon: z.enum(["calendar", "presentation", "people", "layers"]),
     /** Where it sits in menus and lists, lowest first. */
     order: z.number().int(),
     /** The page's sections, in the template's order. */
