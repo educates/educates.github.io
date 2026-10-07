@@ -4,10 +4,12 @@ import { site } from "../../../src/site.ts";
 import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
+import { educates4OnlyTerms } from "./educates4-only-terms.ts";
 import { feedIdentity } from "./feed-identity.ts";
 import { feedLinks } from "./feed-links.ts";
 import { frozenPaths } from "./frozen-paths.ts";
 import { mustResolve } from "./must-resolve.ts";
+import { openGraphImages } from "./open-graph-images.ts";
 import { redirectPages } from "./redirect-pages.ts";
 import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
@@ -26,6 +28,7 @@ export function siteRules(): Rule[] {
     // Missing entries warn; `missing: "error"` makes them block the build.
     mustResolve(mustResolveList, { missing: "warning" }),
     canonicalUrls({ origin: site.origin }),
+    openGraphImages({ origin: site.origin }),
     sitemap({ origin: site.origin }),
     redirectPages({
       origin: site.origin,
@@ -43,5 +46,11 @@ export function siteRules(): Rule[] {
     frozenPaths({ origin: site.origin, paths: ["/assets/images"] }),
     // Stub pages warn; `severity: "error"` makes them block the build.
     stubPages({ severity: "warning" }),
+    // The use case pages say "air-gapped" only once Educates 4.0 is released.
+    educates4OnlyTerms({
+      educates4Released: site.educates4Released,
+      paths: ["/use-cases"],
+      terms: [/air[\s-]?gapped/i],
+    }),
   ];
 }

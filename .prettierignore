@@ -2,7 +2,6 @@
 # its authors gave it.
 *.md
 *.mdx
-about-educates/
 docs/
 
 # Generated

@@ -1,25 +1,36 @@
 ---
-// A list of posts: each one's title, date, reading time and description.
-import PostByline from "./PostByline.astro";
-import { postPath, type Post } from "../lib/posts.ts";
+// A list of posts as Content cards, in the order given.
+import ContentCard from "./ContentCard.astro";
+import {
+  postCover,
+  postPath,
+  postReadingMinutes,
+  type Post,
+} from "../lib/posts.ts";
 
 export interface Props {
   posts: Post[];
 }
 
 const { posts } = Astro.props;
+const cards = await Promise.all(
+  posts.map(async (post) => ({ post, cover: await postCover(post) })),
+);
 ---
 
 <ol class="posts">
-  {posts.map((post) => (
+  {cards.map(({ post, cover }) => (
     <li>
-      <article>
-        <h2>
-          <a href={postPath(post)}>{post.data.title}</a>
-        </h2>
-        <PostByline post={post} />
-        <p class="description">{post.data.description}</p>
-      </article>
+      <ContentCard
+        href={postPath(post)}
+        kind="Blog post"
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        length={`${postReadingMinutes(post)} min read`}
+        cover={cover}
+        coverImage={post.data.cover}
+      />
     </li>
   ))}
 </ol>
@@ -27,33 +38,16 @@ const { posts } = Astro.props;
 <style>
   .posts {
     display: grid;
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  article {
-    display: grid;
-    gap: 8px;
-    padding: 22px 24px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    background: var(--color-surface);
+  .posts > li {
+    display: flex;
   }
-  h2 {
-    font-size: 22px;
-    font-weight: 700;
-  }
-  h2 a {
-    color: var(--color-ink);
-    text-decoration: none;
-  }
-  h2 a:hover {
-    color: var(--color-accent-strong);
-    text-decoration: underline;
-  }
-  .description {
-    margin: 0;
-    color: var(--color-ink-muted);
+  .posts > li > :global(*) {
+    flex: 1;
   }
 </style>

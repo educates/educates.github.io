@@ -21,6 +21,15 @@ export function page(url: string, extraHead = ""): string {
   return `<!doctype html><html lang="en"><head><title>Page</title><link rel="canonical" href="${url}"><meta property="og:url" content="${url}">${extraHead}</head><body><main><h1>Page</h1></main></body></html>`;
 }
 
+/** The Open Graph image tags the base layout writes, for the image at `url`. */
+export function openGraphImageTags(
+  url: string,
+  width = "1200",
+  height = "630",
+): string {
+  return `<meta property="og:image" content="${url}"><meta property="og:image:width" content="${width}"><meta property="og:image:height" content="${height}">`;
+}
+
 /** A stub page: the base layout's head for `url`, and the stub marker. */
 export function stubPage(url: string): string {
   return page(url).replace("<body>", "<body data-stub>");

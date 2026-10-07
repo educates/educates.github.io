@@ -7,7 +7,7 @@
 //    action, "Get started" or "Get help building yours".
 // 2. The problem: two or three pains.
 // 3. How Educates fits: three or four capabilities, each linking the
-//    Features it rests on.
+//    Features it rests on, as the release the site describes has them.
 // 4. How it works, for the Builder: the entry's Markdown body, passed in
 //    the default slot.
 // 5. What you bring: what Educates does not do for this use case.
@@ -27,6 +27,8 @@ import {
 } from "../lib/content.ts";
 import { elsewhere, getStarted } from "../lib/navigation.ts";
 import { getHelp, getHelpBuildingYours } from "../lib/project.ts";
+import { currentCapabilities } from "../lib/use-cases.ts";
+import { site } from "../site.ts";
 
 export interface Props {
   /** A use case with a `page`. */
@@ -46,7 +48,7 @@ const [lead, second] =
     ? [getHelpBuildingYours, getStarted]
     : [getStarted, getHelp];
 const capabilities = await Promise.all(
-  page.capabilities.map(async (capability) => ({
+  currentCapabilities(page.capabilities, site).map(async (capability) => ({
     ...capability,
     links: await featureLinksFor(capability.features, usedBy),
   })),

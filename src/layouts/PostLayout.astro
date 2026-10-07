@@ -7,7 +7,13 @@ import PostAuthors from "../components/PostAuthors.astro";
 import PostByline from "../components/PostByline.astro";
 import PostTags from "../components/PostTags.astro";
 import { breadcrumbs } from "../lib/breadcrumbs.ts";
-import { postAuthors, postPath, postTags, type Post } from "../lib/posts.ts";
+import {
+  postAuthors,
+  postPath,
+  postReadingMinutes,
+  postTags,
+  type Post,
+} from "../lib/posts.ts";
 import { editUrl } from "../lib/urls.ts";
 
 export interface Props {
@@ -23,6 +29,13 @@ const [authors, tags] = await Promise.all([postAuthors(post), postTags(post)]);
   title={title}
   description={description}
   section="Blog post"
+  cover={{
+    form: "post",
+    slug: post.id,
+    minutes: postReadingMinutes(post),
+    date: post.data.date,
+  }}
+  coverImage={post.data.cover}
   breadcrumbs={breadcrumbs(postPath(post), title)}
 >
   <article class="wrap post">

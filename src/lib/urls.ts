@@ -28,3 +28,13 @@ export function editUrl(filePath: string): string {
 export function canonicalUrl(pathname: string): string {
   return `${site.origin}${pagePath(pathname)}`;
 }
+
+/**
+ * The URL of the Open Graph image generated for the page at `pathname`:
+ * `/og/<path>.png`, and `/og/index.png` for the homepage. The image is
+ * written after the build, by src/integrations/open-graph-images.ts.
+ */
+export function openGraphImageUrl(pathname: string): string {
+  const path = pagePath(pathname);
+  return `${site.origin}/og${path === "/" ? "/index" : path}.png`;
+}

@@ -8,6 +8,7 @@ import { render } from "astro:content";
 import DocsLayout from "../../layouts/DocsLayout.astro";
 import { breadcrumbs } from "../../lib/breadcrumbs.ts";
 import { guides } from "../../lib/content.ts";
+import type { PageCoverData } from "../../lib/page-cover.ts";
 import { editUrl } from "../../lib/urls.ts";
 
 export const getStaticPaths = (async () => {
@@ -30,6 +31,16 @@ const eyebrow =
     : entry.id.includes("/")
       ? `Part ${part.number}: ${part.title}`
       : `Part ${part.number} of ${part.count}`;
+// A page of a part shows the path on its cover, with its part filled, as
+// the sidebar numbers it; the overview is drawn like any other page.
+const cover: PageCoverData | undefined = part && {
+  form: "guide",
+  part: part.number,
+  steps: path.sidebar.items.map((item, index) => ({
+    marker: item.marker ?? String(index + 1),
+    label: item.label,
+  })),
+};
 ---
 
 <DocsLayout
@@ -40,6 +51,7 @@ const eyebrow =
   headings={headings}
   eyebrow={eyebrow}
   pager={path.around(entry.id)}
+  cover={cover}
   editUrl={entry.filePath && editUrl(entry.filePath)}
   breadcrumbs={breadcrumbs(href, entry.data.title)}
 >

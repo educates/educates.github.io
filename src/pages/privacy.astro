@@ -1,0 +1,256 @@
+---
+// Privacy: who runs the site, what it counts and why, who processes the
+// counts, the switch that turns counting off in this browser, what the site
+// keeps in the browser, videos, rights, the analytics the site used before,
+// and the sites this page does not cover. The footer links here from every
+// page.
+import "../styles/prose.css";
+import Card from "../components/Card.astro";
+import ProjectLayout from "../layouts/ProjectLayout.astro";
+import { OPT_OUT_KEY } from "../lib/analytics.ts";
+import { formatDate, isoDate } from "../lib/posts.ts";
+import { THEME_STORAGE_KEY } from "../scripts/theme.ts";
+
+const contact = "jorge@educates.dev";
+/** The day this site stopped loading Google Analytics. */
+const googleAnalyticsUntil = "[cutover date]";
+const lastUpdated = new Date("2026-10-07");
+---
+
+<ProjectLayout
+  title="Privacy"
+  description="What educates.dev counts, what it stores in your browser, and how to opt out."
+  lede="This site counts page views without cookies and without knowing who you are. Here is what it counts, who processes it, and how to turn it off."
+>
+  <div class="wrap">
+    <div class="prose policy">
+      <h2 id="who">Who runs this site</h2>
+      <p>
+        I am Jorge Morales Pou, based in Spain, and I run educates.dev. I decide
+        what the site counts and why, so I am responsible for it under the GDPR.
+        Write to me at <a href={`mailto:${contact}`}>{contact}</a> about
+        anything on this page.
+      </p>
+
+      <h2 id="counting">What the site counts</h2>
+      <p>
+        The site counts page views with GoatCounter. For each page you open,
+        GoatCounter records the page, the site that sent you there, your browser
+        and operating system, your language, your screen size, your country, and
+        the campaign tags in the link you followed, such as{" "}
+        <code>utm_campaign</code>. It keeps these as separate totals per hour or
+        per day, which cannot be joined back into one visit.
+      </p>
+      <p>
+        The site sets no cookies. Your IP address and your browser's full user
+        agent are never stored. To tell a new visit from a repeat one,
+        GoatCounter keeps them in memory for up to 8 hours, tied to a random
+        identifier, and then forgets them.
+      </p>
+
+      <h2 id="why">Why, and on what basis</h2>
+      <p>
+        To learn which pages people read and how they find them, so I know what
+        to write next and what to fix. The statistics are anonymous, are not
+        combined with any other data, and are not used for anything else.
+      </p>
+      <p>
+        The legal basis is my legitimate interest in measuring this site's own
+        audience, under article 6(1)(f) of the GDPR. The Spanish data protection
+        authority, the AEPD, exempts first-party audience measurement that only
+        produces anonymous statistics from consent, as long as visitors are told
+        about it, which is what this page is for. That is why the site shows no
+        cookie banner.
+      </p>
+
+      <h2 id="processor">Who processes the counts</h2>
+      <p>
+        <a href="https://www.goatcounter.com">GoatCounter</a>, a service
+        operated from the Republic of Ireland, processes the counts for me. Its
+        servers are at Hetzner, in Finland and Germany, and it shares nothing
+        with third parties. The statistics are kept for 25 months and then
+        deleted, and GoatCounter's backups keep them for up to 30 days more. Its{" "}
+        <a href="https://www.goatcounter.com/help/privacy">privacy policy</a>{" "}
+        has the details.
+      </p>
+
+      <h2 id="opt-out">Turn counting off</h2>
+      <p>
+        Turn the switch off and this browser stops loading GoatCounter, so none
+        of your page views are counted. The choice lives in this browser only,
+        until you turn counting on again or clear this site's data.
+      </p>
+      <Card class="switch-card" data-counting-switch>
+        <button
+          type="button"
+          class="switch"
+          role="switch"
+          aria-checked="true"
+          aria-describedby="counting-status"
+        >
+          <span class="track" aria-hidden="true">
+            <span class="knob"></span>
+          </span>
+          Count my page views in this browser
+        </button>
+        <p
+          id="counting-status"
+          class="status"
+          data-counting-status
+          aria-live="polite"
+        >
+          Counting is on: this browser's page views are counted.
+        </p>
+        <p class="no-script">
+          JavaScript is off, so this site loads nothing from GoatCounter and
+          counts nothing from this browser.
+        </p>
+      </Card>
+
+      <h2 id="browser-storage">What the site keeps in your browser</h2>
+      <p>
+        Two settings, each kept in your browser's local storage only when you
+        choose it, and never sent anywhere:
+      </p>
+      <ul>
+        <li>
+          <code>{OPT_OUT_KEY}</code>, when you turn counting off above.
+        </li>
+        <li>
+          <code>{THEME_STORAGE_KEY}</code>, when you pick the light or dark
+          theme with the theme button.
+        </li>
+      </ul>
+
+      <h2 id="videos">Videos</h2>
+      <p>
+        Videos in posts are hosted on YouTube. Until you press play, the page
+        shows a picture served from this site and loads nothing from YouTube or
+        Google. Pressing play loads the player from youtube-nocookie.com, and
+        from then on{" "}
+        <a href="https://policies.google.com/privacy">
+          Google's privacy policy
+        </a>{" "}
+        applies to it.
+      </p>
+
+      <h2 id="rights">Your rights</h2>
+      <p>
+        You can ask me for access to your data or its erasure, or object to the
+        counting, by writing to <a href={`mailto:${contact}`}>{contact}</a>.
+        Because nothing stored identifies you, I usually cannot pick out your
+        visits among the totals; turning counting off above is the quickest way
+        to object. You can also complain to the{" "}
+        <a href="https://www.aepd.es">AEPD</a>, the Spanish data protection
+        authority.
+      </p>
+
+      <h2 id="google-analytics">Before GoatCounter</h2>
+      <p>
+        Until {googleAnalyticsUntil}, this site used Google Analytics. It no
+        longer loads it, and the Google Analytics property receives no new data;
+        it keeps the statistics collected before then. If you visited before
+        that date, your browser may still hold the <code>_ga</code> cookies it
+        set. This site no longer reads them, and you can delete them.
+      </p>
+
+      <h2 id="other-sites">Other Educates sites</h2>
+      <p>
+        docs.educates.dev and hub.educates.dev are separate sites, and this page
+        does not cover them.
+      </p>
+
+      <p class="updated">
+        Last updated{" "}
+        <time datetime={isoDate(lastUpdated)}>{formatDate(lastUpdated)}</time>.
+      </p>
+    </div>
+  </div>
+</ProjectLayout>
+
+<script>
+  import { setUpCountingSwitch } from "../scripts/counting-switch.ts";
+  setUpCountingSwitch();
+</script>
+
+<style>
+  .policy {
+    max-width: 720px;
+    padding-bottom: 96px;
+  }
+  .policy > h2:first-child {
+    margin-top: 0;
+  }
+  .policy :global(.switch-card) {
+    gap: 8px;
+  }
+  .switch {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    justify-self: start;
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--color-ink);
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+  .switch:disabled {
+    color: var(--color-ink-muted);
+    cursor: not-allowed;
+  }
+  .track {
+    display: inline-flex;
+    flex: none;
+    width: 44px;
+    height: 24px;
+    padding: 2px;
+    border: 1px solid var(--color-ink-muted);
+    border-radius: 999px;
+    background: var(--color-background);
+    transition: background-color 0.15s;
+  }
+  .knob {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-ink-muted);
+    transition: transform 0.15s;
+  }
+  .switch[aria-checked="true"] .track {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+  .switch[aria-checked="true"] .knob {
+    background: var(--color-on-accent);
+    transform: translateX(20px);
+  }
+  .status {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+  .no-script {
+    display: none;
+    font-size: 15px;
+  }
+  :global(html:not(.js)) .switch,
+  :global(html:not(.js)) .status {
+    display: none;
+  }
+  :global(html:not(.js)) .no-script {
+    display: block;
+  }
+  .updated {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track,
+    .knob {
+      transition: none;
+    }
+  }
+</style>

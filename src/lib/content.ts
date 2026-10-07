@@ -1,10 +1,12 @@
 import type { ImageMetadata } from "astro";
 import { getCollection } from "astro:content";
 import { site } from "../site.ts";
+import { aboutSection } from "./about-section.ts";
 import { entryFileUrl } from "./entry-files.ts";
 import { currentFeatures, featureLinks } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
 import { hubWorkshopLinks } from "./hub-workshops.ts";
+import { youTubeVideoId } from "./outside-content.ts";
 import { useCasesRelyingOn } from "./use-cases.ts";
 
 export { featurePath } from "./features.ts";
@@ -21,6 +23,19 @@ export async function guides() {
     })),
   );
   return { entries, path };
+}
+
+/** The About Educates pages, and the section they make. */
+export async function aboutPages() {
+  const entries = await getCollection("about");
+  const section = aboutSection(
+    entries.map((entry) => ({
+      id: entry.id,
+      title: entry.data.title,
+      order: entry.data.order,
+    })),
+  );
+  return { entries, section };
 }
 
 /** The use cases, in their menu order. */
@@ -100,4 +115,21 @@ export function loopMedia(
     src: entryFileUrl(loop.video, entryFilePath, featureVideos),
     poster: loop.poster,
   };
+}
+
+/**
+ * The outside Content entry of the YouTube video `videoId`, which holds its
+ * title, URL and poster. A video without one fails the build; `usedBy`
+ * names who showed it.
+ */
+export async function youTubeVideo(videoId: string, usedBy: string) {
+  const entry = (await getCollection("outsideContent")).find(
+    (candidate) => youTubeVideoId(candidate.data.url) === videoId,
+  );
+  if (!entry) {
+    throw new Error(
+      `${usedBy}: YouTube video ${videoId} has no outside Content entry; add one under src/content/outside-content/`,
+    );
+  }
+  return entry;
 }
