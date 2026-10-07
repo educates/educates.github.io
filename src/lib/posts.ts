@@ -1,7 +1,8 @@
 // Blog posts, their authors and their tags, from the content collections,
 // and the URL paths of the pages that show them.
 
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import type { PostCover } from "./cover.ts";
 import { readingMinutes } from "./reading-time.ts";
 
 export type Post = CollectionEntry<"posts">;
@@ -34,6 +35,25 @@ export function postPath(post: Post): string {
 /** How many minutes a post takes to read. */
 export function postReadingMinutes(post: Post): number {
   return readingMinutes(post.body ?? "");
+}
+
+/**
+ * What a post's generated cover draws: its window lists the post's `h2`
+ * headings, or shows its description when it has none.
+ */
+export async function postCover(post: Post): Promise<PostCover> {
+  const { headings } = await render(post);
+  return {
+    form: "post",
+    title: post.data.title,
+    slug: post.id,
+    minutes: postReadingMinutes(post),
+    date: post.data.date,
+    description: post.data.description,
+    headings: headings
+      .filter((heading) => heading.depth === 2)
+      .map((heading) => heading.text),
+  };
 }
 
 /** Every author, by key. */
