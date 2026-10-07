@@ -1,0 +1,44 @@
+---
+// A text link that leads on, such as "Get help" or "Explore the Hub": an
+// arrow after it, or, for a link that leaves the site, the external mark
+// and a note for screen readers.
+import Icon from "./Icon.astro";
+
+export interface Props {
+  href: string;
+  /** Whether the link leads to another site. */
+  external?: boolean;
+}
+
+const { href, external = false } = Astro.props;
+---
+
+<a class="arrow-link" href={href}>
+  <slot />
+  {external ? (
+    <>
+      <Icon name="external" />
+      <span class="sr-only">{" (external site)"}</span>
+    </>
+  ) : (
+    <Icon name="arrow-right" />
+  )}
+</a>
+
+<style>
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-accent-strong);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .arrow-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .arrow-link :global(.icon) {
+    font-size: 15px;
+  }
+</style>
