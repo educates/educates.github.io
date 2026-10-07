@@ -1,0 +1,490 @@
+---
+// The use case template. Every use case page has the same seven sections,
+// in this order, from its entry in the use case collection
+// (src/content.config.ts):
+//
+// 1. The outcome: the headline, who the page is for, and the main call to
+//    action, "Get started" or "Get help building yours".
+// 2. The problem: two or three pains.
+// 3. How Educates fits: three or four capabilities, each linking the
+//    Features it rests on.
+// 4. How it works, for the Builder: the entry's Markdown body, passed in
+//    the default slot.
+// 5. What you bring: what Educates does not do for this use case.
+// 6. Proof: facts, cleared customer stories, Content to read, and
+//    workshops to deploy from the Hub, with "Explore the Hub".
+// 7. The close: "Get started" and "Get help", and the other use cases.
+import type { CollectionEntry } from "astro:content";
+import ArrowLink from "../components/ArrowLink.astro";
+import Card from "../components/Card.astro";
+import BaseLayout from "./BaseLayout.astro";
+import { breadcrumbs } from "../lib/breadcrumbs.ts";
+import {
+  featureLinksFor,
+  hubWorkshops,
+  useCasePath,
+  useCases,
+} from "../lib/content.ts";
+import { elsewhere, getStarted } from "../lib/navigation.ts";
+import { getHelp, getHelpBuildingYours } from "../lib/project.ts";
+
+export interface Props {
+  /** A use case with a `page`. */
+  entry: CollectionEntry<"useCases">;
+}
+
+const { entry } = Astro.props;
+const { name, promise, page } = entry.data;
+const usedBy = entry.filePath ?? `The use case "${entry.id}"`;
+if (!page) {
+  throw new Error(`${usedBy} has no page to render on the use case template`);
+}
+
+const path = useCasePath(entry.id);
+const [lead, second] =
+  page.lead === "get-help-building"
+    ? [getHelpBuildingYours, getStarted]
+    : [getStarted, getHelp];
+const capabilities = await Promise.all(
+  page.capabilities.map(async (capability) => ({
+    ...capability,
+    links: await featureLinksFor(capability.features, usedBy),
+  })),
+);
+const workshops = await hubWorkshops(page.proof.hubWorkshops, usedBy);
+const related = (await useCases()).filter((other) => other.id !== entry.id);
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+<BaseLayout
+  title={name}
+  description={promise}
+  section="Use case"
+  breadcrumbs={breadcrumbs(path, name)}
+>
+  <header class="outcome">
+    <div class="wrap">
+      <p class="kicker">{name}</p>
+      <h1>{page.headline}</h1>
+      <p class="reader">{page.reader}</p>
+      <p class="lede">{page.lede}</p>
+      <div class="actions">
+        <a class="button button-primary" href={lead.href}>
+          {lead.label}
+        </a>
+        <a class="button button-secondary" href={second.href}>
+          {second.label}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="band" id="problem" aria-labelledby="problem-heading">
+    <div class="wrap">
+      <h2 id="problem-heading">The problem</h2>
+      <ol class="problems">
+        {page.problems.map((problem) => (
+          <li>
+            <h3>{problem.title}</h3>
+            <p>{problem.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="band alt" id="fit" aria-labelledby="fit-heading">
+    <div class="wrap">
+      <h2 id="fit-heading">How Educates fits</h2>
+      <ul class="cards capabilities">
+        {capabilities.map((capability) => (
+          <Card as="li">
+            <h3>{capability.title}</h3>
+            <p>{capability.text}</p>
+            <p class="features">
+              {capability.links.map((link) => (
+                <ArrowLink href={link.href}>{link.name}</ArrowLink>
+              ))}
+            </p>
+          </Card>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="how-it-works" aria-labelledby="how-heading">
+    <div class="wrap">
+      <p class="kicker">For the Builder</p>
+      <h2 id="how-heading">How it works</h2>
+      <div class="prose how">
+        <slot />
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="what-you-bring" aria-labelledby="bring-heading">
+    <div class="wrap">
+      <h2 id="bring-heading">What you bring</h2>
+      <p class="intro">
+        Educates is the core, not the whole job. This is what it leaves to you,
+        so you can plan for it before you commit.
+      </p>
+      <ul class="cards bring">
+        {page.bring.map((item) => (
+          <Card as="li">
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+            {item.docs && (
+              <p class="docs">
+                <ArrowLink href={item.docs} external>
+                  What the docs say
+                </ArrowLink>
+              </p>
+            )}
+          </Card>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="proof" aria-labelledby="proof-heading">
+    <div class="wrap">
+      <h2 id="proof-heading">Proof</h2>
+      {page.proof.facts.length > 0 && (
+        <ul class="facts">
+          {page.proof.facts.map((fact) => (
+            <Card as="li" tone="soft">
+              <p class="figure">{fact.figure}</p>
+              <p>{fact.text}</p>
+              <p class="source">
+                <ArrowLink
+                  href={fact.source.href}
+                  external={isExternal(fact.source.href)}
+                >
+                  {fact.source.label}
+                </ArrowLink>
+              </p>
+            </Card>
+          ))}
+        </ul>
+      )}
+      {page.proof.stories.length > 0 && (
+        <ul class="cards stories" aria-label="Stories from teams using it">
+          {page.proof.stories.map((story) => (
+            <Card as="li">
+              <h3>{story.title}</h3>
+              <p>{story.text}</p>
+            </Card>
+          ))}
+        </ul>
+      )}
+      <div class="evidence">
+        {page.proof.content.length > 0 && (
+          <div class="column">
+            <h3>Read how it is done</h3>
+            <ul class="links">
+              {page.proof.content.map((item) => (
+                <li>
+                  <span class="kind">{item.kind}</span>
+                  <ArrowLink href={item.href} external={isExternal(item.href)}>
+                    {item.title}
+                  </ArrowLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div class="column">
+          <h3>Deploy it from the Hub</h3>
+          <p>
+            The Hub is a catalog of workshops you deploy on your own Educates,
+            each with one command.
+          </p>
+          {workshops.length > 0 && (
+            <ul class="links">
+              {workshops.map((workshop) => (
+                <li>
+                  <ArrowLink href={workshop.url} external>
+                    {workshop.title}
+                  </ArrowLink>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p>
+            <a class="button button-secondary" href={elsewhere.hub.href}>
+              Explore the Hub
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="next" aria-labelledby="next-heading">
+    <div class="wrap close">
+      <Card tone="soft" class="call">
+        <h2 id="next-heading">Try it yourself, or talk to us</h2>
+        <p>
+          Get started runs Educates on your laptop with a first workshop in a
+          few commands. Get help is where the community answers questions, and
+          where you can hire the people who build Educates.
+        </p>
+        <div class="actions">
+          <a class="button button-primary" href={getStarted.href}>
+            {getStarted.label}
+          </a>
+          <a class="button button-secondary" href={getHelp.href}>
+            {getHelp.label}
+          </a>
+        </div>
+      </Card>
+      <nav class="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">Other use cases</h2>
+        <ul>
+          {related.map((other) => (
+            <li>
+              <a href={useCasePath(other.id)}>{other.data.name}</a>
+              <p>{other.data.promise}</p>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .outcome .wrap {
+    padding-block: 32px 64px;
+  }
+  .kicker {
+    margin: 0 0 12px;
+    color: var(--color-accent-strong);
+    font: 600 13px/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  h1 {
+    max-width: 18em;
+    font-size: clamp(34px, 4.4vw, 54px);
+    line-height: 1.08;
+    font-weight: 700;
+  }
+  .reader {
+    margin: 20px 0 0;
+    font-weight: 600;
+  }
+  .lede {
+    max-width: 38em;
+    margin: 8px 0 28px;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .actions .button {
+    white-space: normal;
+  }
+
+  /* A section of the page; `alt` sections sit on the surface colour. */
+  .band {
+    padding-block: 72px;
+    scroll-margin-top: 72px;
+  }
+  .band.alt {
+    border-block: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+  h2 {
+    margin-bottom: 32px;
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+  }
+  h3 {
+    font-size: 19px;
+  }
+  p {
+    margin: 0;
+  }
+  .intro {
+    max-width: 40em;
+    margin: -16px 0 32px;
+    color: var(--color-ink-muted);
+  }
+
+  /* The problem: numbered pains in columns. */
+  .problems {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: problem;
+  }
+  .problems li {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-line);
+  }
+  .problems h3 {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .problems h3::before {
+    counter-increment: problem;
+    content: counter(problem, decimal-leading-zero);
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font: 600 13px/1 var(--font-mono);
+  }
+  .problems p {
+    color: var(--color-ink-muted);
+  }
+
+  /* Cards in a grid; on a surface section they take the page colour. */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .alt .cards > :global(.card.surface) {
+    background: var(--color-background);
+  }
+  .cards p {
+    color: var(--color-ink-muted);
+  }
+  /* Four capabilities, or more points, read best two by two. */
+  .capabilities:has(> :nth-child(4)),
+  .bring {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  }
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+  .bring > :global(.card) {
+    gap: 8px;
+  }
+
+  .how {
+    max-width: 52em;
+  }
+
+  /* Proof. */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+    margin: 0 0 32px;
+    padding: 0;
+    list-style: none;
+  }
+  .figure {
+    color: var(--color-accent-strong);
+    font-size: clamp(34px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1;
+  }
+  .stories {
+    margin-bottom: 32px;
+  }
+  .evidence {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 32px 48px;
+  }
+  .column {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+  .column > p {
+    color: var(--color-ink-muted);
+  }
+  .links {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .links li {
+    display: grid;
+    gap: 2px;
+    justify-items: start;
+  }
+  .kind {
+    color: var(--color-ink-muted);
+    font: 600 12px/1.4 var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* The close. */
+  .close {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 32px 48px;
+    align-items: start;
+  }
+  .call {
+    gap: 16px;
+    padding: 32px;
+  }
+  .call h2 {
+    margin: 0;
+    font-size: clamp(24px, 2.6vw, 30px);
+  }
+  .call p {
+    color: var(--color-ink-muted);
+  }
+  .related h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+  .related ul {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related a {
+    font-weight: 600;
+  }
+  .related p {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+
+  @media (max-width: 860px) {
+    .close {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .band {
+      padding-block: 52px;
+    }
+    .outcome .wrap {
+      padding-block: 24px 48px;
+    }
+    .call {
+      padding: 24px;
+    }
+  }
+</style>
