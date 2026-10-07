@@ -24,6 +24,7 @@ npm.
 | `npm run link-check` | Checks the internal links in the build in `dist/`, offline. Needs [lychee](https://lychee.cli.rs/), for example from `brew install lychee`. |
 | `npm run url-check -- <base-url>` | Requests every URL of the must-resolve list from the site served at `<base-url>`, such as `https://educates.dev` after a deploy; see below. |
 | `npm run posters` | Downloads the poster of every video from the project's YouTube channel that has none, next to its outside Content entry in `src/content/outside-content/`. Run it after adding an entry for such a video, which fails the build until it has its poster, and commit each poster with its entry. |
+| `npm run captures` | Takes the screenshots and loops on the Features pages from a running Educates, and wires them into the Feature entries; `npm run captures -- setup` deploys what it needs first. See [scripts/captures/README.md](scripts/captures/README.md). |
 | `npm run docker-build` | Builds the Docker image; see below. |
 
 The site check, in `scripts/site-check/`, reads the build the way GitHub
