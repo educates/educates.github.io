@@ -9,6 +9,7 @@ import { feedIdentity } from "./feed-identity.ts";
 import { feedLinks } from "./feed-links.ts";
 import { frozenPaths } from "./frozen-paths.ts";
 import { mustResolve } from "./must-resolve.ts";
+import { openGraphImages } from "./open-graph-images.ts";
 import { redirectPages } from "./redirect-pages.ts";
 import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
@@ -27,6 +28,7 @@ export function siteRules(): Rule[] {
     // Missing entries warn; `missing: "error"` makes them block the build.
     mustResolve(mustResolveList, { missing: "warning" }),
     canonicalUrls({ origin: site.origin }),
+    openGraphImages({ origin: site.origin }),
     sitemap({ origin: site.origin }),
     redirectPages({
       origin: site.origin,

@@ -2,6 +2,10 @@ import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { jobIds } from "./lib/features.ts";
+import {
+  outsideContentKinds,
+  outsideEntryProblems,
+} from "./lib/outside-content.ts";
 
 /** A short point on a use case page: a title and a sentence or two. */
 const useCasePoint = z.object({
@@ -301,6 +305,63 @@ const posts = defineCollection({
     }),
 });
 
+/**
+ * Outside Content: videos, talks and articles published somewhere other
+ * than this site, one YAML file per entry under
+ * `src/content/outside-content/`, its images next to it. The file name is
+ * the entry's id. Entries link out, and the YouTube facade in posts plays
+ * their videos. `outsideEntryProblems()` in src/lib/outside-content.ts
+ * holds the rules that span fields, such as the poster every video from
+ * the project's channel needs; an entry that breaks one fails the build.
+ */
+const outsideContent = defineCollection({
+  loader: glob({
+    pattern: "*.{yml,yaml}",
+    base: "./src/content/outside-content",
+  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        kind: z.enum(outsideContentKinds),
+        /** Where it is published, which its card links to. */
+        url: z.url(),
+        /** When it was published, or for a talk, given. */
+        date: z.coerce.date(),
+        /** The event a talk was given at. */
+        event: z.string().optional(),
+        /**
+         * The YouTube channel a video or talk is on, by its handle, such as
+         * `@EducatesTrainingPlatform`.
+         */
+        channel: z.string().optional(),
+        /** Keys of `src/content/tags.yml`. */
+        tags: z.array(z.string()).default([]),
+        /** One line for its card. */
+        description: z.string().min(1),
+        /**
+         * An image next to the entry, which the project has the right to
+         * use, that replaces its generated cover.
+         */
+        cover: image().optional(),
+        /** A video's or talk's length, recorded by hand: `m:ss` or `h:mm:ss`. */
+        length: z
+          .string()
+          .regex(/^(\d+:)?\d{1,2}:\d{2}$/)
+          .optional(),
+        /**
+         * The YouTube thumbnail of a video from the project's channel, next
+         * to the entry. `npm run posters` downloads it and adds this field.
+         */
+        poster: image().optional(),
+      })
+      .superRefine((entry, context) => {
+        for (const { field, message } of outsideEntryProblems(entry)) {
+          context.addIssue({ code: "custom", path: [field], message });
+        }
+      }),
+});
+
 /** The authors of blog posts, by key, with the keys of Docusaurus's `authors.yml`. */
 const authors = defineCollection({
   loader: file("./src/content/authors.yml"),
@@ -334,6 +395,7 @@ export const collections = {
   guides,
   about,
   posts,
+  outsideContent,
   authors,
   tags,
 };

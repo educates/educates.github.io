@@ -4,5 +4,6 @@
 // names, from feed-components.ts; a component added here needs one there.
 
 import AsciinemaPlayer from "./AsciinemaPlayer.astro";
+import YouTubeVideo from "./YouTubeVideo.astro";
 
-export const postComponents = { AsciinemaPlayer };
+export const postComponents = { AsciinemaPlayer, YouTubeVideo };

@@ -5,6 +5,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import expressiveCode from "astro-expressive-code";
 import mermaid from "astro-mermaid";
+import { openGraphImages } from "./src/integrations/open-graph-images.ts";
 import { singleSitemap } from "./src/integrations/single-sitemap.ts";
 import { admonitions } from "./src/markdown/admonitions.ts";
 import { redirects } from "./src/redirects.ts";
@@ -43,7 +44,8 @@ export default defineConfig({
   // `data-theme` names; it comes after expressiveCode() and adds its plugin
   // to the processor above. A `mermaid` fence in MDX fails the build unless
   // the processor's `rawHtml` feature is on. react() renders the islands;
-  // singleSitemap() reads sitemap()'s output.
+  // singleSitemap() reads sitemap()'s output; openGraphImages() draws every
+  // page's Open Graph image from the built pages.
   integrations: [
     expressiveCode(),
     mermaid({ enableLog: false }),
@@ -51,5 +53,6 @@ export default defineConfig({
     react(),
     sitemap(),
     singleSitemap(),
+    openGraphImages({ origin: site.origin }),
   ],
 });
