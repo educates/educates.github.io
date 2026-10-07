@@ -1,0 +1,107 @@
+---
+// The page shell every page uses: the document head (title, description,
+// canonical URL, Open Graph tags, fonts, tokens, theme), the site header,
+// and the page's content inside <main>.
+import "@fontsource/onest/400.css";
+import "@fontsource/onest/600.css";
+import "@fontsource/onest/700.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/jetbrains-mono/700.css";
+import "../styles/tokens.css";
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import ThemeScript from "../components/ThemeScript.astro";
+import { canonicalUrl } from "../lib/urls.ts";
+import { site } from "../site.ts";
+
+export interface Props {
+  /** The page's own title; the layout appends the site name. */
+  title: string;
+  /** One or two sentences for search results and shared links. */
+  description: string;
+  /**
+   * The site section the page belongs to, such as "Use case", "Feature"
+   * or "About Educates". Written as `data-section` on <body>, where the
+   * Open Graph image step reads it.
+   */
+  section?: string;
+}
+
+const { title, description, section } = Astro.props;
+const fullTitle = `${title} | ${site.name}`;
+const canonical = canonicalUrl(Astro.url.pathname);
+
+// The site-wide structured data, with the social card as the logo.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Educates Training Platform",
+  description:
+    "A system for hosting interactive workshop environments in Kubernetes, or on top of a local container runtime.",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Kubernetes",
+  url: site.origin,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  sourceOrganization: {
+    "@type": "Organization",
+    name: "Educates",
+    url: site.origin,
+    logo: `${site.origin}/img/educates-social-card.png`,
+    sameAs: [
+      "https://github.com/educates/educates-training-platform",
+      "https://www.youtube.com/@EducatesTrainingPlatform",
+    ],
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ThemeScript />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
+  </head>
+  <body data-section={section}>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 50;
+    padding: 8px 14px;
+    border-radius: var(--radius-control);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 600;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+</style>

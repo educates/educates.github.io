@@ -1,12 +1,81 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const lede =
+  "Educates gives everyone their own live environment, with instructions beside a terminal, editor and Kubernetes console. Open source, running on your own Kubernetes cluster.";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Educates</title>
-  </head>
-  <body>
-    <h1>Educates</h1>
-  </body>
-</html>
+<BaseLayout
+  title="Hands-on workshops and demos, ready in one click"
+  description={lede}
+>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Open source, Apache 2.0</p>
+      <h1>Hands-on workshops and demos, ready in one click</h1>
+      <p class="lede">{lede}</p>
+      <div class="actions">
+        <a class="button button-primary" href="/get-started">
+          Get started
+        </a>
+        <a class="button button-secondary" href="https://hub.educates.dev">
+          Explore the Hub
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero .wrap {
+    padding-block: 72px 56px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    margin: 0 0 18px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  h1 {
+    max-width: 14em;
+    font-size: clamp(36px, 4.6vw, 56px);
+    line-height: 1.06;
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 34em;
+    margin: 20px 0 28px;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 24px;
+    border-radius: var(--radius-control);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .button-primary {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .button-primary:hover {
+    background: var(--color-accent-strong);
+  }
+  .button-secondary {
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+</style>
