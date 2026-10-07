@@ -1,0 +1,55 @@
+---
+// The layout of the project pages, the footer's Project column: the page
+// head, with its heading and lede, then the page's own sections. The
+// heading is the title, unless the page fills the `heading` slot.
+import BaseLayout from "./BaseLayout.astro";
+
+export interface Props {
+  /** The page's own title; the layout appends the site name. */
+  title: string;
+  /** One or two sentences for search results and shared links. */
+  description: string;
+  /** The paragraph below the heading. */
+  lede: string;
+}
+
+const { title, description, lede } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="page-head">
+    <div class="wrap">
+      <h1>
+        <slot name="heading">{title}</slot>
+      </h1>
+      <p class="lede">{lede}</p>
+    </div>
+  </header>
+  <slot />
+</BaseLayout>
+
+<style>
+  .page-head .wrap {
+    padding-block: 64px 40px;
+  }
+  h1 {
+    max-width: 18em;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+  }
+  h1 :global(code) {
+    font-size: 0.9em;
+    font-weight: 600;
+  }
+  .lede {
+    max-width: 38em;
+    margin: 16px 0 0;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  @media (max-width: 640px) {
+    .page-head .wrap {
+      padding-block: 40px 28px;
+    }
+  }
+</style>
