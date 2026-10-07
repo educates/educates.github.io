@@ -115,3 +115,51 @@ export function homepageFeaturesByJob<T extends FeatureEntry>(
       .sort((a, b) => (a.data.homepage ?? 0) - (b.data.homepage ?? 0)),
   }));
 }
+
+/** The URL path of the Features overview. */
+export const featuresPath = "/features";
+
+/** The URL path of a flagship Feature's deep page. */
+export function featurePath(slug: string): string {
+  return `${featuresPath}/${slug}`;
+}
+
+/** A Feature entry with what a link to it needs. */
+export interface FeatureLinkEntry {
+  id: string;
+  data: { name: string; flagship: boolean };
+}
+
+/** A link to a Feature's page: its name and where it leads. */
+export interface FeatureLink {
+  name: string;
+  href: string;
+}
+
+/**
+ * Links to the Features named by `ids`, in that order, from `entries`, the
+ * Features the site shows: a flagship's deep page, or any other Feature's
+ * block on the overview. An id missing from `entries` fails the build;
+ * `usedBy` names the page or file that named it, for the error message.
+ */
+export function featureLinks(
+  ids: readonly string[],
+  entries: readonly FeatureLinkEntry[],
+  usedBy: string,
+): FeatureLink[] {
+  const byId = new Map(entries.map((entry) => [entry.id, entry]));
+  return ids.map((id) => {
+    const entry = byId.get(id);
+    if (!entry) {
+      throw new Error(
+        `${usedBy} names Feature "${id}", which the site does not show: it is missing from src/content/features/ or hidden until Educates 4.0 is released`,
+      );
+    }
+    return {
+      name: entry.data.name,
+      href: entry.data.flagship
+        ? featurePath(entry.id)
+        : `${featuresPath}#${entry.id}`,
+    };
+  });
+}

@@ -27,6 +27,15 @@ export const paidHelp = {
   ],
 } as const;
 
+/** "Get help": help from the community, and paid help from the team. */
+export const getHelp = { label: "Get help", href: "/get-help" } as const;
+
+/** "Get help building yours": paid help, for a use case built with the team. */
+export const getHelpBuildingYours = {
+  label: "Get help building yours",
+  href: "/get-help#hire-us",
+} as const;
+
 /** A call to action: a short title, one line of text and where it leads. */
 export interface ProjectCall {
   title: string;

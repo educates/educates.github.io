@@ -9,7 +9,8 @@ export interface Props {
     | "close"
     | "github"
     | "arrow-right"
-    | "download";
+    | "download"
+    | "expand";
   class?: string;
 }
 
@@ -22,6 +23,7 @@ const strokes: Record<string, string> = {
   close: "M6 6l12 12M18 6L6 18",
   "arrow-right": "M5 12h14M13 6l6 6-6 6",
   download: "M12 4v11M7 10l5 5 5-5M5 20h14",
+  expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
 };
 
 const github =

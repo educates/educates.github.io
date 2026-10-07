@@ -26,24 +26,4 @@ export const stubs: readonly Stub[] = [
     description:
       "Blog posts, guides, videos and talks about Educates, in one list you can filter by kind and Topic.",
   },
-  {
-    path: "/about-educates",
-    title: "About Educates",
-    description:
-      "How Educates is put together: the operator, training portals, Sessions, the lookup service, and where it runs.",
-    section: "About Educates",
-  },
-  {
-    path: "/about-educates/workflows",
-    title: "Workflows",
-    description: "How a workshop goes from its source to a running Session.",
-    section: "About Educates",
-  },
-  {
-    path: "/about-educates/history",
-    title: "History",
-    description:
-      "Where Educates came from, and how it became an independent open source project.",
-    section: "About Educates",
-  },
 ];

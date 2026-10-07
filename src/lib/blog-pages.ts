@@ -28,15 +28,18 @@ function pageSuffix(page: Page<Post>): string {
   return page.number === 1 ? "" : `, page ${page.number}`;
 }
 
+/** What the blog is, for its list pages and its feeds. */
+export const blogDescription =
+  "Posts from the Educates team on writing workshops, running Educates and what is new in the project.";
+
 /** The pages of the list of every post: `/blog`, then `/blog/page/N`. */
 export async function blogPages(): Promise<PostListPage[]> {
   return paginate(await posts(), blogPath).map((page) => ({
     page,
     title: `Blog${pageSuffix(page)}`,
     heading: "Blog",
-    description:
-      "Posts from the Educates team on writing workshops, running Educates and what is new in the project.",
-    lede: "Posts from the Educates team on writing workshops, running Educates and what is new in the project.",
+    description: blogDescription,
+    lede: blogDescription,
   }));
 }
 
