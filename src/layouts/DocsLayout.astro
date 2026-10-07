@@ -8,10 +8,12 @@
 import type { MarkdownHeading } from "astro";
 import BaseLayout from "./BaseLayout.astro";
 import Icon from "../components/Icon.astro";
+import TableOfContents from "../components/TableOfContents.astro";
 import "../styles/prose.css";
 import type { Crumb } from "../lib/breadcrumbs.ts";
 import type { PageCoverData } from "../lib/page-cover.ts";
 import type { Sidebar, SidebarItem } from "../lib/sidebar.ts";
+import { tableOfContents } from "../lib/table-of-contents.ts";
 import { pagePath } from "../lib/urls.ts";
 
 /** A link to a neighbouring page, with the page's title as its label. */
@@ -30,8 +32,8 @@ export interface Props {
   /** The section's navigation; the current page is marked in it. */
   sidebar: Sidebar;
   /**
-   * The page's headings, as rendering a content entry returns them. Its
-   * second and third level headings make the table of contents.
+   * The page's headings, as rendering a content entry returns them, which
+   * make its table of contents (see `tableOfContents()`).
    */
   headings?: MarkdownHeading[];
   /** A short line above the title, such as where the page sits in a path. */
@@ -64,16 +66,7 @@ const ariaCurrent = (href: string) => (href === current ? "page" : undefined);
 const contains = (item: SidebarItem): boolean =>
   item.href === current || (item.items ?? []).some(contains);
 
-// Second level headings, each with the third level headings under it.
-interface TocEntry {
-  heading: MarkdownHeading;
-  children: MarkdownHeading[];
-}
-const toc: TocEntry[] = [];
-for (const heading of headings) {
-  if (heading.depth === 2) toc.push({ heading, children: [] });
-  else if (heading.depth === 3) toc.at(-1)?.children.push(heading);
-}
+const toc = tableOfContents(headings);
 ---
 
 <BaseLayout
@@ -164,27 +157,7 @@ for (const heading of headings) {
       )}
     </article>
 
-    {toc.length > 0 && (
-      <nav class="docs-toc" aria-labelledby="docs-toc-heading">
-        <h2 id="docs-toc-heading">On this page</h2>
-        <ul>
-          {toc.map(({ heading, children }) => (
-            <li>
-              <a href={`#${heading.slug}`}>{heading.text}</a>
-              {children.length > 0 && (
-                <ul>
-                  {children.map((child) => (
-                    <li>
-                      <a href={`#${child.slug}`}>{child.text}</a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
-    )}
+    {toc.length > 0 && <TableOfContents entries={toc} />}
   </div>
 </BaseLayout>
 
@@ -341,47 +314,10 @@ for (const heading of headings) {
     font-weight: 500;
   }
 
-  /* Table of contents */
-  .docs-toc {
-    position: sticky;
-    top: 88px;
-    max-height: calc(100vh - 112px);
-    overflow-y: auto;
-    font-size: 14px;
-  }
-  .docs-toc h2 {
-    margin-bottom: 10px;
-    color: var(--color-ink);
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .docs-toc ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .docs-toc li {
-    margin-top: 6px;
-  }
-  .docs-toc ul ul {
-    padding-left: 12px;
-  }
-  .docs-toc a {
-    color: var(--color-ink-muted);
-    text-decoration: none;
-  }
-  .docs-toc a:hover {
-    color: var(--color-ink);
-  }
-
   /* Below wide screens the table of contents goes. */
   @media (max-width: 1200px) {
     .docs.has-toc {
       grid-template-columns: 220px minmax(0, 1fr);
-    }
-    .docs-toc {
-      display: none;
     }
   }
 

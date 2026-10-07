@@ -5,6 +5,8 @@ description: "How the installer that came with Educates 3.0 works: part of the C
 date: 2025-03-26
 authors: [jorge]
 tags: [educates, installation, cli]
+series: How the installer works
+part: 1
 ---
 
 In **Educates 3.0**, we introduced a new installer mechanism designed to simplify the deployment of Educates on your preferred cluster infrastructure. This new approach provides an opinionated yet flexible way to set up the platform, addressing common challenges faced by our users.
