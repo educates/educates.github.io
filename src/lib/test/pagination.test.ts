@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { paginate } from "./pagination.ts";
+import { paginate } from "../pagination.ts";
 
 const numbers = (count: number) =>
   Array.from({ length: count }, (_, index) => index + 1);

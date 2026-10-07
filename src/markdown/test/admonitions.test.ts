@@ -1,6 +1,6 @@
 import { markdownToHtml, type MarkdownToHtmlResult } from "satteri";
 import { describe, expect, it } from "vitest";
-import { admonitions } from "./admonitions.ts";
+import { admonitions } from "../admonitions.ts";
 
 /** Markdown rendered to HTML as the site's pipeline does, with the plugin. */
 function render(markdown: string): string {

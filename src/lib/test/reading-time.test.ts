@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readingMinutes } from "./reading-time.ts";
+import { readingMinutes } from "../reading-time.ts";
 
 const words = (count: number) => Array(count).fill("word").join(" ");
 
