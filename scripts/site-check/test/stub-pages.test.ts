@@ -42,14 +42,4 @@ describe("stub-pages rule", () => {
       },
     ]);
   });
-
-  it("reports stub pages with the severity it is given", () => {
-    const findings = checkSite(
-      fixtureBuild({ ...built, "learn.html": stubPage(`${origin}/learn`) }),
-      [stubPages({ severity: "warning" })],
-    );
-    expect(findings).toMatchObject([
-      { rule: "stub-pages", severity: "warning" },
-    ]);
-  });
 });

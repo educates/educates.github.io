@@ -42,7 +42,7 @@ export interface SiteRulesOptions {
 export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
   const { entries, redirects } = loadSiteUrls();
   return [
-    mustResolve(entries, { missing: "error" }),
+    mustResolve(entries),
     // A page published on the live site since the build last matched it,
     // such as a new blog post, fails the build until it is converted.
     liveSitemap(live),
@@ -74,7 +74,7 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
     // The images the old feeds embedded, kept at their URLs for feed readers
     // that cached those items.
     frozenPaths({ origin: site.origin, paths: ["/assets/images"] }),
-    stubPages({ severity: "error" }),
+    stubPages(),
     // Screenshots and recordings still to be captured: listed, never blocking.
     visualPlaceholders(),
     // The use case pages say "air-gapped" only once Educates 4.0 is released.

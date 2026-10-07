@@ -18,7 +18,7 @@ describe("must-resolve rule", () => {
     expect(findings).toEqual([]);
   });
 
-  it("warns about an entry the build does not serve, naming it and its section", () => {
+  it("fails an entry the build does not serve, naming it and its section", () => {
     const findings = check(
       { "blog.html": page("https://educates.dev/blog") },
       "[Site pages]\n/downloads\n[Blog]\n/blog\n",
@@ -26,20 +26,10 @@ describe("must-resolve rule", () => {
     expect(findings).toHaveLength(1);
     expect(findings[0]).toMatchObject({
       rule: "must-resolve",
-      severity: "warning",
+      severity: "error",
     });
     expect(findings[0].message).toContain("/downloads");
     expect(findings[0].message).toContain("Site pages");
-  });
-
-  it("fails a missing entry when missing entries are blocking", () => {
-    const list = parseMustResolveList("[Site pages]\n/downloads\n");
-    const findings = checkSite(fixtureBuild({ "index.html": "" }), [
-      mustResolve(list, { missing: "error" }),
-    ]);
-    expect(findings).toMatchObject([
-      { rule: "must-resolve", severity: "error" },
-    ]);
   });
 });
 

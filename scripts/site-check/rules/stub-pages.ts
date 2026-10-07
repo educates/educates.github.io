@@ -1,16 +1,11 @@
-import type { Rule, Severity } from "../site-check.ts";
+import type { Rule } from "../site-check.ts";
 import { urlPathOf } from "../url-form.ts";
-
-export interface StubPagesOptions {
-  /** How a stub page in the build is reported. */
-  severity?: Severity;
-}
 
 /**
  * No page is a stub: a placeholder the base layout marks with `data-stub`
  * on `<body>`, standing in for a page still to be written.
  */
-export function stubPages({ severity = "error" }: StubPagesOptions = {}): Rule {
+export function stubPages(): Rule {
   return {
     name: "stub-pages",
     check(build) {
@@ -19,7 +14,7 @@ export function stubPages({ severity = "error" }: StubPagesOptions = {}): Rule {
         .filter((file) => build.html(file).querySelector("body[data-stub]"))
         .map((file) => ({
           rule: "stub-pages",
-          severity,
+          severity: "error" as const,
           message: `${urlPathOf(file)} (${file}) is a stub page`,
         }));
     },
