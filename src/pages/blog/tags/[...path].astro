@@ -1,0 +1,22 @@
+---
+// Each tag's pages of posts: /blog/tags/<tag>, then /blog/tags/<tag>/page/N.
+import type { GetStaticPaths } from "astro";
+import PageNavigation from "../../../components/PageNavigation.astro";
+import PostList from "../../../components/PostList.astro";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { tagPages } from "../../../lib/blog-pages.ts";
+import { tagsPath } from "../../../lib/posts.ts";
+
+export const getStaticPaths = (async () =>
+  (await tagPages()).map((listPage) => ({
+    params: { path: listPage.page.path.slice(`${tagsPath}/`.length) },
+    props: { listPage },
+  }))) satisfies GetStaticPaths;
+
+const { page, title, heading, description } = Astro.props.listPage;
+---
+
+<BlogLayout title={title} heading={heading} description={description}>
+  <PostList posts={page.items} />
+  <PageNavigation page={page} />
+</BlogLayout>

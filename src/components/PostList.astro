@@ -1,0 +1,59 @@
+---
+// A list of posts: each one's title, date, reading time and description.
+import PostByline from "./PostByline.astro";
+import { postPath, type Post } from "../lib/posts.ts";
+
+export interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+<ol class="posts">
+  {posts.map((post) => (
+    <li>
+      <article>
+        <h2>
+          <a href={postPath(post)}>{post.data.title}</a>
+        </h2>
+        <PostByline post={post} />
+        <p class="description">{post.data.description}</p>
+      </article>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .posts {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  article {
+    display: grid;
+    gap: 8px;
+    padding: 22px 24px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  h2 a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  h2 a:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+  }
+  .description {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+</style>

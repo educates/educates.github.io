@@ -1,6 +1,8 @@
 /* Long-form text rendered from Markdown, inside an element with the
-   `prose` class: headings, paragraphs, lists, quotes, images, tables and
-   inline code. Code blocks style themselves through Expressive Code. */
+   `prose` class: headings, paragraphs, lists, quotes, images, tables,
+   inline code and callouts. Code blocks style themselves through
+   Expressive Code (ec.config.mjs); callouts are the admonitions that
+   src/markdown/admonitions.ts renders. */
 
 .prose {
   font-size: 17px;
@@ -15,6 +17,7 @@
   margin-top: 1.1em;
 }
 
+.prose h1,
 .prose h2,
 .prose h3,
 .prose h4 {
@@ -22,6 +25,8 @@
   scroll-margin-top: 88px;
 }
 
+/* A heading of the first level inside a post reads as a section. */
+.prose h1,
 .prose h2 {
   margin-top: 2.2em;
   font-size: 26px;
@@ -37,7 +42,7 @@
   font-size: 17px;
 }
 
-.prose :is(h2, h3, h4) + * {
+.prose :is(h1, h2, h3, h4) + * {
   margin-top: 0.7em;
 }
 
@@ -83,6 +88,10 @@
   border-radius: var(--radius-control);
 }
 
+.prose iframe {
+  max-width: 100%;
+}
+
 .prose hr {
   border: 0;
   border-top: 1px solid var(--color-line);
@@ -99,4 +108,60 @@
   border-bottom: 1px solid var(--color-line);
   text-align: left;
   vertical-align: top;
+}
+
+/* Callouts: note, tip, info, warning and danger. */
+
+.callout {
+  padding: 14px 18px;
+  border: 1px solid var(--callout-line);
+  border-left-width: 4px;
+  border-radius: var(--radius-control);
+  background: var(--callout-ground);
+}
+
+.callout-title {
+  margin: 0 0 6px;
+  color: var(--callout-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.callout-body > * {
+  margin-block: 0;
+}
+
+.callout-body > * + * {
+  margin-top: 0.8em;
+}
+
+.callout-note {
+  --callout-line: var(--color-line);
+  --callout-ground: var(--color-surface);
+  --callout-ink: var(--color-ink);
+  border-left-color: var(--color-ink-muted);
+}
+
+.callout-info {
+  --callout-line: var(--color-accent);
+  --callout-ground: var(--color-accent-soft);
+  --callout-ink: var(--color-accent-strong);
+}
+
+.callout-tip {
+  --callout-line: var(--color-tip);
+  --callout-ground: var(--color-tip-soft);
+  --callout-ink: var(--color-tip);
+}
+
+.callout-warning {
+  --callout-line: var(--color-highlight-ink);
+  --callout-ground: var(--color-highlight);
+  --callout-ink: var(--color-highlight-ink);
+}
+
+.callout-danger {
+  --callout-line: var(--color-danger);
+  --callout-ground: var(--color-danger-soft);
+  --callout-ink: var(--color-danger);
 }

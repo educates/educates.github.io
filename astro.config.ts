@@ -1,9 +1,12 @@
 import { defineConfig } from "astro/config";
+import { satteri } from "@astrojs/markdown-satteri";
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import expressiveCode from "astro-expressive-code";
 import mermaid from "astro-mermaid";
 import { singleSitemap } from "./src/integrations/single-sitemap.ts";
+import { admonitions } from "./src/markdown/admonitions.ts";
 import { redirects } from "./src/redirects.ts";
 import { site } from "./src/site.ts";
 
@@ -20,18 +23,32 @@ export default defineConfig({
   // Two routes building the same URL fail the build, such as a new page
   // whose stub in src/stubs.ts is still listed, or a redirect from a page.
   prerenderConflictBehavior: "error",
+  // Markdown and MDX share this pipeline.
+  markdown: {
+    processor: satteri({
+      features: {
+        // Admonitions, the `:::type` blocks.
+        directive: true,
+        // Content keeps its punctuation as written: `--` in prose stays two
+        // hyphens and quotes stay straight, as on the Docusaurus site.
+        smartPunctuation: false,
+      },
+      mdastPlugins: [admonitions()],
+    }),
+  },
   // Integrations run in this order. expressiveCode(), configured in
   // ec.config.mjs, must come before mdx() to render code blocks in MDX too.
   // mermaid() turns each `mermaid` fence in Markdown into a
   // <pre class="mermaid"> that Mermaid renders in the browser, in the theme
-  // `data-theme` names; it comes after expressiveCode() so it extends the
-  // same Markdown processor. A `mermaid` fence in MDX fails the build unless
-  // the processor's `rawHtml` feature is on. singleSitemap() reads
-  // sitemap()'s output.
+  // `data-theme` names; it comes after expressiveCode() and adds its plugin
+  // to the processor above. A `mermaid` fence in MDX fails the build unless
+  // the processor's `rawHtml` feature is on. react() renders the islands;
+  // singleSitemap() reads sitemap()'s output.
   integrations: [
     expressiveCode(),
     mermaid({ enableLog: false }),
     mdx(),
+    react(),
     sitemap(),
     singleSitemap(),
   ],

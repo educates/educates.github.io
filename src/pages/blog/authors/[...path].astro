@@ -1,0 +1,33 @@
+---
+// Each author's pages of posts: /blog/authors/<author>, then
+// /blog/authors/<author>/page/N.
+import type { GetStaticPaths } from "astro";
+import AuthorProfile from "../../../components/AuthorProfile.astro";
+import PageNavigation from "../../../components/PageNavigation.astro";
+import PostList from "../../../components/PostList.astro";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { authorPages } from "../../../lib/blog-pages.ts";
+import { authorsPath } from "../../../lib/posts.ts";
+
+export const getStaticPaths = (async () =>
+  (await authorPages()).map((listPage) => ({
+    params: { path: listPage.page.path.slice(`${authorsPath}/`.length) },
+    props: { listPage },
+  }))) satisfies GetStaticPaths;
+
+const { page, author, title, heading, description } = Astro.props.listPage;
+---
+
+<BlogLayout title={title} heading={heading} description={description}>
+  <div class="profile">
+    <AuthorProfile author={author} />
+  </div>
+  <PostList posts={page.items} />
+  <PageNavigation page={page} />
+</BlogLayout>
+
+<style>
+  .profile {
+    margin-bottom: 32px;
+  }
+</style>

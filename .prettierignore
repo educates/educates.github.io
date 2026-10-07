@@ -2,7 +2,6 @@
 # its authors gave it.
 *.md
 *.mdx
-blog/
 about-educates/
 docs/
 
