@@ -4,5 +4,6 @@
 // component under the same name.
 
 import AsciinemaPlayer from "./AsciinemaPlayer.astro";
+import YouTubeVideo from "./YouTubeVideo.astro";
 
-export const postComponents = { AsciinemaPlayer };
+export const postComponents = { AsciinemaPlayer, YouTubeVideo };
