@@ -3,6 +3,9 @@ name: Examiner checks
 job: authoring
 sentence: A check script run from the instructions shows pass or fail, so the work at each step is checked with instant feedback.
 docs: https://docs.educates.dev/en/stable/workshop-content/workshop-instructions.html#clickable-actions-for-the-examiner
+visual:
+  src: ./examiner-checks/passed.webp
+  alt: A check in the instructions that passed, once the pod the step started was running.
 flagship: true
 order: 3
 homepage: 2
@@ -11,17 +14,34 @@ page:
   what: An examiner check is a clickable action that runs a test you write and shows whether it passed. Put one after a step, and the person taking the workshop knows at once whether the step worked, before the next step builds on it. It checks the work; it does not grade it.
   loop:
     alt: A check waits on the page while a pod starts in the terminal, then turns to passed once the pod is running.
+    video: ./examiner-checks/wait.mp4
+    poster: ./examiner-checks/wait-poster.webp
   things:
     - title: Check a step with a click
       text: A check runs a program from the workshop's examiner tests directory, with the arguments you give it. An exit status of 0 passes and anything else fails, and the action on the page shows which.
+      visual:
+        src: ./examiner-checks/test.webp
+        alt: A check that passed when clicked, beside the test it ran, open in the editor.
     - title: Check without a click
       text: Start a check as soon as the page loads, and retry it until it passes, for as long as the page is open. The page notices the step is done without anyone asking.
+      visual:
+        src: ./examiner-checks/autostart.webp
+        alt: A check that started as the page opened, and passed on its own once the pod it waited for was running.
     - title: Move on when it passes
       text: When a check passes, it can trigger the next action on the page, such as another check or a command, so a page can walk through a task one verified step at a time.
+      visual:
+        src: ./examiner-checks/cascade.webp
+        alt: Two checks that passed one after the other from a single click, and the command the second one started, with its output in the terminal.
     - title: Ask for an answer
       text: A check can show a form, and the values entered reach the test as JSON. The docs suggest it for a quiz, or for collecting values that later steps use.
+      visual:
+        src: ./examiner-checks/question.webp
+        alt: A question in the instructions, answered in its form and checked as right, beside the deployment the answer came from.
     - title: Check from outside the Session
       text: Give a check a URL, and a separate service runs it instead of the workshop container, out of reach of the person whose work it checks.
+      visual:
+        src: ./examiner-checks/outside.webp
+        alt: A check whose test a separate service of the training team runs, written with that service's URL, open in the editor beside the instructions.
   limits:
     - title: Pass or fail, and nothing kept
       text: A check shows pass or fail on the page, and that is all. Educates keeps no score and no record of results, and issues no certificate. If you need results, collecting them is yours to build, for example in the service a check can call.

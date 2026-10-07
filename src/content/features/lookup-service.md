@@ -3,6 +3,9 @@ name: Lookup service
 job: delivering
 sentence: One REST API in front of many training portals and clusters, sending each request for a Session to where there is room.
 docs: https://docs.educates.dev/en/stable/lookup-service/service-overview.html
+visual:
+  src: ./lookup-service/example-academy.webp
+  alt: Example Academy, a training team's own site, listing workshops it gets from the lookup service, with a button to start each.
 flagship: true
 order: 17
 homepage: 2
@@ -12,17 +15,34 @@ page:
   what: Every training portal has a REST API, so a site of yours can list its workshops and start Sessions behind whatever sign-in you choose. The lookup service puts one API in front of many portals on one or more clusters. Your site asks it for a Session, it sends the request to a portal with room, and you add capacity by adding a cluster, not by growing the one you have.
   loop:
     alt: A custom site lists workshops from the lookup service, and a click on one opens a new Session in the browser.
+    video: ./lookup-service/start-a-session.mp4
+    poster: ./lookup-service/start-a-session-poster.webp
   things:
     - title: Your own front end on one portal
       text: Each training portal comes with a robot account for its REST API. Your site logs in with it, lists the portal's workshops, asks for a Session for the person signed in, and sends their browser to the URL that comes back. Turn off the portal's own registration, as the docs recommend, so people come in through your site.
+      visual:
+        src: ./lookup-service/robot-account.webp
+        alt: A terminal logging in to a training portal's REST API with its robot account, and listing the portal's workshops.
     - title: People get their own Session back
       text: Pass your own ID for each person with every request. Someone who closes the tab and clicks again gets the Session they already have, not a second one. A portal's API also lists a person's Sessions, extends one close to expiring where the workshop allows it, and ends one early.
+      visual:
+        src: ./lookup-service/same-session.webp
+        alt: Two requests for a Session for the same learner ID, answered with the same Session.
     - title: One API in front of many clusters
       text: Register clusters with the lookup service, the one it runs on or remote ones, and it watches the training portals on each. A request for a Session goes to the portal with the most room, so the same workshop on several clusters shares the load, and an admin client sees every cluster, portal and Session from one place.
+      visual:
+        src: ./lookup-service/clusters.webp
+        alt: The lookup service's admin API listing the clusters it watches, and the training portals on them.
     - title: A tenant for each customer
       text: Tenants pick clusters and portals by name or by label, and each client of the API reaches only the tenants it is granted. One lookup service can keep customers apart, or production apart from staging.
+      visual:
+        src: ./lookup-service/tenants.webp
+        alt: "The lookup service's configuration in the editor: tenants that pick clusters and portals by name or by label, and a client granted one of them."
     - title: Set up each Session as it starts
       text: With each request, pass the parameters the workshop declares, the person's name and email address, the page to send them back to when the Session ends, and a webhook to receive that Session's analytics events.
+      visual:
+        src: ./lookup-service/request.webp
+        alt: A request to the lookup service for a learner's Session, with their name and email address, a workshop parameter, the page to return to and a webhook for its events, and the Session it got.
   limits:
     - title: Your site, your sign-in
       text: Neither API is a front end or a sign-in service. The catalog people browse, how they sign in, and the ID you pass for each person are yours to build.

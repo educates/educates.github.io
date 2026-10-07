@@ -3,6 +3,9 @@ name: Clickable actions
 job: authoring
 sentence: Blocks in the workshop instructions that run a command, open or edit a file, or switch a dashboard tab when clicked.
 docs: https://docs.educates.dev/en/stable/workshop-content/workshop-instructions.html#extensible-clickable-actions
+visual:
+  src: ./clickable-actions/actions.webp
+  alt: Clickable actions in the instructions, checked off as they ran, beside the terminals where the last one ran a command in both at once.
 flagship: true
 order: 2
 homepage: 1
@@ -11,17 +14,34 @@ page:
   what: A clickable action is a block in the workshop instructions that does the step when clicked. It runs a command in the right terminal, opens or changes a file in the editor, switches a dashboard tab, downloads a file or runs a check. Nobody mistypes a command or edits the wrong line, so the people taking the workshop spend their time on what it teaches, not on typing.
   loop:
     alt: A command in the instructions is clicked, and it runs in the terminal beside them.
+    video: ./clickable-actions/run.mp4
+    poster: ./clickable-actions/run-poster.webp
   things:
     - title: Run commands in the right terminal
       text: Run a command in the first terminal, another one, or all of them, clearing the terminal first if you like. Interrupt a command that never returns, or send input, such as a password, to one that is waiting for it.
+      visual:
+        src: ./clickable-actions/terminals.webp
+        alt: "Two commands from the instructions, one in each terminal: the application applied in the first, and its pods watched as they start in the second."
     - title: Open and change files in the editor
       text: Open a file at a line, select text by an exact match or a regular expression and replace it, insert lines, or create a file. YAML files change by path, such as spec.replicas, and a click can run a VS Code command.
+      visual:
+        src: ./clickable-actions/editor.webp
+        alt: The editor, opened at the deployment by one action, with the image tag a second action selected by a regular expression, and actions below to replace it, set a YAML value and create a file.
     - title: Drive the dashboard
       text: Open a URL in a new browser tab, bring a dashboard tab to the front, or create, reload and delete tabs, for example one showing the application the step just deployed.
+      visual:
+        src: ./clickable-actions/dashboard.webp
+        alt: A dashboard tab that an action in the instructions created, showing the application the step deployed.
     - title: Copy, download and upload files
       text: Copy text to the clipboard, download a file from the Session, such as its kubeconfig, or upload a file into it.
+      visual:
+        src: ./clickable-actions/files.webp
+        alt: Actions that copied the application's address, downloaded the Session's kubeconfig and uploaded a reading list, which the terminal lists in the uploads directory.
     - title: Pace the page
       text: Hide optional steps or questions in sections that open with a click, start an action as soon as the page loads, and have each action trigger the next one when it succeeds.
+      visual:
+        src: ./clickable-actions/pace.webp
+        alt: An action that ran as the page opened, a section that ran its two commands one after the other when it was opened, and a question and an optional step still folded away.
   limits:
     - title: Editor and file actions need those Features on
       text: Editor actions work only when the workshop turns on the editor, which is off by default. Download and upload actions need downloads or uploads turned on in the same way.
