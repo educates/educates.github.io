@@ -1,4 +1,5 @@
 ---
+import SessionDemo from "../components/SessionDemo.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const lede =
@@ -22,6 +23,14 @@ const lede =
         <a class="button button-secondary" href="https://hub.educates.dev">
           Explore the Hub
         </a>
+      </div>
+      <div class="demo">
+        <SessionDemo />
+        <p class="caption">
+          Every Attendee gets this Session to themselves: slides, a terminal, an
+          editor and a Kubernetes console beside the instructions. Click the
+          tabs to look around.
+        </p>
       </div>
     </div>
   </section>
@@ -57,5 +66,13 @@ const lede =
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+  }
+  .demo {
+    margin-top: 48px;
+  }
+  .caption {
+    margin: 14px 0 0;
+    color: var(--color-ink-muted);
+    font-size: 14px;
   }
 </style>
