@@ -15,7 +15,8 @@
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "test": "vitest run",
     "posters": "node scripts/posters/cli.ts",
-    "url-check": "node scripts/url-check/cli.ts"
+    "url-check": "node scripts/url-check/cli.ts",
+    "captures": "node scripts/captures/cli.ts"
   },
   "engines": {
     "node": ">=24"
@@ -47,6 +48,7 @@
     "@types/react-dom": "^19.3.0",
     "prettier": "^3.9.9",
     "prettier-plugin-astro": "^1.1.0",
+    "puppeteer-core": "^25.12.0",
     "typescript": "^6.0.3",
     "vitest": "^5.0.3",
     "yaml": "^2.9.1"

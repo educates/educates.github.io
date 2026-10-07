@@ -1,0 +1,7 @@
+{
+  "books": [
+    { "title": "The Pragmatic Programmer", "status": "reading" },
+    { "title": "Designing Data-Intensive Applications", "status": "next" },
+    { "title": "Kubernetes in Action", "status": "done" }
+  ]
+}

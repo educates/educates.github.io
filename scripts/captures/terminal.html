@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Terminal</title>
+    <link rel="stylesheet" href="/player/asciinema-player.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+      }
+      body.backdrop {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #3a4b63, #6b7f99 55%, #a7b4c4);
+      }
+      .window {
+        display: inline-block;
+        margin: 24px;
+        overflow: hidden;
+        border: 1px solid #3b3f46;
+        border-radius: 10px;
+        background: #1d1f23;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        background: #2b2e33;
+        color: #c9ced6;
+        font:
+          600 13px/1 -apple-system,
+          "Helvetica Neue",
+          sans-serif;
+      }
+      .bar i {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .bar i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .bar i:nth-child(2) {
+        background: #febc2e;
+      }
+      .bar i:nth-child(3) {
+        background: #28c840;
+      }
+      .bar span {
+        flex: 1;
+        margin-right: 52px;
+        text-align: center;
+      }
+      #player .ap-wrapper,
+      #player .ap-player {
+        border-radius: 0;
+      }
+      #player .ap-control-bar,
+      #player .ap-overlay {
+        display: none !important;
+      }
+      .ap-player {
+        --term-color-background: #1d1f23;
+        --term-color-foreground: #e6e9ee;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="window" id="window">
+      <div class="bar"><i></i><i></i><i></i><span id="title"></span></div>
+      <div id="player"></div>
+    </div>
+    <script src="/player/asciinema-player.min.js"></script>
+    <script>
+      // ?cast=<url>&title=<text>&cols=<n>&rows=<n>&at=<seconds>&play=1&backdrop=1
+      const params = new URLSearchParams(location.search);
+      if (params.get("backdrop") === "1")
+        document.body.classList.add("backdrop");
+      document.getElementById("title").textContent = params.get("title") ?? "";
+      const play = params.get("play") === "1";
+      window.player = AsciinemaPlayer.create(
+        params.get("cast"),
+        document.getElementById("player"),
+        {
+          cols: Number(params.get("cols")),
+          rows: Number(params.get("rows")),
+          autoPlay: play,
+          controls: false,
+          fit: false,
+          terminalFontSize: "15px",
+          terminalFontFamily: "Menlo, 'SF Mono', monospace",
+          terminalLineHeight: 1.3,
+          poster: play ? undefined : `npt:${params.get("at") ?? "9999"}`,
+        },
+      );
+      window.ready = new Promise((resolve) => {
+        if (play) window.player.addEventListener("play", resolve);
+        else setTimeout(resolve, 800);
+      });
+    </script>
+  </body>
+</html>
