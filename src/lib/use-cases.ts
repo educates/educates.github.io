@@ -2,7 +2,7 @@
 // for the Educates release the site describes, and the use cases that rely
 // on a Feature. These helpers take entries as plain data, so they work on
 // the use case collection and in tests alike.
-import type { Release } from "./features.ts";
+import { forRelease, type Release } from "./features.ts";
 
 /** The URL path of a use case's page. */
 export function useCasePath(slug: string): string {
@@ -44,12 +44,12 @@ export function currentCapabilities(
 ): CurrentCapability[] {
   return capabilities.map((capability) => ({
     title: capability.title,
-    text: release.educates4Released
-      ? (capability.educates4Text ?? capability.text)
-      : capability.text,
-    features: release.educates4Released
-      ? (capability.educates4Features ?? capability.features)
-      : capability.features,
+    text: forRelease(release, capability.text, capability.educates4Text),
+    features: forRelease(
+      release,
+      capability.features,
+      capability.educates4Features,
+    ),
   }));
 }
 

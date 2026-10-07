@@ -64,6 +64,19 @@ export interface Release {
 }
 
 /**
+ * What the release the site describes shows of a field that Educates 4.0
+ * changes: `educates4Value` once 4.0 is released and the entry has one,
+ * otherwise `value`.
+ */
+export function forRelease<T>(
+  release: Release,
+  value: T,
+  educates4Value: T | undefined,
+): T {
+  return release.educates4Released ? (educates4Value ?? value) : value;
+}
+
+/**
  * The Features as the release the site describes has them. Until Educates
  * 4.0 is released, 4.0-only Features are left out and every Feature keeps
  * its `sentence`; once it is, a Feature with an `educates4Sentence`, which
@@ -73,17 +86,18 @@ export function currentFeatures<T extends FeatureEntry>(
   entries: readonly T[],
   release: Release,
 ): T[] {
-  if (!release.educates4Released) {
-    return entries.filter((entry) => !entry.data.educates4Only);
-  }
-  return entries.map((entry) =>
-    entry.data.educates4Sentence === undefined
-      ? entry
-      : {
-          ...entry,
-          data: { ...entry.data, sentence: entry.data.educates4Sentence },
-        },
-  );
+  return entries
+    .filter((entry) => release.educates4Released || !entry.data.educates4Only)
+    .map((entry) => {
+      const sentence = forRelease(
+        release,
+        entry.data.sentence,
+        entry.data.educates4Sentence,
+      );
+      return sentence === entry.data.sentence
+        ? entry
+        : { ...entry, data: { ...entry.data, sentence } };
+    });
 }
 
 /** Each job, in order, with the Features that serve it, lowest `order` first. */
