@@ -16,8 +16,6 @@ config:
     disableMulticolor: true
 ---
 timeline
-    accTitle: Educates timeline
-    accDescr: First commit in December 2019, Educates 2.0 in June 2022, Educates 3.0 in August 2024, an independent project in October 2024, and Educates Hub in June 2025.
     Dec 2019 : First commit
     Jun 2022 : Educates 2.0
     Aug 2024 : Educates 3.0
