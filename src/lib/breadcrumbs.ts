@@ -24,6 +24,9 @@ const levels: Readonly<Record<string, Crumb>> = {
     label: "Write your first workshop",
     href: "/getting-started-guides/authoring",
   },
+  "/blog": { label: "Blog", href: "/blog" },
+  "/blog/tags": { label: "Tags", href: "/blog/tags" },
+  "/blog/authors": { label: "Authors", href: "/blog/authors" },
 };
 
 /**

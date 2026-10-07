@@ -19,3 +19,11 @@ export function pagePath(pathname: string): string {
 export function canonicalUrl(pathname: string): string {
   return `${site.origin}${pagePath(pathname)}`;
 }
+
+/**
+ * Where to edit a file of the site's repository on GitHub, given its path
+ * from the repository root, such as a content entry's `filePath`.
+ */
+export function editUrl(filePath: string): string {
+  return `${site.repository}/edit/develop/${filePath}`;
+}

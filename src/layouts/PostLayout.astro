@@ -1,0 +1,78 @@
+---
+// A blog post's page: its title, date, reading time, authors and tags, the
+// post itself, and a link to edit it on GitHub. The cover is not shown.
+import "../styles/prose.css";
+import BaseLayout from "./BaseLayout.astro";
+import PostAuthors from "../components/PostAuthors.astro";
+import PostByline from "../components/PostByline.astro";
+import PostTags from "../components/PostTags.astro";
+import { breadcrumbs } from "../lib/breadcrumbs.ts";
+import { postAuthors, postPath, postTags, type Post } from "../lib/posts.ts";
+import { editUrl } from "../lib/urls.ts";
+
+export interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description } = post.data;
+const [authors, tags] = await Promise.all([postAuthors(post), postTags(post)]);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  section="Blog post"
+  breadcrumbs={breadcrumbs(postPath(post), title)}
+>
+  <article class="wrap post">
+    <header>
+      <h1>{title}</h1>
+      <PostByline post={post} />
+      <PostAuthors authors={authors} />
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+    <footer>
+      <PostTags tags={tags} />
+      {post.filePath && (
+        <a class="edit" href={editUrl(post.filePath)}>
+          Edit this page
+        </a>
+      )}
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: calc(760px + 2 * var(--space-gutter));
+    padding-block: 32px 80px;
+  }
+  header {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  h1 {
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 700;
+  }
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-line);
+  }
+  .edit {
+    font-size: 15px;
+    font-weight: 600;
+  }
+</style>
