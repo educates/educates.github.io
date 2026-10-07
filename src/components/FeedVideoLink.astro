@@ -1,0 +1,19 @@
+---
+// A YouTube video as the blog feeds show it: a feed reader runs no scripts
+// to play it, so it is a link to the video on YouTube, named by its title
+// from the video's outside Content entry. Takes the props of YouTubeVideo.
+import { youTubeVideo } from "../lib/content.ts";
+
+export interface Props {
+  /** The video's id on YouTube, as in `watch?v=<id>`. */
+  videoId: string;
+  /** The facade's player parameters, which a link does not use. */
+  params?: string;
+}
+
+const entry = await youTubeVideo(Astro.props.videoId, Astro.url.pathname);
+---
+
+<p>
+  <a href={entry.data.url}>Watch "{entry.data.title}" on YouTube</a>
+</p>
