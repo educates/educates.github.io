@@ -115,6 +115,13 @@ const actions = [
   { label: "Editor", body: `Select the image in ${folder}/${file}` },
   { label: "Console", body: "Watch the database start" },
 ];
+
+// The workshop step on show, and how far through the workshop it is, for
+// the step badge and the progress ring in the bottom bar. The ring's
+// circle has a circumference of 100, so the dash offset is the percentage
+// still to go.
+const workshopStep = { number: 3, of: 6 };
+const ringOffset = 100 - (workshopStep.number / workshopStep.of) * 100;
 ---
 
 <div
@@ -128,12 +135,12 @@ const actions = [
     <div class="instructions">
       <div class="bar" aria-hidden="true">
         <span class="glyph home"></span>
-        <span class="glyph left"></span>
-        <span class="glyph list"></span>
-        <span class="glyph right"></span>
       </div>
       <div class="page">
-        <p class="title">3: Deploying an application</p>
+        <p class="title">
+          <span class="title-step">{workshopStep.number}</span>Deploying an
+          application
+        </p>
         <p class="prose">
           Start with the database. Its resources are in the
           <code>database</code> directory.
@@ -166,6 +173,39 @@ const actions = [
           </span>
           <span class="glyph check-glyph" aria-hidden="true"></span>
         </div>
+      </div>
+      <div class="step-bar" aria-hidden="true">
+        <span class="step-index">
+          <span class="glyph list"></span>
+        </span>
+        <span class="step-ring">
+          <svg viewBox="0 0 36 36">
+            <circle class="step-ring-track" cx="18" cy="18" r="15.9155" />
+            <circle
+              class="step-ring-fill"
+              cx="18"
+              cy="18"
+              r="15.9155"
+              stroke-dasharray="100"
+              stroke-dashoffset={ringOffset}
+            />
+          </svg>
+          <span class="step-ring-text">
+            {workshopStep.number}/{workshopStep.of}
+          </span>
+        </span>
+        <span class="step-back">
+          <span class="glyph left"></span>
+          <span class="step-label">Back</span>
+        </span>
+        <span
+          class="step-continue"
+          data-step-continue
+          aria-disabled={state.check === "passed" ? undefined : "true"}
+        >
+          <span class="step-label">Continue</span>
+          <span class="glyph right"></span>
+        </span>
       </div>
     </div>
 
@@ -543,6 +583,8 @@ const actions = [
   /* The instructions */
 
   .instructions {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
     border-right: 1px solid var(--color-line);
   }
@@ -561,10 +603,6 @@ const actions = [
     height: 17px;
   }
 
-  .bar .left {
-    margin-left: auto;
-  }
-
   .home {
     mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-8 9 8M5 9.5V20h5v-6h4v6h5V9.5'/%3E%3C/svg%3E");
   }
@@ -580,6 +618,7 @@ const actions = [
 
   .page {
     display: grid;
+    flex: 1;
     gap: 12px;
     align-content: start;
     padding: 20px 22px 24px;
@@ -590,6 +629,117 @@ const actions = [
     font-size: 22px;
     font-weight: 600;
     line-height: 1.25;
+  }
+
+  /* The step number, in a tinted badge before the step's title. */
+  .title-step {
+    display: inline-block;
+    min-width: 1.8em;
+    margin-right: 0.5em;
+    padding: 0.05em 0.3em;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--color-dashboard-bar) 15%, transparent);
+    text-align: center;
+  }
+
+  /* The bottom bar: the index and the progress ring on the left, Back and
+     Continue on the right. Continue stays faded, and marked disabled, until
+     the step's examiner check passes; it switches without a fade, so it is
+     never half faded while no longer disabled. */
+  .step-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 -2px 8px var(--color-shadow);
+    font: 500 13px/1 var(--font-sans);
+  }
+
+  .step-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid
+      color-mix(in srgb, var(--color-ink-muted) 50%, transparent);
+    border-radius: 6px;
+    color: var(--color-ink-muted);
+  }
+
+  .step-index .glyph {
+    width: 15px;
+    height: 15px;
+  }
+
+  .step-ring {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    margin-right: auto;
+  }
+
+  .step-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .step-ring circle {
+    fill: none;
+    stroke-width: 3;
+  }
+
+  .step-ring-track {
+    stroke: var(--color-chrome);
+  }
+
+  .step-ring-fill {
+    stroke: var(--color-dashboard-bar);
+    stroke-linecap: round;
+  }
+
+  .step-ring-text {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-ink-muted);
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .step-back,
+  .step-continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .step-back {
+    padding: 6px 9px;
+    border: 1px solid
+      color-mix(in srgb, var(--color-ink-muted) 70%, transparent);
+    color: var(--color-ink-muted);
+  }
+
+  .step-continue {
+    padding: 7px 16px;
+    background: var(--color-dashboard-bar);
+    color: #ffffff;
+  }
+
+  .step-continue[aria-disabled="true"] {
+    opacity: 0.45;
+  }
+
+  .step-back .glyph,
+  .step-continue .glyph {
+    width: 14px;
+    height: 14px;
   }
 
   .prose {
@@ -1411,6 +1561,14 @@ const actions = [
 
     .title {
       font-size: 19px;
+    }
+
+    .step-bar {
+      padding-inline: 12px;
+    }
+
+    .step-back .step-label {
+      display: none;
     }
 
     .panels {

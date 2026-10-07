@@ -46,6 +46,7 @@ function setUpSessionDemo(root: HTMLElement): void {
   const output = findAll('[data-terminal="output"]');
   const prompt = find('[data-terminal="prompt"]');
   const status = find("[data-editor-status]");
+  const continueStep = find("[data-step-continue]");
   const control = find<HTMLButtonElement>("[data-control]");
   const controlText = control?.querySelector(".control-text");
   const reducedMotion = window.matchMedia(REDUCED_MOTION);
@@ -72,6 +73,14 @@ function setUpSessionDemo(root: HTMLElement): void {
     });
     if (prompt) prompt.hidden = !terminal.prompt;
     if (status) status.textContent = editorStatus(state);
+    // Continue is disabled until the examiner check passes.
+    if (continueStep) {
+      if (state.check === "passed") {
+        continueStep.removeAttribute("aria-disabled");
+      } else {
+        continueStep.setAttribute("aria-disabled", "true");
+      }
+    }
     for (const tab of tabs) {
       const selected = tab.dataset.tabName === state.tab;
       tab.setAttribute("aria-selected", String(selected));
