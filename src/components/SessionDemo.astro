@@ -825,15 +825,14 @@ const actions = [
     background: var(--color-terminal);
   }
 
+  /* Panels switch at once, as the dashboard's own tabs do. A cross-fade
+     would show both panels' text partly transparent while it runs, below
+     the WCAG contrast minimum. */
   .panel {
     position: absolute;
     inset: 0;
     overflow: hidden;
-    opacity: 0;
     visibility: hidden;
-    transition:
-      opacity 0.35s,
-      visibility 0.35s;
   }
 
   .panel:focus-visible {
@@ -844,7 +843,6 @@ const actions = [
   .session-demo[data-tab="console"] .panel-console,
   .session-demo[data-tab="editor"] .panel-editor,
   .session-demo[data-tab="slides"] .panel-slides {
-    opacity: 1;
     visibility: visible;
   }
 
