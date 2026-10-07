@@ -1,3 +1,4 @@
+import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { site } from "../site.ts";
@@ -10,7 +11,7 @@ import {
   type ContentEntry,
   type Topic,
 } from "./content-entries.ts";
-export type { ContentEntry, Topic } from "./content-entries.ts";
+import { entryFileUrl } from "./entry-files.ts";
 import { featuredContentIds } from "./featured-content.ts";
 import { currentFeatures, featureLinks } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
@@ -23,8 +24,12 @@ import {
   posts,
   tagsByKey,
 } from "./posts.ts";
+import { useCasesRelyingOn } from "./use-cases.ts";
+
+export type { ContentEntry, Topic } from "./content-entries.ts";
 
 export { featurePath } from "./features.ts";
+export { useCasePath } from "./use-cases.ts";
 
 /** The Getting Started Guides' pages, and the path they make. */
 export async function guides() {
@@ -75,9 +80,13 @@ export async function flagshipFeatures() {
   return (await features()).filter((feature) => feature.data.flagship);
 }
 
-/** The URL path of a use case's page. */
-export function useCasePath(slug: string): string {
-  return `/use-cases/${slug}`;
+/**
+ * The use cases whose pages rely on the Feature `featureId`, naming it in
+ * one of their capabilities for the release the site describes, in their
+ * menu order.
+ */
+export async function useCasesUsing(featureId: string) {
+  return useCasesRelyingOn(featureId, await useCases(), site);
 }
 
 /**
@@ -100,6 +109,32 @@ export async function hubWorkshops(ids: readonly string[], usedBy: string) {
     ...entry.data,
   }));
   return hubWorkshopLinks(ids, links, usedBy);
+}
+
+/**
+ * The videos next to Feature entries, by their path from the project root,
+ * with the URL each has in the build.
+ */
+const featureVideos = import.meta.glob<string>(
+  "/src/content/features/**/*.{mp4,webm}",
+  { query: "?url", import: "default", eager: true },
+);
+
+/**
+ * A Feature loop's recording, for the VideoLoop component: its video's built
+ * URL and its poster, or `undefined` until it is captured. `entryFilePath`
+ * is the Feature entry's `filePath`; a video it names that is not there
+ * fails the build.
+ */
+export function loopMedia(
+  loop: { video?: string | undefined; poster?: ImageMetadata | undefined },
+  entryFilePath: string,
+) {
+  if (loop.video === undefined || loop.poster === undefined) return undefined;
+  return {
+    src: entryFileUrl(loop.video, entryFilePath, featureVideos),
+    poster: loop.poster,
+  };
 }
 
 /**

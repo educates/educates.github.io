@@ -10,7 +10,9 @@ export interface Props {
     | "github"
     | "arrow-right"
     | "download"
-    | "expand";
+    | "expand"
+    | "play"
+    | "pause";
   class?: string;
 }
 
@@ -24,6 +26,8 @@ const strokes: Record<string, string> = {
   "arrow-right": "M5 12h14M13 6l6 6-6 6",
   download: "M12 4v11M7 10l5 5 5-5M5 20h14",
   expand: "M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7",
+  play: "M8 5v14l11-7z",
+  pause: "M9 5v14M15 5v14",
 };
 
 const github =
