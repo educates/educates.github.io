@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { guidePath, type GuidePage } from "./guide-path.ts";
+import { guidePath, type GuidePage } from "../guide-path.ts";
 
 /** The guides' pages, out of order, as a collection may list them. */
 const pages: GuidePage[] = [
