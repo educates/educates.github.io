@@ -93,8 +93,9 @@ const useCases = defineCollection({
             )
             .default([]),
           /**
-           * What to read, by title and URL: Content, docs pages, or a
-           * section of the page itself, such as `#how-it-works`.
+           * What to read, by title and URL: Content, docs pages, the
+           * Features overview, or a section of the page itself, such as
+           * `#how-it-works`.
            */
           content: z
             .array(
@@ -105,6 +106,7 @@ const useCases = defineCollection({
                   "Blog post",
                   "Guide",
                   "About Educates",
+                  "Features",
                   "Docs",
                   "On this page",
                 ]),
