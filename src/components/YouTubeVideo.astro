@@ -7,8 +7,7 @@
 // gives its title and poster. MDX posts use it as
 // <YouTubeVideo videoId="C6vCd6Nhf5M" />.
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import { youTubeVideoId } from "../lib/outside-content.ts";
+import { youTubeVideo } from "../lib/content.ts";
 
 export interface Props {
   /** The video's id on YouTube, as in `watch?v=<id>`. */
@@ -21,14 +20,7 @@ export interface Props {
 }
 
 const { videoId, params } = Astro.props;
-const entry = (await getCollection("outsideContent")).find(
-  (candidate) => youTubeVideoId(candidate.data.url) === videoId,
-);
-if (!entry) {
-  throw new Error(
-    `YouTubeVideo: video ${videoId} has no outside Content entry; add one under src/content/outside-content/`,
-  );
-}
+const entry = await youTubeVideo(videoId, Astro.url.pathname);
 const { title, poster, cover } = entry.data;
 // A video from another channel has no poster; its `cover`, if any, stands in.
 const image = poster ?? cover;

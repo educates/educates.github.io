@@ -4,6 +4,7 @@ import { aboutSection } from "./about-section.ts";
 import { currentFeatures, featureLinks } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
 import { hubWorkshopLinks } from "./hub-workshops.ts";
+import { youTubeVideoId } from "./outside-content.ts";
 
 export { featurePath } from "./features.ts";
 
@@ -81,4 +82,21 @@ export async function hubWorkshops(ids: readonly string[], usedBy: string) {
     ...entry.data,
   }));
   return hubWorkshopLinks(ids, links, usedBy);
+}
+
+/**
+ * The outside Content entry of the YouTube video `videoId`, which holds its
+ * title, URL and poster. A video without one fails the build; `usedBy`
+ * names who showed it.
+ */
+export async function youTubeVideo(videoId: string, usedBy: string) {
+  const entry = (await getCollection("outsideContent")).find(
+    (candidate) => youTubeVideoId(candidate.data.url) === videoId,
+  );
+  if (!entry) {
+    throw new Error(
+      `${usedBy}: YouTube video ${videoId} has no outside Content entry; add one under src/content/outside-content/`,
+    );
+  }
+  return entry;
 }
