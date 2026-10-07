@@ -138,6 +138,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
               <p class="docs">
                 <ArrowLink href={item.docs} external>
                   What the docs say
+                  <span class="sr-only">{`: ${item.title}`}</span>
                 </ArrowLink>
               </p>
             )}
