@@ -5,8 +5,10 @@
 // fails.
 
 import FeedRecordingLink from "./FeedRecordingLink.astro";
+import FeedVideoLink from "./FeedVideoLink.astro";
 import type { postComponents } from "./post-components.ts";
 
 export const feedComponents = {
   AsciinemaPlayer: FeedRecordingLink,
+  YouTubeVideo: FeedVideoLink,
 } satisfies Record<keyof typeof postComponents, unknown>;

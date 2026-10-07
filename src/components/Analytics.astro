@@ -1,0 +1,9 @@
+---
+// Counts the page view with GoatCounter, unless the visitor opted out on
+// /privacy. Sets no cookies; see src/scripts/analytics.ts.
+---
+
+<script>
+  import { loadCounter } from "../scripts/analytics.ts";
+  loadCounter();
+</script>

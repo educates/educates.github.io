@@ -26,10 +26,4 @@ export const stubs: readonly Stub[] = [
     description:
       "Blog posts, guides, videos and talks about Educates, in one list you can filter by kind and Topic.",
   },
-  {
-    path: "/privacy",
-    title: "Privacy",
-    description:
-      "What educates.dev counts, what it stores in your browser, and how to opt out.",
-  },
 ];

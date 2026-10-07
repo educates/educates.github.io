@@ -1,0 +1,9 @@
+title: Verify Educates running on Google Cloud
+kind: video
+url: https://www.youtube.com/watch?v=bsPbl-5rKDI
+date: 2025-05-05
+channel: "@EducatesTrainingPlatform"
+tags: [educates, installation, cli]
+description: Check an Educates install on Google Cloud, from the platform components to a training portal, a workshop and a workshop session.
+length: "10:56"
+poster: ./verify-educates-on-google-cloud.jpg
