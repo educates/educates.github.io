@@ -18,6 +18,7 @@ import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
 import { stubPages } from "./stub-pages.ts";
 import { textPlaceholders } from "./text-placeholders.ts";
+import { thirdPartyLoads } from "./third-party-loads.ts";
 import { trailingSlashLinks } from "./trailing-slash-links.ts";
 import { visualPlaceholders } from "./visual-placeholders.ts";
 
@@ -70,6 +71,14 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
     feedIdentity({ origin: site.origin, blogPath: "/blog" }),
     feedLinks({
       origin: site.origin,
+      feeds: ["/blog/rss.xml", "/blog/atom.xml"],
+    }),
+    // Pages and feeds load nothing from another site but GoatCounter's
+    // count.js. The YouTube facade's player frame is added only on a click,
+    // so it is not in the HTML.
+    thirdPartyLoads({
+      origin: site.origin,
+      allowedOrigins: [new URL(site.goatCounter.script).origin],
       feeds: ["/blog/rss.xml", "/blog/atom.xml"],
     }),
     // The images the old feeds embedded, kept at their URLs for feed readers
