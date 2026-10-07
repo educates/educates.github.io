@@ -1,10 +1,11 @@
 ---
-sidebar_position: 5
+title: Live editing
+description: See changes to a workshop in a running Session as you make them.
+order: 3
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
-# Live-Editing Workshops
+import Tabs from "../../../components/Tabs.astro";
+import TabItem from "../../../components/TabItem.astro";
 
 While the authoring workflow is already quite fast by using the
 `publish-workshop` and `deploy-workshop` cmdlets of the Educates CLI
@@ -24,22 +25,27 @@ most systems.
 
 ### Installing Hugo on Linux
 
-<Tabs>
-<TabItem value="debian" label="Debian" default>
-    ``` sh
-    sudo apt install hugo
-    ```
-</TabItem>
-<TabItem value="fedora" label="Fedora">
-    ``` sh
-    sudo dnf install hugo
-    ```
-</TabItem>
-<TabItem value="suse" label="SUSE">
+<Tabs label="Linux distribution">
+<TabItem label="Debian">
 
-    ``` sh
-    sudo zypper install hugo
-    ```
+```sh
+sudo apt install hugo
+```
+
+</TabItem>
+<TabItem label="Fedora">
+
+```sh
+sudo dnf install hugo
+```
+
+</TabItem>
+<TabItem label="SUSE">
+
+```sh
+sudo zypper install hugo
+```
+
 </TabItem>
 </Tabs>
 
@@ -48,26 +54,34 @@ For other distributions, please look
 
 ### Installing Hugo ond MacOS and Windows
 
-<Tabs>
-<TabItem value="hombrew" label="Homebrew" default>
-    ``` sh
-    brew install hugo
-    ```
+<Tabs label="Package manager">
+<TabItem label="Homebrew">
+
+```sh
+brew install hugo
+```
+
 </TabItem>
-<TabItem value="choco" label="Choco">
-    ``` sh
-    choco install hugo-extended
-    ```
+<TabItem label="Choco">
+
+```sh
+choco install hugo-extended
+```
+
 </TabItem>
-<TabItem value="scoop" label="Scoop">
-    ``` sh
-    scoop install hugo-extended
-    ```
+<TabItem label="Scoop">
+
+```sh
+scoop install hugo-extended
+```
+
 </TabItem>
-<TabItem value="winget" label="WinGet">
-    ``` sh
-    winget install hugo-extended
-    ```
+<TabItem label="WinGet">
+
+```sh
+winget install hugo-extended
+```
+
 </TabItem>
 </Tabs>
 

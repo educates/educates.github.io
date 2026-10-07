@@ -62,79 +62,10 @@ export const stubs: readonly Stub[] = [
     section: "About Educates",
   },
   {
-    path: "/getting-started-guides",
-    title: guides,
-    description:
-      "One path from an empty laptop to your first workshop: set up, look at what you installed, write a workshop, then where to go next.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/setup",
-    title: "Set up",
-    description:
-      "Install Docker, kubectl and the Educates CLI, and create a local Educates cluster.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/setup/docker",
-    title: "Installing Docker",
-    description:
-      "Install Docker, which runs the local Kubernetes cluster that Educates uses.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/setup/kubectl",
-    title: "Installing kubectl",
-    description:
-      "Install kubectl to look at what Educates runs in your cluster.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/setup/educates",
-    title: "Installing the Educates CLI",
-    description: "Install the educates CLI on macOS or Linux.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/setup/create-cluster",
-    title: "Creating an Educates cluster",
-    description:
-      "Create a local Kind cluster with Educates installed, in one command.",
-    section: guides,
-  },
-  {
     path: "/getting-started-guides/about",
     title: "What you just installed",
     description:
       "The pods, policies and resources a local Educates install gives you, and the commands to see them.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/authoring",
-    title: "Write your first workshop",
-    description:
-      "Create a workshop, prepare its Sessions with setup scripts, guide the work with clickable actions, and edit it live.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/authoring/basics",
-    title: "Workshop basics",
-    description:
-      "Generate a workshop with the educates CLI, learn its layout, and deploy it to your cluster.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/authoring/startup-interactivity",
-    title: "Setup scripts and interactivity",
-    description:
-      "Prepare each Session with setup scripts, and guide the work with clickable actions and checks.",
-    section: guides,
-  },
-  {
-    path: "/getting-started-guides/authoring/live-edit",
-    title: "Live editing",
-    description:
-      "See changes to a workshop in a running Session as you make them.",
     section: guides,
   },
   {

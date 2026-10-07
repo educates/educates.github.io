@@ -1,7 +1,8 @@
 ---
-sidebar_position: 4
+title: Setup scripts and interactivity
+description: Prepare each Session with setup scripts, and guide the work with clickable actions and checks.
+order: 2
 ---
-# Startup and Interactivity
 
 Two things are very important for great workshops:
 
@@ -38,12 +39,12 @@ This way, we can do things like...
 upon session start.
 
 :::warning[Setup scripts and session restarts]
-    If a user e.g. closes their browser and resumes the session at a later
-    point (made possible with session cookies), **all scripts** in
-    `workshop/setup.d` get **executed again**.
+If a user e.g. closes their browser and resumes the session at a later
+point (made possible with session cookies), **all scripts** in
+`workshop/setup.d` get **executed again**.
 
-    Thus it's important to keep **idempotency** in mind when creating your
-    scripts.
+Thus it's important to keep **idempotency** in mind when creating your
+scripts.
 :::
 
 ### Generating Manifests on Session Start
@@ -56,7 +57,7 @@ script and include it in our demo-workshop:
    mkdir -p workshop/setup.d
    ```
 2. Create a new script `workshop/setup.d/write-ingress.sh`.
-   ``` sh title="Create the script"
+   ```sh title="Create the script"
    vim workshop/setup.d/write-ingress.sh
    ```
 3. Copy-paste the script's content.
@@ -91,7 +92,7 @@ script and include it in our demo-workshop:
    rm ~/ingress.in.yaml
    ```
 4. Publish and redeploy the new version of the demo workshop.
-   ``` sh title="Redeploy the demo workshop"
+   ```sh title="Redeploy the demo workshop"
    educates publish-workshop
    educates deploy-workshop
    ```
@@ -175,7 +176,7 @@ to create a short script as well as the markdown block for the clickable action.
 In addition, we will have to **enable the `examiner` feature** for
 our workshop in `resources/workshop.yaml`:
 
-```yaml title="Enable the examiner for the workshop" hl_lines="25-26"
+```yaml title="Enable the examiner for the workshop" {25-26}
 apiVersion: training.educates.dev/v1beta1
 kind: Workshop
 metadata:

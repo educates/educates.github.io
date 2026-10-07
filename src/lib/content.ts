@@ -1,4 +1,18 @@
 import { getCollection } from "astro:content";
+import { guidePath } from "./guide-path.ts";
+
+/** The Getting Started Guides' pages, and the path they make. */
+export async function guides() {
+  const entries = await getCollection("guides");
+  const path = guidePath(
+    entries.map((entry) => ({
+      id: entry.id,
+      title: entry.data.title,
+      order: entry.data.order,
+    })),
+  );
+  return { entries, path };
+}
 
 /** The use cases, in their menu order. */
 export async function useCases() {

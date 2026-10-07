@@ -1,8 +1,8 @@
 ---
-sidebar_label: Create an Educates Cluster
-sidebar_position: 5
+title: Creating an Educates cluster
+description: Create a local Kind cluster with Educates installed, in one command.
+order: 4
 ---
-# Creating an Educates Cluster
 
 Once we got our prerequisites - Docker Desktop and Educates - installed  we can proceed
 with creating our Educates environment by issuing a single bootstrapping command:
@@ -20,10 +20,9 @@ This will do the following, in sequence:
 5. Configure KinD cluster nodes to use the created registry on a node and cluster level.
 6. Deploy the Educates framework to the cluster using [`kapp`](https://carvel.dev/kapp/).
 
-The output of this command will look like this - see the annotations for references to each of the
-outlined steps.
+The output of this command will look like this:
 
-```{ .sh .no-copy title="Installation progress" }
+```text title="Installation progress"
 Cluster config used is saved to:
 ~/Library/Application Support/educates/educates-cluster-config.yaml
 Creating cluster "educates" ...

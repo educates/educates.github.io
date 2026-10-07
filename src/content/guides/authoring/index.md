@@ -1,7 +1,8 @@
 ---
-sidebar_position: 1
+title: Write your first workshop
+description: Create a workshop, prepare its Sessions with setup scripts, guide the work with clickable actions, and edit it live.
+order: 3
 ---
-# Creating Workshops
 
 In this section, we are finally going to create our own workshops!
 

@@ -1,7 +1,8 @@
 ---
-sidebar_position: 2
+title: Installing Docker
+description: Install Docker, which runs the local Kubernetes cluster that Educates uses.
+order: 1
 ---
-# Installing Docker
 
 First, we are going to install Docker.
 - On `MacOS` and `Windows` we will install Docker Desktop.
@@ -49,7 +50,7 @@ docker run --rm -p 80:80 hello-world
 
 The output should look like this:
 
-```{ .text .no-copy title="Output" }
+```text title="Output"
 docker run --rm -p 80:80 hello-world
 
 Hello from Docker!
