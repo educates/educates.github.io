@@ -1,0 +1,74 @@
+---
+// A page's table of contents, "On this page", from `tableOfContents()` in
+// src/lib/table-of-contents.ts. It shows on wide screens only, above
+// 1200px, and stays in view as the page scrolls; the layout gives it its
+// column.
+import type { TocEntry } from "../lib/table-of-contents.ts";
+
+export interface Props {
+  entries: TocEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<nav class="toc" aria-labelledby="toc-heading">
+  <h2 id="toc-heading">On this page</h2>
+  <ul>
+    {entries.map(({ text, slug, children }) => (
+      <li>
+        <a href={`#${slug}`}>{text}</a>
+        {children.length > 0 && (
+          <ul>
+            {children.map((child) => (
+              <li>
+                <a href={`#${child.slug}`}>{child.text}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .toc {
+    position: sticky;
+    top: 88px;
+    max-height: calc(100vh - 112px);
+    overflow-y: auto;
+    font-size: 14px;
+  }
+  h2 {
+    margin-bottom: 10px;
+    color: var(--color-ink);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    margin-top: 6px;
+  }
+  ul ul {
+    padding-left: 12px;
+  }
+  a {
+    color: var(--color-ink-muted);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 1200px) {
+    .toc {
+      display: none;
+    }
+  }
+</style>
