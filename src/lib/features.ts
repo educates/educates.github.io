@@ -5,11 +5,11 @@
 /** The jobs a Feature serves, in the order the site lists them. */
 export const jobIds = ["authoring", "delivering", "operating"] as const;
 
-export type JobId = (typeof jobIds)[number];
+export type FeatureJobId = (typeof jobIds)[number];
 
 /** A job Features serve, and who does it. */
-export interface Job {
-  id: JobId;
+export interface FeatureJob {
+  id: FeatureJobId;
   /** The job's name, as section headings show it. */
   name: string;
   /** One line naming who does the job, which opens its section. */
@@ -17,7 +17,7 @@ export interface Job {
 }
 
 /** The jobs, in the order the site lists them. */
-export const jobs: readonly Job[] = [
+export const jobs: readonly FeatureJob[] = [
   {
     id: "authoring",
     name: "Authoring",
@@ -37,7 +37,7 @@ export const jobs: readonly Job[] = [
 
 /** The fields of a Feature entry that these helpers read. */
 export interface FeatureFields {
-  job: JobId;
+  job: FeatureJobId;
   sentence: string;
   flagship: boolean;
   order: number;
@@ -53,12 +53,15 @@ export interface FeatureEntry {
 
 /** A job with the Features that serve it. */
 export interface JobFeatures<T extends FeatureEntry> {
-  job: Job;
+  job: FeatureJob;
   features: T[];
 }
 
-/** Which Educates release the site describes. */
-export interface Release {
+/**
+ * The 4.0 setting: whether the site describes Educates 4.0, or the
+ * release current before it.
+ */
+export interface Educates4Setting {
   /** Whether Educates 4.0 is released; `site.educates4Released`. */
   educates4Released: boolean;
 }
@@ -69,7 +72,7 @@ export interface Release {
  * otherwise `value`.
  */
 export function forRelease<T>(
-  release: Release,
+  release: Educates4Setting,
   value: T,
   educates4Value: T | undefined,
 ): T {
@@ -84,7 +87,7 @@ export function forRelease<T>(
  */
 export function currentFeatures<T extends FeatureEntry>(
   entries: readonly T[],
-  release: Release,
+  release: Educates4Setting,
 ): T[] {
   return entries
     .filter((entry) => release.educates4Released || !entry.data.educates4Only)
