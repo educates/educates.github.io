@@ -10,10 +10,14 @@
 // 3. How you use it: the entry's Markdown body, the real snippet that turns
 //    it on, passed in the default slot.
 // 4. Its limits: what it does not do, and what it needs from you.
-// 5. Where it is used: the use cases whose pages rely on it, and workshops
-//    to deploy from the Hub.
+// 5. Where it is used: the use cases whose pages rely on it or on a Feature
+//    the page covers, and workshops to deploy from the Hub. With no use case
+//    to list, the part is "Where to try it".
 // 6. Read more and get started: docs, Blog posts and guides, "Get started"
 //    and "Get help", and the other flagship Features.
+//
+// A page that covers other Features, such as the portal REST API on the
+// lookup service's page, names them beside its own in the kicker.
 import type { CollectionEntry } from "astro:content";
 import ArrowLink from "../components/ArrowLink.astro";
 import Card from "../components/Card.astro";
@@ -23,6 +27,7 @@ import VideoLoop from "../components/VideoLoop.astro";
 import BaseLayout from "./BaseLayout.astro";
 import { breadcrumbs } from "../lib/breadcrumbs.ts";
 import {
+  featureLinksFor,
   featurePath,
   flagshipFeatures,
   hubWorkshops,
@@ -49,7 +54,12 @@ if (!filePath || !page) {
 
 const path = featurePath(entry.id);
 const jobName = jobs.find((each) => each.id === job)?.name;
-const useCases = await useCasesUsing(entry.id);
+const covered = await featureLinksFor(page.covers, filePath);
+const kicker = new Intl.ListFormat("en", { type: "conjunction" }).format([
+  name,
+  ...covered.map((feature) => feature.name),
+]);
+const useCases = await useCasesUsing([entry.id, ...page.covers]);
 const workshops = await hubWorkshops(page.hubWorkshops, filePath);
 const others = (await flagshipFeatures()).filter(
   (other) => other.id !== entry.id,
@@ -67,7 +77,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     <div class="wrap what-grid">
       <div class="what-text">
         <p class="kicker">
-          {name}
+          {kicker}
           {jobName && <span class="job">{jobName}</span>}
         </p>
         <h1>{page.headline}</h1>
@@ -146,7 +156,9 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
 
   <section class="band" id="where-it-is-used" aria-labelledby="used-heading">
     <div class="wrap">
-      <h2 id="used-heading">Where it is used</h2>
+      <h2 id="used-heading">
+        {useCases.length > 0 ? "Where it is used" : "Where to try it"}
+      </h2>
       <div class="columns">
         {useCases.length > 0 && (
           <div class="column">

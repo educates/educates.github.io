@@ -2,19 +2,21 @@
 // The Features overview: every Feature of the release the site describes,
 // grouped by the job it serves. Each block shows the Feature's name, its
 // sentence, its visual, its docs link and, for a flagship, a link to its
-// deep page. Each job section and each block has an id to link to, such as
+// deep page, or for a Feature a flagship's deep page covers, a link to that
+// page. Each job section and each block has an id to link to, such as
 // `/features#delivering` or `/features#embedding`.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FeatureVisual from "../../components/FeatureVisual.astro";
 import Icon from "../../components/Icon.astro";
 import { breadcrumbs } from "../../lib/breadcrumbs.ts";
-import { featurePath, features } from "../../lib/content.ts";
-import { featuresByJob } from "../../lib/features.ts";
+import { features } from "../../lib/content.ts";
+import { deepPageShowing, featuresByJob } from "../../lib/features.ts";
 
 const title = "Features";
 const description =
   "What Educates gives the people who write workshops, the people who run them, and the platform team that keeps them running.";
-const groups = featuresByJob(await features());
+const all = await features();
+const groups = featuresByJob(all);
 ---
 
 <BaseLayout
@@ -47,31 +49,36 @@ const groups = featuresByJob(await features());
         <h2 id={`${job.id}-heading`}>{job.name}</h2>
         <p class="who">{job.who}</p>
         <ul class="features">
-          {features.map((entry) => (
-            <li class="feature" id={entry.id}>
-              <FeatureVisual visual={entry.data.visual} />
-              <div class="head">
-                <h3>{entry.data.name}</h3>
-                {entry.data.flagship && <span class="flag">Flagship</span>}
-              </div>
-              <p class="sentence">{entry.data.sentence}</p>
-              <p class="links">
-                {entry.data.flagship && (
-                  <a href={featurePath(entry.id)}>
-                    See it in depth
-                    <span class="sr-only">{`: ${entry.data.name}`}</span>
+          {features.map((entry) => {
+            const deepPage = deepPageShowing(entry.id, all);
+            return (
+              <li class="feature" id={entry.id}>
+                <FeatureVisual visual={entry.data.visual} />
+                <div class="head">
+                  <h3>{entry.data.name}</h3>
+                  {entry.data.flagship && <span class="flag">Flagship</span>}
+                </div>
+                <p class="sentence">{entry.data.sentence}</p>
+                <p class="links">
+                  {deepPage && (
+                    <a href={deepPage.href}>
+                      {deepPage.id === entry.id
+                        ? "See it in depth"
+                        : `See it on the ${deepPage.name} page`}
+                      <span class="sr-only">{`: ${entry.data.name}`}</span>
+                    </a>
+                  )}
+                  <a class="docs" href={entry.data.docs}>
+                    Docs
+                    <span class="sr-only">
+                      {` for ${entry.data.name} (external site)`}
+                    </span>
+                    <Icon name="external" />
                   </a>
-                )}
-                <a class="docs" href={entry.data.docs}>
-                  Docs
-                  <span class="sr-only">
-                    {` for ${entry.data.name} (external site)`}
-                  </span>
-                  <Icon name="external" />
-                </a>
-              </p>
-            </li>
-          ))}
+                </p>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
