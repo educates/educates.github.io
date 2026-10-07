@@ -36,12 +36,6 @@ export const stubs: readonly Stub[] = [
       "Blog posts, guides, videos and talks about Educates, in one list you can filter by kind and Topic.",
   },
   {
-    path: "/blog",
-    title: "Blog",
-    description:
-      "Posts from the Educates team on writing workshops, running Educates and what is new in the project.",
-  },
-  {
     path: "/about-educates",
     title: "About Educates",
     description:

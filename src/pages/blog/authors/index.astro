@@ -1,0 +1,50 @@
+---
+// Every author who has a page, with how many posts they wrote.
+import AuthorProfile from "../../../components/AuthorProfile.astro";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { authorsWithPosts } from "../../../lib/blog-pages.ts";
+
+const authors = await authorsWithPosts();
+---
+
+<BlogLayout
+  title="Authors"
+  description="The people who write the Educates blog, and what each of them wrote."
+>
+  <ul class="authors">
+    {
+      authors.map(({ author, posts }) => (
+        <li>
+          <AuthorProfile author={author} headingLevel={2} />
+          <p class="count">
+            {posts.length} {posts.length === 1 ? "post" : "posts"}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</BlogLayout>
+
+<style>
+  .authors {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: grid;
+    gap: 12px;
+    padding: 22px 24px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .count {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+</style>

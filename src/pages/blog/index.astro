@@ -1,0 +1,19 @@
+---
+// The blog's first page of posts, newest first.
+import PageNavigation from "../../components/PageNavigation.astro";
+import PostList from "../../components/PostList.astro";
+import BlogLayout from "../../layouts/BlogLayout.astro";
+import { blogPages } from "../../lib/blog-pages.ts";
+
+const [{ page, title, heading, description, lede }] = await blogPages();
+---
+
+<BlogLayout
+  title={title}
+  heading={heading}
+  description={description}
+  lede={lede}
+>
+  <PostList posts={page.items} />
+  <PageNavigation page={page} />
+</BlogLayout>
