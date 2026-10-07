@@ -16,14 +16,15 @@ The hand-picked subset of Content that the site promotes on its homepage,
 drawn from any kind of Content.
 _Avoid_: Highlights, featured posts (Featured Content is not limited to posts)
 
-**Content hub**:
+**Learn page**:
 The one page that lists Content of every kind, filterable by kind and
 Topic, with Featured Content pinned at the top. The blog's own list is a
 separate, posts-only view.
-_Avoid_: Resources page, library
+_Avoid_: Content hub, resources page, resource center, library, learning
+center
 
 **Topic**:
-A curated subject used to filter the Content hub, defined as a set of
+A curated subject used to filter the Learn page, defined as a set of
 blog tags. Content carries tags; a Topic groups them.
 _Avoid_: Tag (when meaning the curated filter), category
 
@@ -43,6 +44,12 @@ _Avoid_: Benefit, value claim (such as "Secure by Design")
 A job a team does with Educates, presented on its own page of the site. A
 use case combines several Features; it is not a Feature itself.
 _Avoid_: Solution
+
+**Educates Hub**:
+The project's public catalog of workshops, and of the extension packages
+and policies that go with them, which people deploy on their own Educates
+installation. It is not a place to run workshops. "The Hub" for short.
+_Avoid_: EducatesHub, marketplace, hub in lower case
 
 ## Demos
 
