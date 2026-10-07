@@ -3,14 +3,32 @@ import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { jobIds } from "./lib/features.ts";
 
+/** A short point on a use case page: a title and a sentence or two. */
+const useCasePoint = z.object({
+  title: z.string(),
+  text: z.string(),
+});
+
 /**
  * Use cases: one Markdown file per page under `src/content/use-cases/`. The
  * file name is the entry's slug, its page is `/use-cases/<slug>`, and the
  * header menu, the footer and the homepage tiles list the entries by
  * `order`.
+ *
+ * A use case with a `page` has its page on the use case template,
+ * src/layouts/UseCaseLayout.astro, and its Markdown body is the page's "How
+ * it works" section, for the Builder: a short flow or a `mermaid` diagram,
+ * linking to docs.educates.dev. A use case without a `page` is a stub.
+ * Every claim holds against the docs of the release the site describes.
  */
 const useCases = defineCollection({
-  loader: glob({ pattern: "*.{md,mdx}", base: "./src/content/use-cases" }),
+  loader: glob({
+    pattern: "*.{md,mdx}",
+    base: "./src/content/use-cases",
+    // Rendered when its page renders, where an error in the Markdown
+    // pipeline fails the build.
+    deferRender: true,
+  }),
   schema: z.object({
     /** The use case's name, as menus and tiles show it. */
     name: z.string(),
@@ -18,6 +36,111 @@ const useCases = defineCollection({
     promise: z.string(),
     /** Where it sits in menus and lists, lowest first. */
     order: z.number().int(),
+    /** The page's sections, in the template's order. */
+    page: z
+      .object({
+        /** The outcome, as the page's heading: what the decision maker gets. */
+        headline: z.string(),
+        /** Who the page is for, in one line. */
+        reader: z.string(),
+        /** One or two sentences below the headline. */
+        lede: z.string(),
+        /**
+         * The main call to action at the top of the page: "Get started", or
+         * "Get help building yours" for a use case built with the team's
+         * help. "Get started" and "Get help" close every page.
+         */
+        lead: z
+          .enum(["get-started", "get-help-building"])
+          .default("get-started"),
+        /** The problem: two or three pains the reader has today. */
+        problems: z.array(useCasePoint).min(2).max(3),
+        /**
+         * How Educates fits: three or four capabilities, each naming the
+         * Features it rests on by their ids in src/content/features/.
+         */
+        capabilities: z
+          .array(useCasePoint.extend({ features: z.array(z.string()).min(1) }))
+          .min(3)
+          .max(4),
+        /**
+         * What you bring: what Educates does not do for this use case, each
+         * with the docs page that says so where there is one.
+         */
+        bring: z
+          .array(useCasePoint.extend({ docs: z.url().optional() }))
+          .min(1),
+        /** Proof: what backs the page's claims. */
+        proof: z.object({
+          /** A figure or fact with the page that records it. */
+          facts: z
+            .array(
+              z.object({
+                figure: z.string(),
+                text: z.string(),
+                source: z.object({ label: z.string(), href: z.string() }),
+              }),
+            )
+            .default([]),
+          /**
+           * What to read, by title and URL: Content, docs pages, or a
+           * section of the page itself, such as `#how-it-works`.
+           */
+          content: z
+            .array(
+              z.object({
+                title: z.string(),
+                href: z.string(),
+                kind: z.enum([
+                  "Blog post",
+                  "Guide",
+                  "About Educates",
+                  "Docs",
+                  "On this page",
+                ]),
+              }),
+            )
+            .default([]),
+          /**
+           * Workshops to deploy from the Hub, by their ids in
+           * src/content/hub-workshops.yml.
+           */
+          hubWorkshops: z.array(z.string()).default([]),
+          /**
+           * Anonymized customer stories. A story is published only once its
+           * company has cleared it, on the date in `cleared`; the page reads
+           * complete without one.
+           */
+          stories: z
+            .array(
+              z.object({
+                title: z.string(),
+                text: z.string(),
+                cleared: z.coerce.date(),
+              }),
+            )
+            .default([]),
+        }),
+      })
+      .optional(),
+  }),
+});
+
+/**
+ * Workshops on the Educates Hub that the site links to, in
+ * src/content/hub-workshops.yml, keyed by id. Pages name them by id and
+ * never write a Hub URL into their copy; `hubWorkshops()` in
+ * src/lib/content.ts looks them up and fails the build on an unknown id.
+ */
+const hubWorkshops = defineCollection({
+  loader: file("./src/content/hub-workshops.yml"),
+  schema: z.object({
+    /** The workshop's title, as the Hub shows it. */
+    title: z.string(),
+    /** The workshop's page on the Hub. */
+    url: z.url().refine((url) => url.startsWith("https://hub.educates.dev/"), {
+      message: "must be a page on https://hub.educates.dev/",
+    }),
   }),
 });
 
@@ -194,6 +317,7 @@ const tags = defineCollection({
 
 export const collections = {
   useCases,
+  hubWorkshops,
   features,
   guides,
   about,

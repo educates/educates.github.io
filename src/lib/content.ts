@@ -1,8 +1,11 @@
 import { getCollection } from "astro:content";
 import { site } from "../site.ts";
 import { aboutSection } from "./about-section.ts";
-import { currentFeatures } from "./features.ts";
+import { currentFeatures, featureLinks } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
+import { hubWorkshopLinks } from "./hub-workshops.ts";
+
+export { featurePath } from "./features.ts";
 
 /** The Getting Started Guides' pages, and the path they make. */
 export async function guides() {
@@ -58,7 +61,24 @@ export function useCasePath(slug: string): string {
   return `/use-cases/${slug}`;
 }
 
-/** The URL path of a flagship Feature's deep page. */
-export function featurePath(slug: string): string {
-  return `/features/${slug}`;
+/**
+ * Links to the Features named by `ids`, in that order: a flagship's deep
+ * page, or any other Feature's block on the overview. A Feature the site
+ * does not show fails the build; `usedBy` names who named it.
+ */
+export async function featureLinksFor(ids: readonly string[], usedBy: string) {
+  return featureLinks(ids, await features(), usedBy);
+}
+
+/**
+ * The Hub workshops named by `ids`, in that order, with their titles and
+ * hub.educates.dev URLs from src/content/hub-workshops.yml. An id the file
+ * does not define fails the build; `usedBy` names who named it.
+ */
+export async function hubWorkshops(ids: readonly string[], usedBy: string) {
+  const links = (await getCollection("hubWorkshops")).map((entry) => ({
+    id: entry.id,
+    ...entry.data,
+  }));
+  return hubWorkshopLinks(ids, links, usedBy);
 }
