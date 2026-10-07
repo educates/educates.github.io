@@ -62,13 +62,6 @@ export const stubs: readonly Stub[] = [
     section: "About Educates",
   },
   {
-    path: "/getting-started-guides/about",
-    title: "What you just installed",
-    description:
-      "The pods, policies and resources a local Educates install gives you, and the commands to see them.",
-    section: guides,
-  },
-  {
     path: "/getting-started-guides/next-steps",
     title: "Next steps",
     description:
