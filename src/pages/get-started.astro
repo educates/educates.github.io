@@ -1,0 +1,166 @@
+---
+// Get started: three ways in. Run Educates on a laptop, deploy a workshop
+// from the Hub, or talk to the team.
+import ArrowLink from "../components/ArrowLink.astro";
+import Card from "../components/Card.astro";
+import Command from "../components/Command.astro";
+import Icon from "../components/Icon.astro";
+import ProjectLayout from "../layouts/ProjectLayout.astro";
+import { elsewhere } from "../lib/navigation.ts";
+
+const sampleWorkshop =
+  "https://github.com/educates/lab-k8s-fundamentals/releases/latest/download/workshop.yaml";
+---
+
+<ProjectLayout
+  title="Get started"
+  description="Run Educates on your laptop, deploy a workshop from the Hub, or talk to us."
+  lede="Three ways in: run Educates on your own machine, deploy a ready-made workshop from the Hub, or tell us what you are building."
+>
+  <div class="wrap paths">
+    <Card as="section" id="laptop" class="laptop">
+      <h2>Run Educates on your laptop</h2>
+      <p class="intro">
+        The <code>educates</code> CLI creates a local Kind cluster with Educates
+        installed, then deploys workshops to it. You need Docker, on macOS or
+        Linux, or inside WSL on Windows.
+      </p>
+      <ol class="steps">
+        <li>
+          <h3>Download the CLI</h3>
+          <p>
+            Get the <code>educates</code> binary for your system from{" "}
+            <a href="/downloads">Downloads</a>, and put it on your{" "}
+            <code>PATH</code>.
+          </p>
+        </li>
+        <li>
+          <h3>Create a local cluster</h3>
+          <p>
+            One command creates the cluster, a local image registry and
+            Educates. It takes a few minutes, depending on your network.
+          </p>
+          <Command command="educates create-cluster" />
+        </li>
+        <li>
+          <h3>Deploy a workshop and open it</h3>
+          <p>
+            Deploy the Kubernetes fundamentals workshop, then open the training
+            portal in your browser, already signed in.
+          </p>
+          <Command command={`educates deploy-workshop -f ${sampleWorkshop}`} />
+          <Command command="educates browse-workshops" />
+        </li>
+      </ol>
+      <div class="actions">
+        <a class="button button-primary" href="/getting-started-guides/setup">
+          Follow the setup guide
+        </a>
+        <a class="button button-secondary" href="/downloads">
+          <Icon name="download" />
+          Download the CLI
+        </a>
+      </div>
+    </Card>
+
+    <Card as="section" id="hub">
+      <h2>Browse workshops on the Hub</h2>
+      <p>
+        The Educates Hub is a catalog of ready-made workshops, from Kubernetes
+        fundamentals to the lookup service. Each one comes with the single
+        command that deploys it to your own Educates.
+      </p>
+      <p class="more">
+        <ArrowLink href={elsewhere.hub.href} external>
+          Explore the Hub
+        </ArrowLink>
+      </p>
+    </Card>
+
+    <Card as="section" id="talk">
+      <h2>Talk to us</h2>
+      <p>
+        Planning a Hands-on event, a Demo Platform or training for your team?
+        Ask the community, or hire the people who build Educates to help.
+      </p>
+      <p class="more">
+        <ArrowLink href="/get-help">Get help</ArrowLink>
+      </p>
+    </Card>
+  </div>
+</ProjectLayout>
+
+<style>
+  .paths {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding-bottom: 96px;
+  }
+  .laptop {
+    grid-column: 1 / -1;
+    gap: 16px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  h3 {
+    font-size: 17px;
+  }
+  p {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+  .intro {
+    max-width: 44em;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .steps li {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    min-width: 0;
+  }
+  .steps h3 {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .steps h3::before {
+    counter-increment: step;
+    content: counter(step);
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font: 600 13px/1 var(--font-mono);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .more {
+    margin-top: 4px;
+  }
+
+  @media (max-width: 960px) {
+    .steps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 720px) {
+    .paths {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
