@@ -15,6 +15,7 @@ function pageSaying(path: string, text: string): string {
 
 const built = {
   "index.html": page(`${origin}/`),
+  "use-cases.html": page(`${origin}/use-cases`),
   "use-cases/team-training.html": pageSaying(
     "/use-cases/team-training",
     "<p>Educates runs on a cluster you own.</p>",
@@ -33,14 +34,15 @@ function check(
   return checkSite(fixtureBuild({ ...built, ...files }), [
     educates4OnlyTerms({
       educates4Released,
-      paths: ["/use-cases"],
+      sections: ["/use-cases"],
+      pages: ["/"],
       terms: [/air[\s-]?gapped/i],
     }),
   ]);
 }
 
 describe("educates4-only-terms rule", () => {
-  it("passes a build whose pages under the paths name nothing 4.0 brings", () => {
+  it("passes a build whose checked pages name nothing 4.0 brings", () => {
     expect(check({})).toEqual([]);
   });
 
@@ -52,7 +54,7 @@ describe("educates4-only-terms rule", () => {
       '<a href="https://docs.educates.dev/en/stable/installation-guides/airgapped-installation.html">Install</a>',
     ],
   ])(
-    "fails a page under the paths that names a 4.0-only term %s",
+    "fails a page under a section that names a 4.0-only term %s",
     (_, text) => {
       const findings = check({
         "use-cases/team-training.html": pageSaying(
@@ -70,7 +72,27 @@ describe("educates4-only-terms rule", () => {
     },
   );
 
-  it("leaves pages outside the paths alone", () => {
+  it("fails a section's own page that names a 4.0-only term", () => {
+    const findings = check({
+      "use-cases.html": pageSaying("/use-cases", "<p>Air-gapped.</p>"),
+    });
+    expect(findings).toMatchObject([
+      { rule: "educates4-only-terms", severity: "error" },
+    ]);
+    expect(findings[0].message).toContain("/use-cases (use-cases.html)");
+  });
+
+  it("fails a listed page that names a 4.0-only term", () => {
+    const findings = check({
+      "index.html": pageSaying("/", "<p>Air-gapped.</p>"),
+    });
+    expect(findings).toMatchObject([
+      { rule: "educates4-only-terms", severity: "error" },
+    ]);
+    expect(findings[0].message).toContain("/ (index.html)");
+  });
+
+  it("leaves pages outside the sections and the listed pages alone", () => {
     expect(
       check({
         "learn.html": pageSaying("/learn", "<p>Air-gapped, in a post.</p>"),
@@ -86,6 +108,7 @@ describe("educates4-only-terms rule", () => {
     expect(
       check(
         {
+          "index.html": pageSaying("/", "<p>Air-gapped.</p>"),
           "use-cases/team-training.html": pageSaying(
             "/use-cases/team-training",
             "<p>Self-hosted, or air-gapped.</p>",

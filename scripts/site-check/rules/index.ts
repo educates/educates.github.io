@@ -77,10 +77,18 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
     stubPages(),
     // Screenshots and recordings still to be captured: listed, never blocking.
     visualPlaceholders(),
-    // The use case pages say "air-gapped" only once Educates 4.0 is released.
+    // The homepage and the sections that describe Educates as it is today
+    // say "air-gapped" only once Educates 4.0 is released. The Blog and
+    // Learn are left out: a dated post may mention what is coming.
     educates4OnlyTerms({
       educates4Released: site.educates4Released,
-      paths: ["/use-cases"],
+      sections: [
+        "/use-cases",
+        "/features",
+        "/about-educates",
+        "/getting-started-guides",
+      ],
+      pages: ["/"],
       terms: [/air[\s-]?gapped/i],
     }),
   ];
