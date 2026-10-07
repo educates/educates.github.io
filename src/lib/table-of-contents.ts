@@ -1,6 +1,6 @@
 // The table of contents of a page rendered from Markdown, from the headings
-// that rendering its entry returns. The docs layout shows it beside the
-// page on wide screens.
+// that rendering its entry returns. The docs layout and blog posts show it
+// beside the page on wide screens.
 
 import type { MarkdownHeading } from "astro";
 
@@ -34,4 +34,19 @@ export function tableOfContents(
     else if (level === top + 1) toc.at(-1)?.children.push({ text, slug });
   }
   return toc;
+}
+
+/**
+ * A blog post's table of contents: only a post with three or more headings
+ * in it has one.
+ */
+export function postTableOfContents(
+  headings: readonly MarkdownHeading[],
+): TocEntry[] {
+  const toc = tableOfContents(headings);
+  const listed = toc.reduce(
+    (count, entry) => count + 1 + entry.children.length,
+    0,
+  );
+  return listed >= 3 ? toc : [];
 }

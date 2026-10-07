@@ -1,6 +1,6 @@
 import type { MarkdownHeading } from "astro";
 import { describe, expect, it } from "vitest";
-import { tableOfContents } from "../table-of-contents.ts";
+import { postTableOfContents, tableOfContents } from "../table-of-contents.ts";
 
 /** Headings as rendering an entry returns them, from `[depth, text]`. */
 function headings(...list: [number, string][]): MarkdownHeading[] {
@@ -70,5 +70,32 @@ describe("tableOfContents", () => {
       },
       { text: "On the horizon", slug: "on-the-horizon", children: [] },
     ]);
+  });
+});
+
+describe("postTableOfContents", () => {
+  it("lists a post with three or more headings in its table of contents", () => {
+    expect(
+      postTableOfContents(
+        headings([2, "Prerequisites"], [3, "DNS"], [2, "Installation"]),
+      ),
+    ).toEqual([
+      {
+        text: "Prerequisites",
+        slug: "prerequisites",
+        children: [{ text: "DNS", slug: "dns" }],
+      },
+      { text: "Installation", slug: "installation", children: [] },
+    ]);
+  });
+
+  it("gives a post with fewer than three headings none", () => {
+    expect(
+      postTableOfContents(headings([2, "Asciinema"], [4, "Options"])),
+    ).toEqual([]);
+    expect(postTableOfContents(headings([2, "Setup"], [2, "Summary"]))).toEqual(
+      [],
+    );
+    expect(postTableOfContents([])).toEqual([]);
   });
 });
