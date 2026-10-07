@@ -21,8 +21,8 @@ export default defineConfig({
     format: "file",
   },
   redirects: { ...redirects },
-  // Two routes building the same URL fail the build, such as a new page
-  // whose stub in src/stubs.ts is still listed, or a redirect from a page.
+  // Two routes building the same URL fail the build, such as a redirect
+  // from a page that still exists.
   prerenderConflictBehavior: "error",
   // Markdown and MDX share this pipeline.
   markdown: {
