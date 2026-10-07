@@ -4,6 +4,9 @@ import { site } from "../../../src/site.ts";
 import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
+import { feedIdentity } from "./feed-identity.ts";
+import { feedLinks } from "./feed-links.ts";
+import { frozenPaths } from "./frozen-paths.ts";
 import { mustResolve } from "./must-resolve.ts";
 import { openGraphImages } from "./open-graph-images.ts";
 import { redirectPages } from "./redirect-pages.ts";
@@ -32,6 +35,14 @@ export function siteRules(): Rule[] {
     }),
     // The Educates Hub moves into the site at /hub; until then it stays empty.
     reservedPaths({ paths: ["/hub"] }),
+    feedIdentity({ origin: site.origin, blogPath: "/blog" }),
+    feedLinks({
+      origin: site.origin,
+      feeds: ["/blog/rss.xml", "/blog/atom.xml"],
+    }),
+    // The images the old feeds embedded, kept at their URLs for feed readers
+    // that cached those items.
+    frozenPaths({ origin: site.origin, paths: ["/assets/images"] }),
     // Stub pages warn; `severity: "error"` makes them block the build.
     stubPages({ severity: "warning" }),
   ];

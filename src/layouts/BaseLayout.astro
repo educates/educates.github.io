@@ -1,7 +1,8 @@
 ---
 // The page shell every page uses: the document head (title, description,
 // canonical URL, Open Graph tags, fonts, tokens, theme), the site header,
-// the page's content inside <main> after its breadcrumbs, and the footer.
+// the page's content inside <main> after its breadcrumbs, the footer, and
+// click-to-enlarge for any Mermaid diagram on the page.
 import "@fontsource/onest/400.css";
 import "@fontsource/onest/600.css";
 import "@fontsource/onest/700.css";
@@ -13,11 +14,13 @@ import "../styles/global.css";
 import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
+import DiagramEnlarge from "../components/DiagramEnlarge.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import ThemeScript from "../components/ThemeScript.astro";
 import type { Crumb } from "../lib/breadcrumbs.ts";
 import { pageCoverAttribute, type PageCoverData } from "../lib/page-cover.ts";
+import { feedPaths } from "../lib/posts.ts";
 import { canonicalUrl, openGraphImageUrl } from "../lib/urls.ts";
 import { site } from "../site.ts";
 
@@ -115,6 +118,18 @@ const structuredData = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      href={feedPaths.rss}
+      title="Educates Training Platform RSS Feed"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      href={feedPaths.atom}
+      title="Educates Training Platform Atom Feed"
+    />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
@@ -147,6 +162,7 @@ const structuredData = {
       <slot />
     </main>
     <SiteFooter />
+    <DiagramEnlarge />
   </body>
 </html>
 

@@ -121,6 +121,15 @@ export function authorPath(author: Author): string {
 /** The URL path of the list of every post by year. */
 export const archivePath = `${blogPath}/archive`;
 
+/** The formats the blog's feed is published in. */
+export type FeedFormat = "rss" | "atom";
+
+/** The URL path of the blog's feed in each format. */
+export const feedPaths: Record<FeedFormat, string> = {
+  rss: `${blogPath}/rss.xml`,
+  atom: `${blogPath}/atom.xml`,
+};
+
 /** A post's date as the blog shows it, such as "October 13, 2024". */
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
