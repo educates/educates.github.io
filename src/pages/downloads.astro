@@ -1,0 +1,172 @@
+---
+// Downloads: the `educates` CLI for macOS and Linux from the latest GitHub
+// release, how to install it, and GitHub Releases for other versions.
+import ArrowLink from "../components/ArrowLink.astro";
+import Card from "../components/Card.astro";
+import Icon from "../components/Icon.astro";
+import ProjectLayout from "../layouts/ProjectLayout.astro";
+import { checksumsUrl, cliDownloads, releasesUrl } from "../lib/downloads.ts";
+---
+
+<ProjectLayout
+  title="Downloads"
+  description="The educates CLI for macOS and Linux, from the latest GitHub release."
+  lede="One binary that creates a local Educates cluster, installs Educates on a cluster you run, and creates, publishes and deploys workshops. These links always fetch the latest release."
+>
+  <Fragment slot="heading">
+    Download the <code>educates</code> CLI
+  </Fragment>
+
+  <div class="wrap">
+    <ul class="platforms">
+      {cliDownloads.map((platform) => (
+        <Card as="li">
+          <h2>{platform.os}</h2>
+          <ul class="builds">
+            {platform.builds.map((build) => (
+              <li>
+                <a class="button button-primary" href={build.href}>
+                  <Icon name="download" />
+                  {build.label}
+                  <span class="sr-only">{` for ${platform.os}`}</span>
+                </a>
+                <code class="asset">{build.asset}</code>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ))}
+    </ul>
+  </div>
+
+  <section class="section" aria-labelledby="install-heading">
+    <div class="wrap">
+      <h2 id="install-heading">After you download</h2>
+      <ol class="steps">
+        <li>
+          Rename the file to <code>educates</code>.
+        </li>
+        <li>
+          Make it executable with <code>chmod +x educates</code>.
+        </li>
+        <li>
+          Move it to a directory on your <code>PATH</code>, then check it with{" "}
+          <code>educates version</code>.
+        </li>
+      </ol>
+      <ul class="notes">
+        <li>
+          The macOS binaries are not signed, so macOS asks you to allow the CLI
+          before its first run.
+        </li>
+        <li>On Windows, use the Linux binary inside WSL.</li>
+      </ul>
+      <p>
+        <ArrowLink href="/getting-started-guides/setup/educates">
+          Install it step by step in the setup guide
+        </ArrowLink>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="versions-heading">
+    <div class="wrap">
+      <h2 id="versions-heading">Other versions</h2>
+      <p>
+        Every release, with its release notes, checksums and installer
+        manifests, is on GitHub Releases. The latest release's{" "}
+        <a href={checksumsUrl}>
+          <code>checksums.txt</code>
+        </a>{" "}
+        lists the SHA-256 of each binary.
+      </p>
+      <p>
+        <ArrowLink href={releasesUrl} external>
+          All releases on GitHub
+        </ArrowLink>
+      </p>
+    </div>
+  </section>
+</ProjectLayout>
+
+<style>
+  .platforms {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  .builds {
+    display: grid;
+    gap: 14px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .builds li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .builds .button {
+    min-width: 15em;
+    justify-content: flex-start;
+  }
+  .asset {
+    color: var(--color-ink-muted);
+    font-size: 13px;
+  }
+  .section .wrap {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    padding-top: 40px;
+  }
+  /* A rule above the first section, as wide as the content. */
+  .section:first-of-type .wrap::before {
+    content: "";
+    justify-self: stretch;
+    margin-bottom: 26px;
+    border-top: 1px solid var(--color-line);
+  }
+  .section:last-of-type .wrap {
+    padding-bottom: 96px;
+  }
+  p,
+  li {
+    margin: 0;
+  }
+  .section p,
+  .notes {
+    max-width: 44em;
+    color: var(--color-ink-muted);
+  }
+  .steps {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.4em;
+  }
+  .notes {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.2em;
+  }
+
+  @media (max-width: 720px) {
+    .platforms {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .builds .button {
+      min-width: 0;
+      flex: 1 1 100%;
+    }
+  }
+</style>

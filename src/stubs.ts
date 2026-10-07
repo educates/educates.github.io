@@ -145,12 +145,6 @@ export const stubs: readonly Stub[] = [
     section: guides,
   },
   {
-    path: "/downloads",
-    title: "Downloads",
-    description:
-      "The educates CLI for macOS and Linux, from the latest GitHub release.",
-  },
-  {
     path: "/privacy",
     title: "Privacy",
     description:
