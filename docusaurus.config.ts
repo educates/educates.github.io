@@ -143,6 +143,16 @@ const config: Config = {
           path: "docs",
           routeBasePath: "docs",
           sidebarPath: require.resolve("./sidebars.js"),
+          // Architecture decision records in docs/adr are repository
+          // records, not site pages. Setting exclude replaces the plugin's
+          // defaults, so they are repeated here.
+          exclude: [
+            "**/_*.{js,jsx,ts,tsx,md,mdx}",
+            "**/_*/**",
+            "**/*.test.{js,jsx,ts,tsx}",
+            "**/__tests__/**",
+            "adr/**",
+          ],
         },
         blog: {
           blogTitle: "Educates Training Platform blog!",
