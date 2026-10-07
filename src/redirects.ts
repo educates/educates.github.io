@@ -13,3 +13,14 @@ export const redirects: Readonly<Record<string, string>> = {
   "/team": "/community",
   "/resources": "/learn",
 };
+
+/**
+ * Redirects from a source that ends in a slash, the URL of a directory,
+ * which Astro's `redirects` cannot express. Each is a page in `public/`,
+ * `<source>index.html`, written by hand from the template of Astro's
+ * redirect pages. The site check verifies every one.
+ */
+export const staticRedirects: Readonly<Record<string, string>> = {
+  "/posts/": "/blog",
+  "/posts/installation-kind/": "/blog/getting-started-on-kind",
+};

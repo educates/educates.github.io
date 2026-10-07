@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { redirects } from "../../../src/redirects.ts";
+import { redirects, staticRedirects } from "../../../src/redirects.ts";
 import { site } from "../../../src/site.ts";
 import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
@@ -24,7 +24,10 @@ export function siteRules(): Rule[] {
     mustResolve(mustResolveList, { missing: "warning" }),
     canonicalUrls({ origin: site.origin }),
     sitemap({ origin: site.origin }),
-    redirectPages({ origin: site.origin, redirects }),
+    redirectPages({
+      origin: site.origin,
+      redirects: { ...redirects, ...staticRedirects },
+    }),
     // The Educates Hub moves into the site at /hub; until then it stays empty.
     reservedPaths({ paths: ["/hub"] }),
     // Stub pages warn; `severity: "error"` makes them block the build.

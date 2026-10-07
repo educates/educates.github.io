@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { redirects } from "../../../src/redirects.ts";
+import { redirects, staticRedirects } from "../../../src/redirects.ts";
 import { fixtureBuild, page, redirectPage } from "./fixture-build.ts";
 
 const cli = fileURLToPath(new URL("../cli.ts", import.meta.url));
@@ -37,6 +37,19 @@ describe("site-check command", () => {
     expect(status).toBe(1);
   });
 
+  it("fails a build whose /posts/ redirect page sends the visitor elsewhere than the blog", () => {
+    const { status, output } = runSiteCheck(
+      fixtureBuild({
+        "index.html": page("https://educates.dev/"),
+        "sitemap.xml": sitemap("https://educates.dev/"),
+        ...redirectsAndTargets(),
+        "posts/index.html": redirectPage("/"),
+      }),
+    );
+    expect(output).toContain("/posts/ redirects to /, not to /blog");
+    expect(status).toBe(1);
+  });
+
   it("fails when the build directory does not exist", () => {
     const { status, output } = runSiteCheck("/nonexistent/site-check/dist");
     expect(output).toContain("/nonexistent/site-check/dist");
@@ -47,8 +60,14 @@ describe("site-check command", () => {
 /** The site's redirect pages, and the pages on the site they point to. */
 function redirectsAndTargets(): Record<string, string> {
   const files: Record<string, string> = {};
-  for (const [source, target] of Object.entries(redirects)) {
-    files[`${source.slice(1)}.html`] = redirectPage(target);
+  for (const [source, target] of Object.entries({
+    ...redirects,
+    ...staticRedirects,
+  })) {
+    const file = source.endsWith("/")
+      ? `${source.slice(1)}index.html`
+      : `${source.slice(1)}.html`;
+    files[file] = redirectPage(target);
     if (target.startsWith("/")) {
       files[`${target.slice(1)}.html`] = page(`https://educates.dev${target}`);
     }
