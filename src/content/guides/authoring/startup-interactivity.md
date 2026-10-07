@@ -185,7 +185,7 @@ to create a short script as well as the markdown block for the clickable action.
 In addition, we will have to **enable the `examiner` feature** for
 our workshop in `resources/workshop.yaml`:
 
-```yaml title="Enable the examiner for the workshop" {25-26}
+```yaml title="Enable the examiner for the workshop" {28-29}
 apiVersion: training.educates.dev/v1beta1
 kind: Workshop
 metadata:
@@ -197,15 +197,18 @@ spec:
     image: "$(image_repository)/demo-workshop-files:$(workshop_version)"
   workshop:
     files:
-      - image:
-          url: "$(image_repository)/demo-workshop-files:$(workshop_version)"
-        includePaths:
-          - /workshop/**
-          - /exercises/**
-          - /README.md
+    - image:
+        url: "$(image_repository)/demo-workshop-files:$(workshop_version)"
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
   session:
     namespaces:
       budget: medium
+      security:
+        token:
+          enabled: false
     applications:
       terminal:
         enabled: true
