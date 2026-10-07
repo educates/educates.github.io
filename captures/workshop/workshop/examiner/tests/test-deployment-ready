@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Passes when every replica of the deployment named $1 is ready.
+
+wanted=$(kubectl get deployment "$1" -o jsonpath='{.spec.replicas}') || exit 1
+ready=$(kubectl get deployment "$1" -o jsonpath='{.status.readyReplicas}')
+
+[ "${ready:-0}" = "$wanted" ]

@@ -1,0 +1,96 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: lab-linux-vm
+spec:
+  title: Linux Administration
+  description: Administer a Fedora virtual machine of your own, with root access.
+  duration: 60m
+  difficulty: beginner
+  workshop:
+    files:
+    - image:
+        url: $(image_repository)/lab-linux-vm-files:$(workshop_version)
+  session:
+    namespaces:
+      budget: x-large
+      limits:
+        max:
+          memory: 2.5Gi
+    objects:
+    - apiVersion: secrets.educates.dev/v1beta1
+      kind: SecretCopier
+      metadata:
+        name: $(session_name)-ssh-keys
+      spec:
+        rules:
+        - sourceSecret:
+            name: $(ssh_keys_secret)
+            namespace: $(workshop_namespace)
+          targetNamespaces:
+            nameSelector:
+              matchNames:
+              - $(session_namespace)
+          targetSecret:
+            name: ssh-keys
+    - apiVersion: kubevirt.io/v1
+      kind: VirtualMachine
+      metadata:
+        name: fedora
+        labels:
+          kubevirt.io/vm: fedora
+      spec:
+        running: true
+        template:
+          metadata:
+            labels:
+              kubevirt.io/vm: fedora
+          spec:
+            accessCredentials:
+            - sshPublicKey:
+                source:
+                  secret:
+                    secretName: ssh-keys
+                propagationMethod:
+                  configDrive: {}
+            domain:
+              cpu:
+                cores: 2
+              resources:
+                requests:
+                  memory: 2Gi
+              devices:
+                disks:
+                - name: disk1
+                  disk:
+                    bus: virtio
+                - name: cloudinitdisk
+                  disk:
+                    bus: virtio
+                interfaces:
+                - name: default
+                  masquerade: {}
+            networks:
+            - name: default
+              pod: {}
+            volumes:
+            - name: disk1
+              containerDisk:
+                image: $(oci_image_cache)/containerdisks/fedora:42
+            - name: cloudinitdisk
+              cloudInitConfigDrive:
+                userData: |-
+                  #cloud-config
+                  password: $(services_password)
+                  chpasswd: { expire: False }
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: fedora
+      spec:
+        selector:
+          kubevirt.io/vm: fedora
+        ports:
+        - name: ssh
+          port: 22
+          targetPort: 22

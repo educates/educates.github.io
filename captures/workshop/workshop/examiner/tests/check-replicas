@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Passes when the answer, sent as JSON on standard input, matches the number
+# of replicas the frontend deployment runs.
+
+answer=$(jq -r '.replicas // empty')
+replicas=$(kubectl get deployment frontend -o jsonpath='{.spec.replicas}') || exit 1
+
+[ "$answer" = "$replicas" ]

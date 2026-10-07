@@ -1,0 +1,29 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: lab-site-captures-vcluster
+spec:
+  title: Kubernetes Cluster Admin
+  description: Install operators and manage namespaces as cluster admin, in a virtual cluster of your own.
+  duration: 30m
+  difficulty: intermediate
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/lab-site-captures-files:$(workshop_version)"
+  session:
+    env:
+    - name: PATHWAY_NAME
+      value: virtual-cluster
+    namespaces:
+      budget: large
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+      vcluster:
+        enabled: true

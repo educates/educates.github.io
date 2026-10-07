@@ -1,0 +1,62 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: lab-spring-petclinic
+spec:
+  title: Spring PetClinic on Kubernetes
+  description: Build the Spring PetClinic application and deploy it with its database.
+  duration: 45m
+  difficulty: intermediate
+  workshop:
+    image: jdk21-environment:*
+    files:
+    - image:
+        url: $(image_repository)/lab-spring-petclinic-files:$(workshop_version)
+    packages:
+    - name: vscode-java-tools
+      files:
+      - path: .
+        image:
+          url: ghcr.io/educates/educates-extension-packages/vscode-java-tools:v0.29.2
+  session:
+    resources:
+      memory: 2Gi
+    namespaces:
+      budget: large
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+    objects:
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: database
+      spec:
+        selector:
+          matchLabels:
+            app: database
+        template:
+          metadata:
+            labels:
+              app: database
+          spec:
+            containers:
+            - name: postgres
+              image: postgres:17
+              env:
+              - name: POSTGRES_PASSWORD
+                value: $(services_password)
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: database
+      spec:
+        selector:
+          app: database
+        ports:
+        - port: 5432
