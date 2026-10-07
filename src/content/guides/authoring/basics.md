@@ -1,7 +1,8 @@
 ---
-sidebar_position: 2
+title: Workshop basics
+description: Generate a workshop with the educates CLI, learn its layout, and deploy it to your cluster.
+order: 1
 ---
-# Getting Started
 
 Educates workshop repositories need to follow a **specific layout** in order for
 Educates to **render** instructions, **setup** workshop environments, and **configure**
@@ -16,10 +17,9 @@ educates new-workshop ./demo-workshop
 ```
 
 This will create a new workshop called `demo-workshop` in `./demo-workshop`.
-The layout of the directory looks like this - click on the annotations for
-more information regarding the different files:
+The layout of the directory looks like this:
 
-```{ .sh .no-copy title="Layout of an Educates workshop" showLineNumbers}
+```text title="Layout of an Educates workshop"
 demo-workshop
 ├── README.md
 ├── resources
@@ -118,14 +118,14 @@ gets interpreted as:
 > - [x] Create a workshop on workshops
 > - [ ] Build a workshop in the workshop on workshops
 > - [ ] ???
->     - [x] ????
+>     - [ ] ????
 >     - [ ] more ?????
 > - [ ] Profit!
 
 ## Publishing Workshop Content
 
 Once we're satisfied with our instructions, we will have to publish them,
-according to the [workflow](../about/workflow.md) explained earlier.
+following the [workflow](/about-educates/workflows) Educates uses.
 
 To do this, we issue the following command from our workshop's root directory:
 
@@ -136,7 +136,7 @@ educates publish-workshop
 We can see all relevant content being bundled and pushed to our local OCI registry
 running on `localhost:5001`:
 
-``` { .text .no-copy title="Output of the Educates CLI" }
+```text title="Output of the Educates CLI"
 educates publish-workshop
 
 Processing workshop with name "demo-workshop".
@@ -167,13 +167,14 @@ educates deploy-workshop
 Again, the CLI outputs useful information, e.g. the **name** of the deployed
 workshop as well as the target `TrainingPortal` it got deployed to:
 
-``` { .text .no-copy title="Output of the Educates CLI" }
+```text title="Output of the Educates CLI"
 educates deploy-workshop
 
 Loaded workshop "educates-cli--demo-workshop-efb97a1".
 Creating new training portal "educates-cli".
 Workshop added to training portal.
 ```
+
 :::info[Creation of TrainingPortals]
 Upon the first deployment of a workshop to our local environment, the Educates 
 CLI will automatically create a `TrainingPortal` called `educates-cli` for us.
@@ -194,7 +195,7 @@ educates browse-workshops
 You might see this output and have to wait for a few seconds, but eventually,
 a browser window should open:
 
-``` { .text .no-copy title="Output of the Educates CLI"}
+```text title="Output of the Educates CLI"
 educates browse-workshops
 
 Training portal "educates-cli".
@@ -202,9 +203,12 @@ Checking training portal is ready.
 [/] Waiting...
 ```
 
-You should be greated by this screen:
+You should be greeted by this screen:
 
 ![TrainingPortal screenshot](img/trainingportal.png)
+
+Click **Start workshop** to start your own Session of the workshop, and look
+around: this is what the people taking your workshop will see.
 
 We did it! Within a few minutes, we deployed the first draft of our workshops!
 

@@ -1,0 +1,116 @@
+---
+// A group of tabs, such as one install command per package manager. Each
+// child is a <TabItem label="...">. The group renders as WAI-ARIA tabs: a
+// tab list named by `label` for screen readers, and one tab panel per item,
+// the first one selected. src/scripts/tabs.ts handles clicks and the arrow,
+// Home and End keys. Without JavaScript the tab list is hidden and every
+// panel shows, each under its own label.
+//
+// The panels come from rendering the items: each item's opening tag, found
+// by its `data-tab-label`, gets the panel's id, role and label, and every
+// panel after the first starts hidden.
+import { createHash } from "node:crypto";
+
+export interface Props {
+  /** What the tabs choose between, such as "Package manager". */
+  label: string;
+}
+
+const { label } = Astro.props;
+const items = await Astro.slots.render("default");
+// The same items always get the same ids, so builds are reproducible.
+const group = `tabs-${createHash("sha1").update(items).digest("hex").slice(0, 8)}`;
+
+const labels: string[] = [];
+const panels = items.replace(
+  /<div class="tab-panel" data-tab-label="([^"]*)"([^>]*)>/g,
+  (_, tabLabel: string, rest: string) => {
+    const index = labels.push(decodeAttribute(tabLabel)) - 1;
+    const hidden = index === 0 ? "" : " hidden";
+    return `<div class="tab-panel" role="tabpanel" id="${group}-panel-${index}" aria-labelledby="${group}-tab-${index}" tabindex="0"${hidden}${rest}>`;
+  },
+);
+
+function decodeAttribute(value: string): string {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+---
+
+<div class="tabs" data-tabs>
+  <div class="tab-list" role="tablist" aria-label={label}>
+    {labels.map((tabLabel, index) => (
+      <button
+        type="button"
+        role="tab"
+        id={`${group}-tab-${index}`}
+        aria-controls={`${group}-panel-${index}`}
+        aria-selected={index === 0 ? "true" : "false"}
+        tabindex={index === 0 ? 0 : -1}
+      >
+        {tabLabel}
+      </button>
+    ))}
+  </div>
+  <Fragment set:html={panels} />
+</div>
+
+<script>
+  import { setUpTabs } from "../scripts/tabs.ts";
+  setUpTabs();
+</script>
+
+<style>
+  .tabs {
+    margin-block: 20px;
+  }
+  .tab-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  [role="tab"] {
+    min-height: 44px;
+    margin-bottom: -1px;
+    padding: 8px 14px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--color-ink-muted);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  [role="tab"]:hover {
+    color: var(--color-ink);
+  }
+  [role="tab"][aria-selected="true"] {
+    border-bottom-color: var(--color-accent);
+    color: var(--color-ink);
+  }
+  .tabs :global(.tab-panel-label) {
+    display: none;
+  }
+  .tabs :global(.tab-panel:focus-visible) {
+    border-radius: var(--radius-control);
+  }
+
+  /* Without JavaScript: every panel, each under its label, and no tabs. */
+  :global(html:not(.js)) .tab-list {
+    display: none;
+  }
+  :global(html:not(.js)) .tabs :global(.tab-panel[hidden]) {
+    display: block;
+  }
+  :global(html:not(.js)) .tabs :global(.tab-panel-label) {
+    display: block;
+    margin: 16px 0 8px;
+    font-weight: 600;
+  }
+</style>

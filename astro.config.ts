@@ -3,10 +3,9 @@ import { satteri } from "@astrojs/markdown-satteri";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import astroExpressiveCode from "astro-expressive-code";
+import expressiveCode from "astro-expressive-code";
 import { singleSitemap } from "./src/integrations/single-sitemap.ts";
 import { admonitions } from "./src/markdown/admonitions.ts";
-import { expressiveCode } from "./src/markdown/expressive-code.ts";
 import { redirects } from "./src/redirects.ts";
 import { site } from "./src/site.ts";
 
@@ -36,13 +35,8 @@ export default defineConfig({
       mdastPlugins: [admonitions()],
     }),
   },
-  // Build hooks run in this order: singleSitemap() reads sitemap()'s output.
-  // Expressive Code must come before mdx() to render code blocks in MDX.
-  integrations: [
-    astroExpressiveCode(expressiveCode),
-    mdx(),
-    react(),
-    sitemap(),
-    singleSitemap(),
-  ],
+  // Integrations run in this order. expressiveCode(), configured in
+  // ec.config.mjs, must come before mdx() to render code blocks in MDX too;
+  // react() renders the islands; singleSitemap() reads sitemap()'s output.
+  integrations: [expressiveCode(), mdx(), react(), sitemap(), singleSitemap()],
 });

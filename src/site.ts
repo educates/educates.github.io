@@ -4,8 +4,10 @@ export interface SiteSettings {
   readonly origin: string;
   /** The name appended to every page title. */
   readonly name: string;
-  /** The site's own GitHub repository, where its pages are edited. */
+  /** The site's source on GitHub, where "Edit this page" links point. */
   readonly repository: string;
+  /** The branch pull requests target, which edit links open. */
+  readonly sourceBranch: string;
   /**
    * Whether Educates 4.0 is released. The site describes the release
    * current at launch, so 4.0-only Features and claims, such as Helm and
@@ -24,6 +26,7 @@ export const site: SiteSettings = {
   origin: "https://educates.dev",
   name: "Educates",
   repository: "https://github.com/educates/educates.github.io",
+  sourceBranch: "develop",
   educates4Released: false,
   sponsorsListingPublic: false,
 };

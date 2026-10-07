@@ -15,15 +15,16 @@ export function pagePath(pathname: string): string {
   return path === "" ? "/" : path;
 }
 
+/**
+ * The GitHub page that edits the source file at `filePath`, a path from the
+ * repository root such as `src/content/guides/setup/docker.md`, on the
+ * branch pull requests target.
+ */
+export function editUrl(filePath: string): string {
+  return `${site.repository}/edit/${site.sourceBranch}/${filePath}`;
+}
+
 /** The canonical URL of the page at `pathname`: its absolute `pagePath()`. */
 export function canonicalUrl(pathname: string): string {
   return `${site.origin}${pagePath(pathname)}`;
-}
-
-/**
- * Where to edit a file of the site's repository on GitHub, given its path
- * from the repository root, such as a content entry's `filePath`.
- */
-export function editUrl(filePath: string): string {
-  return `${site.repository}/edit/develop/${filePath}`;
 }

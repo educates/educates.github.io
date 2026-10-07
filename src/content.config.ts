@@ -80,6 +80,32 @@ const features = defineCollection({
 });
 
 /**
+ * The Getting Started Guides: one Markdown or MDX page per file under
+ * `src/content/guides/`, served at `/getting-started-guides/<path>`.
+ * `index.md` is the overview. Every other top-level page is a part of the
+ * path, numbered by `order`; a part with pages inside it is a folder with
+ * an `index.md`, and its pages follow it in `order`. `guidePath()` in
+ * src/lib/guide-path.ts arranges them.
+ */
+const guides = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/guides",
+    // Rendered when a page renders the guide, where an error in the
+    // Markdown pipeline, such as an unknown directive, fails the build.
+    deferRender: true,
+  }),
+  schema: z.object({
+    /** The page's heading and title. */
+    title: z.string(),
+    /** One or two sentences for search results and shared links. */
+    description: z.string(),
+    /** Where it sits among the parts, or among its part's pages. */
+    order: z.number().int(),
+  }),
+});
+
+/**
  * Blog posts: one Markdown file per post under `src/content/posts/`, in a
  * folder with its images when it has any, or `.mdx` when it uses a
  * component. The entry's id is its `slug`, and its page is `/blog/<slug>`.
@@ -141,4 +167,11 @@ const tags = defineCollection({
   }),
 });
 
-export const collections = { useCases, features, posts, authors, tags };
+export const collections = {
+  useCases,
+  features,
+  guides,
+  posts,
+  authors,
+  tags,
+};

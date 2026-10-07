@@ -1,14 +1,15 @@
 ---
-sidebar_position: 4
+title: Setup scripts and interactivity
+description: Prepare each Session with setup scripts, and guide the work with clickable actions and checks.
+order: 2
 ---
-# Startup and Interactivity
 
 Two things are very important for great workshops:
 
 - a **proper environment**, with basic tooling and configuration
    already installed
 - **flexibility** to try out (and break) things in a **fast feedback loop**,
-   while still being able to follow a golden path **golden path** and being set
+   while still being able to follow a **golden path** and being set
    up for success.
 
 Educates can help with both concerns out of the box, in multiple ways -
@@ -20,12 +21,13 @@ Educates provides a mechanism for ensuring a proper workshop environment,
 with configuration and installation of additional tools needed for a workshop
 already installed: `workshop/setup.d/`.
 
-Educates will bundle all scripts matching `workshop/setup.d/*.sh` within your
-workshop repository for later use in the workshop session.
-
-Upon startup, these scripts get executed from inside `/home/eduk8s/`, and have
-access to a wide range of so-called _data variables_, specific environment
-variables containing information about the workshop session.
+Educates runs every executable script in `workshop/setup.d` whose name ends
+in `.sh` when the Session's container starts. The scripts run from the
+workshop user's home directory, and can read a set of pre-defined
+environment variables with information about the Session, such as
+`SESSION_NAME`, `SESSION_NAMESPACE` and `INGRESS_DOMAIN`. The docs list them
+all in
+[Workshop runtime](https://docs.educates.dev/en/stable/workshop-content/workshop-runtime.html).
 
 This way, we can do things like...
 
@@ -37,65 +39,73 @@ This way, we can do things like...
 
 upon session start.
 
-:::warning[Setup scripts and session restarts]
-    If a user e.g. closes their browser and resumes the session at a later
-    point (made possible with session cookies), **all scripts** in
-    `workshop/setup.d` get **executed again**.
+:::warning[Setup scripts run more than once]
+Educates runs **all scripts** in `workshop/setup.d` **again** whenever the
+Session's container restarts, and when you run `update-workshop` in the
+Session's terminal to pull in new content.
 
-    Thus it's important to keep **idempotency** in mind when creating your
-    scripts.
+Thus it's important to keep **idempotency** in mind when creating your
+scripts: running one twice must do no harm.
 :::
 
 ### Generating Manifests on Session Start
 
 Building on the mentioned use-cases above, let's look at an example setup
-script and include it in our demo-workshop:
+script and include it in our demo-workshop. It writes an Ingress for an
+application the workshop would deploy, at a host name of its own for each
+Session.
 
-1. Create the `workshop/setup.d` directory.   
+1. Create the `workshop/setup.d` directory.
    ```sh title="Create the setup directory"
    mkdir -p workshop/setup.d
    ```
-2. Create a new script `workshop/setup.d/write-ingress.sh`.
-   ``` sh title="Create the script"
+2. Create a new script `workshop/setup.d/write-ingress.sh` in your editor.
+   ```sh title="Create the script"
    vim workshop/setup.d/write-ingress.sh
    ```
-3. Copy-paste the script's content.
+3. Copy-paste the script's content. The quoted `'EOF'` stops the shell from
+   filling in the variables while it writes the template, so `envsubst` fills
+   them in from the Session's environment afterwards.
    ```sh title="Contents of the script"
-   #! /bin/sh
+   #!/bin/bash
 
-   # Create Ingress manifest template
-   cat << EOF > ~/ingress.in.yaml  # = /home/eduk8s/ingress.in.yaml
+   # Create the Ingress manifest template
+   cat << 'EOF' > ~/ingress.in.yaml
    apiVersion: networking.k8s.io/v1
    kind: Ingress
    metadata:
-      name: ${SESSION_NAME}
-      namespace: ${SESSION_NAMESPACE}
+     name: app1
+     namespace: ${SESSION_NAMESPACE}
    spec:
-   rules:
-   - host: ${SESSION_HOSTNAME}
-     http:
-       paths:
-       - path: /
-         pathType: Prefix
-         backend:
-           service:
-             name: app1-service
-             port:
-               number: 80
+     rules:
+     - host: app1-${SESSION_NAME}.${INGRESS_DOMAIN}
+       http:
+         paths:
+         - path: /
+           pathType: Prefix
+           backend:
+             service:
+               name: app1-service
+               port:
+                 number: 80
    EOF
 
-   # Generate templated manifest
+   # Generate the manifest from the template
    envsubst < ~/ingress.in.yaml > ~/ingress.yaml
 
-   # Cleanup
+   # Clean up
    rm ~/ingress.in.yaml
    ```
-4. Publish and redeploy the new version of the demo workshop.
-   ``` sh title="Redeploy the demo workshop"
+4. Make the script executable.
+   ```sh title="Make the setup script executable"
+   chmod +x workshop/setup.d/write-ingress.sh
+   ```
+5. Publish and redeploy the new version of the demo workshop.
+   ```sh title="Redeploy the demo workshop"
    educates publish-workshop
    educates deploy-workshop
    ```
-5. Start a new workshop session and take a look at `~/ingress.yaml`.   
+6. Start a new workshop session and take a look at `~/ingress.yaml`.
 
 ## Guiding Users with Clickable Actions
 
@@ -146,7 +156,7 @@ Let's add a clickable action to our workshops that checks a user's basic Linux
 knowledge by having them create a file with a specific content in a given directory.
 
 `examiner` clickable actions rely on executable scripts in `workshop/examiner/tests/`
-that which evaluate the condition to be checked by the test/quiz. Thus, we will have
+that evaluate the condition to be checked by the test/quiz. Thus, we will have
 to create a short script as well as the markdown block for the clickable action.
 
 1. Create the directory `workshop/examiner/tests`.
@@ -175,7 +185,7 @@ to create a short script as well as the markdown block for the clickable action.
 In addition, we will have to **enable the `examiner` feature** for
 our workshop in `resources/workshop.yaml`:
 
-```yaml title="Enable the examiner for the workshop" hl_lines="25-26"
+```yaml title="Enable the examiner for the workshop" {25-26}
 apiVersion: training.educates.dev/v1beta1
 kind: Workshop
 metadata:
