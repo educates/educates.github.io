@@ -22,6 +22,24 @@ const useCases = defineCollection({
 });
 
 /**
+ * Workshops on the Educates Hub that the site links to, in
+ * src/content/hub-workshops.yml, keyed by id. Pages name them by id and
+ * never write a Hub URL into their copy; `hubWorkshops()` in
+ * src/lib/content.ts looks them up and fails the build on an unknown id.
+ */
+const hubWorkshops = defineCollection({
+  loader: file("./src/content/hub-workshops.yml"),
+  schema: z.object({
+    /** The workshop's title, as the Hub shows it. */
+    title: z.string(),
+    /** The workshop's page on the Hub. */
+    url: z.url().refine((url) => url.startsWith("https://hub.educates.dev/"), {
+      message: "must be a page on https://hub.educates.dev/",
+    }),
+  }),
+});
+
+/**
  * Features: one Markdown file per Feature under `src/content/features/`. The
  * file name is the entry's slug. Every Feature is a block on `/features`,
  * under its job. A flagship Feature also has a deep page at
@@ -169,6 +187,7 @@ const tags = defineCollection({
 
 export const collections = {
   useCases,
+  hubWorkshops,
   features,
   guides,
   posts,
