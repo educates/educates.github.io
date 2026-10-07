@@ -14,7 +14,8 @@
     "format": "prettier --write \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "test": "vitest run",
-    "posters": "node scripts/posters/cli.ts"
+    "posters": "node scripts/posters/cli.ts",
+    "url-check": "node scripts/url-check/cli.ts"
   },
   "engines": {
     "node": ">=24"

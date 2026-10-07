@@ -21,6 +21,7 @@ npm.
 | `npm run format:check` | Checks the formatting of code files with Prettier; content Markdown is excluded. |
 | `npm test` | Runs the unit tests. |
 | `npm run link-check` | Checks the internal links in the build in `dist/`, offline. Needs [lychee](https://lychee.cli.rs/), for example from `brew install lychee`. |
+| `npm run url-check -- <base-url>` | Requests every URL of the must-resolve list from the site served at `<base-url>`, such as `https://educates.dev` after a deploy; see below. |
 | `npm run docker-build` | Builds the Docker image; see below. |
 
 The site check, in `scripts/site-check/`, reads the build the way GitHub
@@ -32,6 +33,15 @@ does not serve a URL it lists, such as a blog post published since; when
 the sitemap cannot be fetched, it skips that comparison with a warning.
 `npm run site-check -- --live-sitemap <url>` compares with another
 sitemap.
+
+The URL check, in `scripts/url-check/`, checks the same must-resolve list
+against a served copy of the site instead of the build: every page and
+file must answer 200 without an HTTP redirect, and every redirect source
+must answer with a redirect page that names its target, which must answer
+200 in turn. Run it once after a deploy that changes URLs, against
+`https://educates.dev`, because GitHub does not document the Pages
+behavior the URL form relies on. It also runs against the Docker image's
+`serve` target at `http://localhost:8080`.
 
 The link check uses the settings in `lychee.toml`.
 

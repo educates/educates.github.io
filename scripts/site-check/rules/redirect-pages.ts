@@ -1,4 +1,4 @@
-import type { HTMLElement } from "node-html-parser";
+import { metaRefresh } from "../meta-refresh.ts";
 import {
   isRedirectPage,
   type Build,
@@ -40,7 +40,7 @@ export function redirectPages({
             `${source} (${file}) has no meta refresh; it must redirect to ${target}`,
           );
         } else {
-          const actual = refreshOf(build.html(file)).target;
+          const actual = metaRefresh(build.html(file)).target;
           if (actual !== undefined && !sameUrl(actual, target, origin)) {
             fail(`${source} redirects to ${actual}, not to ${target}`);
           }
@@ -68,7 +68,7 @@ function redirectProblems(
 ): string[] {
   const document = build.html(file);
   const problems: string[] = [];
-  const { content, delay, target } = refreshOf(document);
+  const { content, delay, target } = metaRefresh(document);
   if (delay !== 0) {
     problems.push(
       `its meta refresh "${content}" is not immediate; it must wait 0 seconds`,
@@ -105,22 +105,6 @@ function redirectProblems(
     }
   }
   return problems;
-}
-
-/** The content of a page's meta refresh, such as `0;url=/community`, read. */
-function refreshOf(document: HTMLElement): {
-  content: string;
-  delay: number | undefined;
-  target: string | undefined;
-} {
-  const content =
-    document
-      .querySelector('meta[http-equiv="refresh"]')
-      ?.getAttribute("content") ?? "";
-  const match = /^\s*(\d+)\s*(?:[;,]\s*(?:url\s*=\s*)?(.*))?$/i.exec(content);
-  if (!match) return { content, delay: undefined, target: undefined };
-  const target = match[2]?.trim().replace(/^(['"])(.*)\1$/, "$2");
-  return { content, delay: Number(match[1]), target: target || undefined };
 }
 
 function absolute(url: string, origin: string): URL | undefined {
