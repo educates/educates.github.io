@@ -30,3 +30,19 @@ lab-lookup-configuration:
 lab-lookup-consumption:
   title: Using the Educates Lookup Service
   url: https://hub.educates.dev/lab-lookup-consumption/
+
+lab-spring-boot-on-k8s:
+  title: SpringBoot on Kubernetes
+  url: https://hub.educates.dev/lab-spring-boot-on-k8s/
+
+creating-a-spring-application:
+  title: Creating a Spring Application
+  url: https://hub.educates.dev/creating-a-spring-application/
+
+lab-virtual-cluster:
+  title: Using Virtual Cluster in Educates
+  url: https://hub.educates.dev/lab-virtual-cluster/
+
+lab-git-repositories:
+  title: Using Git Repositories in Educates
+  url: https://hub.educates.dev/lab-git-repositories/
