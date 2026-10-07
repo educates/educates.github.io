@@ -12,16 +12,14 @@ const authors = await authorsWithPosts();
   description="The people who write the Educates blog, and what each of them wrote."
 >
   <ul class="authors">
-    {
-      authors.map(({ author, posts }) => (
-        <li>
-          <AuthorProfile author={author} headingLevel={2} />
-          <p class="count">
-            {posts.length} {posts.length === 1 ? "post" : "posts"}
-          </p>
-        </li>
-      ))
-    }
+    {authors.map(({ author, posts }) => (
+      <li>
+        <AuthorProfile author={author} headingLevel={2} />
+        <p class="count">
+          {posts.length} {posts.length === 1 ? "post" : "posts"}
+        </p>
+      </li>
+    ))}
   </ul>
 </BlogLayout>
 

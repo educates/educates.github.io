@@ -20,23 +20,21 @@ for (const post of await posts()) {
   title="Archive"
   description="Every post on the Educates blog, by the year it was published."
 >
-  {
-    [...years].map(([year, posts]) => (
-      <section aria-labelledby={`year-${year}`}>
-        <h2 id={`year-${year}`}>{year}</h2>
-        <ul>
-          {posts.map((post) => (
-            <li>
-              <time datetime={isoDate(post.data.date)}>
-                {formatDate(post.data.date)}
-              </time>
-              <a href={postPath(post)}>{post.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))
-  }
+  {[...years].map(([year, posts]) => (
+    <section aria-labelledby={`year-${year}`}>
+      <h2 id={`year-${year}`}>{year}</h2>
+      <ul>
+        {posts.map((post) => (
+          <li>
+            <time datetime={isoDate(post.data.date)}>
+              {formatDate(post.data.date)}
+            </time>
+            <a href={postPath(post)}>{post.data.title}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </BlogLayout>
 
 <style>

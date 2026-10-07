@@ -16,16 +16,14 @@ const tags = (await tagsWithPosts()).sort((a, b) =>
   description="Every tag on the Educates blog, with how many posts carry it."
 >
   <ul class="tags">
-    {
-      tags.map(({ tag, posts }) => (
-        <li>
-          <a href={tagPath(tag)}>
-            {tag.data.label}
-            <span class="count">{posts.length}</span>
-          </a>
-        </li>
-      ))
-    }
+    {tags.map(({ tag, posts }) => (
+      <li>
+        <a href={tagPath(tag)}>
+          {tag.data.label}
+          <span class="count">{posts.length}</span>
+        </a>
+      </li>
+    ))}
   </ul>
 </BlogLayout>
 
