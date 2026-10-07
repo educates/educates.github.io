@@ -4,6 +4,7 @@ import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
 import { mustResolve } from "./must-resolve.ts";
+import { sitemap } from "./sitemap.ts";
 
 /**
  * The rules the site-check command runs over every build. A rule is a
@@ -18,5 +19,6 @@ export function siteRules(): Rule[] {
     // Missing entries warn; `missing: "error"` makes them block the build.
     mustResolve(mustResolveList, { missing: "warning" }),
     canonicalUrls({ origin: site.origin }),
+    sitemap({ origin: site.origin }),
   ];
 }

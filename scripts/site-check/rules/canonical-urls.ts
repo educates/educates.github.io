@@ -1,4 +1,5 @@
 import type { Finding, Rule } from "../site-check.ts";
+import { urlFormProblem, urlPathOf } from "../url-form.ts";
 
 export interface CanonicalUrlsOptions {
   /** The site's origin, such as `https://educates.dev`. */
@@ -68,29 +69,4 @@ export function canonicalUrls({ origin }: CanonicalUrlsOptions): Rule {
       return findings;
     },
   };
-}
-
-/** What makes `url` break the site's URL form, or `undefined` if nothing. */
-function urlFormProblem(url: string, origin: string): string | undefined {
-  let parsed: URL;
-  try {
-    parsed = new URL(url);
-  } catch {
-    return "is not an absolute URL";
-  }
-  const { pathname } = parsed;
-  if (parsed.origin !== origin) return `is not on ${origin}`;
-  if (parsed.search || parsed.hash || url.includes("?") || url.includes("#")) {
-    return "has a query or fragment";
-  }
-  if (pathname.endsWith(".html")) return "ends in .html";
-  if (pathname.endsWith("/index")) return "ends in /index";
-  if (pathname !== "/" && pathname.endsWith("/")) return "has a trailing slash";
-  return undefined;
-}
-
-/** The URL path a page file is served at: `index.html` is `/`, `a/b.html` is `/a/b`. */
-function urlPathOf(file: string): string {
-  if (file === "index.html") return "/";
-  return `/${file.replace(/\.html$/, "")}`;
 }

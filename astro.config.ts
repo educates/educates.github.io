@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import { singleSitemap } from "./src/integrations/single-sitemap.ts";
 import { site } from "./src/site.ts";
 
 // URL form (docs/adr/0002-keep-the-docusaurus-url-form.md): every page
@@ -11,5 +12,6 @@ export default defineConfig({
   build: {
     format: "file",
   },
-  integrations: [sitemap()],
+  // Build hooks run in this order: singleSitemap() reads sitemap()'s output.
+  integrations: [sitemap(), singleSitemap()],
 });
