@@ -13,7 +13,8 @@
     "docker-build": "sh scripts/docker-build.sh",
     "format": "prettier --write \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,mjs,css}\"",
-    "test": "vitest run"
+    "test": "vitest run",
+    "posters": "node scripts/posters/cli.ts"
   },
   "engines": {
     "node": ">=24"
@@ -40,8 +41,10 @@
     "node-html-parser": "^9.0.4",
     "prettier": "^3.9.9",
     "prettier-plugin-astro": "^1.1.0",
+    "sharp": "^0.35.5",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "yaml": "^2.9.1"
   },
   "volta": {
     "node": "26.10.0"
