@@ -19,11 +19,4 @@ export interface Stub {
   section?: string;
 }
 
-export const stubs: readonly Stub[] = [
-  {
-    path: "/learn",
-    title: "Learn",
-    description:
-      "Blog posts, guides, videos and talks about Educates, in one list you can filter by kind and Topic.",
-  },
-];
+export const stubs: readonly Stub[] = [];

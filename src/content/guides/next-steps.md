@@ -2,6 +2,7 @@
 title: Next steps
 description: Deploy a workshop from the Hub, find the reference docs, and get help.
 order: 4
+signpost: true
 ---
 
 You have Educates running on your machine and a workshop of your own in it.

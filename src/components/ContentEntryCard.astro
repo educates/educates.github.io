@@ -1,0 +1,29 @@
+---
+// The Content card of one entry from `contentEntries()`, of any kind: what
+// the Learn page lists and pins, and what the homepage's Featured Content
+// and a post's Related Content show.
+import ContentCard from "./ContentCard.astro";
+import type { ContentEntry } from "../lib/content-entries.ts";
+
+export interface Props {
+  entry: ContentEntry;
+  /** The level of the title's heading, below the list's own heading. */
+  heading?: "h2" | "h3";
+}
+
+const { entry, heading } = Astro.props;
+---
+
+<ContentCard
+  href={entry.href}
+  kind={entry.label}
+  title={entry.title}
+  description={entry.description}
+  date={entry.date}
+  length={entry.length}
+  topics={entry.topics.map((topic) => topic.label)}
+  source={entry.source}
+  cover={entry.cover}
+  coverImage={entry.coverImage}
+  heading={heading}
+/>

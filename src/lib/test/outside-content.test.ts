@@ -78,12 +78,27 @@ describe("outsideEntryProblems", () => {
     ]);
   });
 
-  it("accepts an article without a poster", () => {
+  it("accepts an article with its author and without a poster", () => {
+    expect(
+      outsideEntryProblems({
+        kind: "article",
+        url: "https://grahamdumpleton.me/posts/2026/02/developer-advocacy-in-2026/",
+        author: "Graham Dumpleton",
+      }),
+    ).toEqual([]);
+  });
+
+  it("rejects an article without its author, whom its cover names", () => {
     expect(
       outsideEntryProblems({
         kind: "article",
         url: "https://grahamdumpleton.me/posts/2026/02/developer-advocacy-in-2026/",
       }),
-    ).toEqual([]);
+    ).toEqual([
+      {
+        field: "author",
+        message: "an article needs its `author`, whom its cover names",
+      },
+    ]);
   });
 });

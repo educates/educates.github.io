@@ -2,6 +2,7 @@
 title: What you just installed
 description: The pods, policies and resources a local Educates install gives you, and the commands to see them.
 order: 2
+tags: [getting-started, kubernetes, local]
 ---
 
 `educates create-cluster` gave you more than a Kind cluster. Before you

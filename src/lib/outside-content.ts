@@ -21,6 +21,7 @@ export interface OutsideEntryFields {
   channel?: string | undefined;
   poster?: unknown;
   length?: string | undefined;
+  author?: string | undefined;
 }
 
 /**
@@ -63,6 +64,12 @@ export function outsideEntryProblems(
     problems.push({
       field: "length",
       message: "a video or talk needs its `length`, such as `10:45`",
+    });
+  }
+  if (entry.kind === "article" && entry.author === undefined) {
+    problems.push({
+      field: "author",
+      message: "an article needs its `author`, whom its cover names",
     });
   }
   const projectVideo = isProjectVideo(entry);

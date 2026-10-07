@@ -2,6 +2,7 @@
 title: Set up
 description: Install Docker, kubectl and the Educates CLI, and create a local Educates cluster.
 order: 1
+tags: [getting-started, local, kind, cli]
 ---
 
 Educates runs on [Kubernetes](https://kubernetes.io), so to try it on your
