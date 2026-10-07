@@ -1,0 +1,22 @@
+---
+// A page per use case in the use case collection, each a stub until its
+// page is written.
+import type { GetStaticPaths } from "astro";
+import StubLayout from "../../layouts/StubLayout.astro";
+import { useCasePath, useCases } from "../../lib/content.ts";
+
+export const getStaticPaths = (async () =>
+  (await useCases()).map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+---
+
+<StubLayout
+  path={useCasePath(entry.id)}
+  title={entry.data.name}
+  description={entry.data.promise}
+  section="Use case"
+/>

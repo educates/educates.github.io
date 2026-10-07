@@ -12,6 +12,9 @@ export default defineConfig({
   build: {
     format: "file",
   },
+  // Two routes building the same URL fail the build, such as a new page
+  // whose stub in src/stubs.ts is still listed, or a redirect from a page.
+  prerenderConflictBehavior: "error",
   // Build hooks run in this order: singleSitemap() reads sitemap()'s output.
   integrations: [sitemap(), singleSitemap()],
 });

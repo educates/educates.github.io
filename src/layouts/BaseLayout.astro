@@ -35,9 +35,14 @@ export interface Props {
    * Section pages have one; other pages leave it out.
    */
   breadcrumbs?: Crumb[];
+  /**
+   * Marks a stub, a placeholder for a page still to be written, with
+   * `data-stub` on <body>. The site check reports every stub page.
+   */
+  stub?: boolean;
 }
 
-const { title, description, section, breadcrumbs } = Astro.props;
+const { title, description, section, breadcrumbs, stub = false } = Astro.props;
 const fullTitle = `${title} | ${site.name}`;
 const canonical = canonicalUrl(Astro.url.pathname);
 
@@ -86,7 +91,7 @@ const structuredData = {
       set:html={JSON.stringify(structuredData)}
     />
   </head>
-  <body data-section={section}>
+  <body data-section={section} data-stub={stub ? "" : undefined}>
     <a class="skip-link" href="#main">
       Skip to content
     </a>
