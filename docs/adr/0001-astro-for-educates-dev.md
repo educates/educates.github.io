@@ -39,6 +39,7 @@ stability promise, with a Docusaurus 4 migration close behind.
 - The site is never more than one Astro major behind the current one.
   Astro ships security fixes for the previous major only, and its majors
   have come between 3.5 and 15 months apart.
-- React islands are limited to the Asciinema player, the diagram viewer
-  and the Content hub filters, so React loads only on the pages that use
-  them. The theme toggle and the phone menu are small inline scripts.
+- React islands are limited to the Asciinema player and the Learn page's
+  filters, so React loads only on the pages that use them. The theme
+  toggle, the phone menu and click-to-enlarge on diagrams are small inline
+  scripts.
