@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { homepageAnchorForwards } from "../../../src/lib/anchor-forwards.ts";
 import { redirects, staticRedirects } from "../../../src/redirects.ts";
 import { site } from "../../../src/site.ts";
+import type { LiveSitemap } from "../live-sitemap.ts";
 import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
@@ -9,7 +10,6 @@ import { educates4OnlyTerms } from "./educates4-only-terms.ts";
 import { feedIdentity } from "./feed-identity.ts";
 import { feedLinks } from "./feed-links.ts";
 import { frozenPaths } from "./frozen-paths.ts";
-import type { LiveSitemap } from "../live-sitemap.ts";
 import { keptAnchors } from "./kept-anchors.ts";
 import { liveSitemap } from "./live-sitemap.ts";
 import { mustResolve } from "./must-resolve.ts";
@@ -18,6 +18,7 @@ import { redirectPages } from "./redirect-pages.ts";
 import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
 import { stubPages } from "./stub-pages.ts";
+import { trailingSlashLinks } from "./trailing-slash-links.ts";
 
 /** The old homepage's anchors whose sections the homepage keeps, by id. */
 const homepageAnchors = [
@@ -64,6 +65,12 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
     }),
     // The Educates Hub moves into the site at /hub; until then it stays empty.
     reservedPaths({ paths: ["/hub"] }),
+    // Links keep the site's URL form: the homepage and the redirect pages
+    // at directory URLs are the only paths served with a trailing slash.
+    trailingSlashLinks({
+      origin: site.origin,
+      slashPaths: ["/", ...Object.keys(staticRedirects)],
+    }),
     feedIdentity({ origin: site.origin, blogPath: "/blog" }),
     feedLinks({
       origin: site.origin,
