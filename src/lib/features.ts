@@ -168,3 +168,40 @@ export function featureLinks(
     return { name: entry.data.name, href: featureHref(entry) };
   });
 }
+
+/** A Feature entry with what `deepPageShowing()` reads. */
+export interface DeepPageEntry {
+  id: string;
+  data: {
+    name: string;
+    flagship: boolean;
+    /** A flagship's deep page names the other Features it covers. */
+    page?: { covers?: readonly string[] | undefined } | undefined;
+  };
+}
+
+/** The deep page that shows a Feature: the flagship it belongs to, and its path. */
+export interface DeepPage {
+  id: string;
+  name: string;
+  href: string;
+}
+
+/**
+ * The deep page that shows the Feature `id`, from `entries`, the Features
+ * the site shows: a flagship's own deep page, or for another Feature, the
+ * deep page of the flagship that covers it, such as the portal REST API on
+ * the lookup service's page. A Feature no deep page covers has none.
+ */
+export function deepPageShowing(
+  id: string,
+  entries: readonly DeepPageEntry[],
+): DeepPage | undefined {
+  const flagships = entries.filter((entry) => entry.data.flagship);
+  const page =
+    flagships.find((entry) => entry.id === id) ??
+    flagships.find((entry) => entry.data.page?.covers?.includes(id));
+  return page
+    ? { id: page.id, name: page.data.name, href: featurePath(page.id) }
+    : undefined;
+}

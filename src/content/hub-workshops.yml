@@ -58,3 +58,7 @@ lab-examiner-scripts:
 lab-session-namespace:
   title: Using Session Namespace in Educates
   url: https://hub.educates.dev/lab-session-namespace/
+
+lab-educates-workshop:
+  title: Creating Educates Workshops
+  url: https://hub.educates.dev/lab-educates-workshop/

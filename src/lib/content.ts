@@ -81,12 +81,12 @@ export async function flagshipFeatures() {
 }
 
 /**
- * The use cases whose pages rely on the Feature `featureId`, naming it in
- * one of their capabilities for the release the site describes, in their
- * menu order.
+ * The use cases whose pages rely on any of the Features `featureIds`, such
+ * as a Feature and those its deep page covers, naming one in a capability
+ * for the release the site describes, in their menu order.
  */
-export async function useCasesUsing(featureId: string) {
-  return useCasesRelyingOn(featureId, await useCases(), site);
+export async function useCasesUsing(featureIds: readonly string[]) {
+  return useCasesRelyingOn(featureIds, await useCases(), site);
 }
 
 /**

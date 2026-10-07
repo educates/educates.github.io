@@ -262,6 +262,13 @@ const features = defineCollection({
         .object({
           /** The page's heading: what the Feature does for the reader. */
           headline: z.string(),
+          /**
+           * Other Features the page covers in full, by their ids, such as
+           * the portal REST API on the lookup service's page. Their use
+           * cases are listed with the Feature's own, and their blocks on
+           * the overview link here.
+           */
+          covers: z.array(z.string()).default([]),
           /** What it is: a paragraph below the headline. */
           what: z.string(),
           /** The recording beside it, of the Feature at work. */
@@ -293,6 +300,15 @@ const features = defineCollection({
            * src/content/hub-workshops.yml.
            */
           hubWorkshops: z.array(z.string()).default([]),
+          /**
+           * Repositories on GitHub to try it from, for a tool outside the
+           * platform, such as the AI authoring skills: each as owner/name,
+           * with a line on what it holds. See `repositoryLinks()` in
+           * src/lib/repositories.ts.
+           */
+          repositories: z
+            .array(z.object({ name: z.string(), text: z.string() }))
+            .default([]),
           /** What to read next: docs sections, Blog posts and guides. */
           reading: z
             .array(
