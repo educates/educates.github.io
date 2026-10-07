@@ -1,45 +1,274 @@
 ---
+// The homepage, in order: the hero with the live Session demo, the use
+// cases, what a workshop looks like, the Features by job, "Used by" (left
+// out while empty), Featured Content, and the strip with "Open source",
+// "Support the project" (while the Sponsors setting is on) and "Get help".
+// Use cases, Features and Featured Content come from their collections.
+//
+// The old homepage's anchors stay as section ids: `use-cases`,
+// `description`, `features`, `featured-content` and `pricing`. An inline
+// script forwards `#team`, whose section moved, to the Community page.
+import ArrowLink from "../components/ArrowLink.astro";
+import Card from "../components/Card.astro";
+import ContentEntryCard from "../components/ContentEntryCard.astro";
+import Icon from "../components/Icon.astro";
 import SessionDemo from "../components/SessionDemo.astro";
+import UsedBy from "../components/UsedBy.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  anchorForwardScript,
+  homepageAnchorForwards,
+} from "../lib/anchor-forwards.ts";
+import {
+  featuredContent,
+  features,
+  useCasePath,
+  useCases,
+} from "../lib/content.ts";
+import {
+  featureHref,
+  featuresPath,
+  homepageFeaturesByJob,
+} from "../lib/features.ts";
+import { elsewhere, getStarted } from "../lib/navigation.ts";
+import {
+  getHelp,
+  platformRepository,
+  supportTheProject,
+  type ProjectCall,
+} from "../lib/project.ts";
+import type { SessionDemoStateName } from "../lib/session-demo.ts";
 
+const title = "Hands-on workshops and demos, ready in one click";
 const lede =
   "Educates gives everyone their own live environment, with instructions beside a terminal, editor and Kubernetes console. Open source, running on your own Kubernetes cluster.";
+
+const tiles = await useCases();
+const jobs = homepageFeaturesByJob(await features());
+const featured = await featuredContent(3);
+
+/** "What a workshop looks like": three moments of the Session demo. */
+const frames: { state: SessionDemoStateName; title: string; text: string }[] = [
+  {
+    state: "start",
+    title: "Read the step",
+    text: "The instructions sit beside a terminal, an editor, the Kubernetes console and the workshop's slides.",
+  },
+  {
+    state: "terminal",
+    title: "Click to run it",
+    text: "A clickable action runs the command or opens the file for you.",
+  },
+  {
+    state: "final",
+    title: "Check the work",
+    text: "An examiner check confirms the step worked before you move on.",
+  },
+];
+
+/** The strip: the project's calls to action, with external links marked. */
+const support = supportTheProject();
+const strip: (ProjectCall & { external: boolean })[] = [
+  {
+    title: "Open source",
+    text: "Apache 2.0, developed in the open on GitHub.",
+    label: "View on GitHub",
+    href: platformRepository,
+    external: true,
+  },
+  ...(support ? [{ ...support, external: true }] : []),
+  {
+    title: "Get help",
+    text: "Ask the community on Slack, or hire us.",
+    label: getHelp.label,
+    href: getHelp.href,
+    external: false,
+  },
+];
 ---
 
-<BaseLayout
-  title="Hands-on workshops and demos, ready in one click"
-  description={lede}
-  cover={{ form: "session" }}
-  stub
->
+<BaseLayout title={title} description={lede} cover={{ form: "session" }}>
+  <script
+    slot="head"
+    is:inline
+    set:html={anchorForwardScript(homepageAnchorForwards)}
+  />
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Open source, Apache 2.0</p>
-      <h1>Hands-on workshops and demos, ready in one click</h1>
-      <p class="lede">{lede}</p>
-      <div class="actions">
-        <a class="button button-primary" href="/get-started">
-          Get started
-        </a>
-        <a class="button button-secondary" href="https://hub.educates.dev">
-          Explore the Hub
-        </a>
+      <div class="hero-top">
+        <div>
+          <p class="eyebrow">Open source, Apache 2.0</p>
+          <h1>{title}</h1>
+        </div>
+        <div class="hero-side">
+          <p class="lede">{lede}</p>
+          <div class="actions">
+            <a class="button button-primary" href={getStarted.href}>
+              {getStarted.label}
+            </a>
+            <a class="button button-secondary" href={elsewhere.hub.href}>
+              Explore the Hub
+              <Icon name="external" />
+              <span class="sr-only">{" (external site)"}</span>
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="demo">
-        <SessionDemo />
-        <p class="caption">
-          Every Attendee gets this Session to themselves: slides, a terminal, an
-          editor and a Kubernetes console beside the instructions. Click the
-          tabs to look around.
-        </p>
+      <SessionDemo />
+      <p class="caption">
+        Everyone gets a Session like this to themselves: the instructions beside
+        a terminal, an editor, the Kubernetes console and slides. Click the tabs
+        to look around.
+      </p>
+    </div>
+  </section>
+
+  <section
+    id="use-cases"
+    class="section alt"
+    aria-labelledby="use-cases-heading"
+  >
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="use-cases-heading">What teams use Educates for</h2>
       </div>
+      <ul class="tiles">
+        {tiles.map((entry) => (
+          <li class="tile">
+            <span class="tile-icon">
+              <Icon name={entry.data.icon} />
+            </span>
+            <h3>
+              <a href={useCasePath(entry.id)}>{entry.data.name}</a>
+            </h3>
+            <p>{entry.data.promise}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section
+    id="description"
+    class="section"
+    aria-labelledby="description-heading"
+  >
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="description-heading">What a workshop looks like</h2>
+          <p>
+            Instructions on one side and real tools on the other, in a Session
+            that belongs to one person.
+          </p>
+        </div>
+        <ArrowLink href={featuresPath}>See all Features</ArrowLink>
+      </div>
+      <ol class="frames">
+        {frames.map((frame) => (
+          <li>
+            <figure class="frame">
+              <div class="shot">
+                <div class="shot-canvas">
+                  <SessionDemo state={frame.state} />
+                </div>
+              </div>
+              <figcaption>
+                <strong>{frame.title}</strong>
+                <span>{frame.text}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="features" class="section alt" aria-labelledby="features-heading">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="features-heading">Features for every part of the job</h2>
+          <p>
+            For the people who write workshops, the people who deliver them, and
+            the platform team that keeps Educates running.
+          </p>
+        </div>
+        <ArrowLink href={featuresPath}>See all Features</ArrowLink>
+      </div>
+      <div class="jobs">
+        {jobs.map(({ job, features }) => (
+          <div class="job">
+            <h3>{job.name}</h3>
+            <p class="who">{job.who}</p>
+            <ul class="job-features">
+              {features.map((entry) => (
+                <li>
+                  <p class="feature-name">
+                    <a href={featureHref(entry)}>{entry.data.name}</a>
+                    {entry.data.flagship && <span class="flag">Flagship</span>}
+                  </p>
+                  <p class="sentence">{entry.data.sentence}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <UsedBy />
+
+  <section
+    id="featured-content"
+    class="section"
+    aria-labelledby="featured-content-heading"
+  >
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="featured-content-heading">Featured Content</h2>
+        <ArrowLink href="/learn">Browse all Content</ArrowLink>
+      </div>
+      <ol class="cards">
+        {featured.map((entry) => (
+          <li>
+            <ContentEntryCard entry={entry} heading="h3" />
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section id="pricing" class="section strip-section">
+    <div class="wrap">
+      <ul class="strip">
+        {strip.map((call) => (
+          <Card as="li" tone="soft">
+            <h2>{call.title}</h2>
+            <p>{call.text}</p>
+            <ArrowLink href={call.href} external={call.external}>
+              {call.label}
+            </ArrowLink>
+          </Card>
+        ))}
+      </ul>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  /* The hero: the eyebrow and headline beside the lede and the calls to
+     action, then the full-width Session demo. */
   .hero .wrap {
-    padding-block: 72px 56px;
+    padding-block: 64px 56px;
+  }
+  .hero-top {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 24px 56px;
+    align-items: end;
+    margin-bottom: 40px;
   }
   .eyebrow {
     display: inline-flex;
@@ -52,14 +281,17 @@ const lede =
     font-weight: 600;
   }
   h1 {
-    max-width: 14em;
-    font-size: clamp(36px, 4.6vw, 56px);
-    line-height: 1.06;
+    font-size: clamp(36px, 4.8vw, 60px);
     font-weight: 700;
+    line-height: 1.05;
+  }
+  .hero-side {
+    display: grid;
+    gap: 22px;
   }
   .lede {
     max-width: 34em;
-    margin: 20px 0 28px;
+    margin: 0;
     color: var(--color-ink-muted);
     font-size: 18px;
   }
@@ -68,12 +300,274 @@ const lede =
     flex-wrap: wrap;
     gap: 12px;
   }
-  .demo {
-    margin-top: 48px;
-  }
   .caption {
     margin: 14px 0 0;
     color: var(--color-ink-muted);
     font-size: 14px;
+  }
+
+  /* Sections, alternating with the surface colour. A link to a section's
+     anchor leaves its heading clear of the sticky header. */
+  .section {
+    padding-block: 72px;
+    scroll-margin-top: 32px;
+  }
+  .alt {
+    border-block: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-bottom: 32px;
+  }
+  .section-head h2 {
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1.15;
+  }
+  .section-head p {
+    max-width: 40em;
+    margin: 8px 0 0;
+    color: var(--color-ink-muted);
+  }
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Use cases: a card per use case, the whole card its link. */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .tile {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 16px;
+    padding: 24px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .tile:hover {
+    border-color: var(--color-accent);
+  }
+  .tile:has(a:focus-visible) {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .tile-icon {
+    display: grid;
+    grid-row: span 2;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font-size: 22px;
+  }
+  .tile h3 {
+    font-size: 19px;
+  }
+  .tile a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .tile a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .tile a:focus-visible {
+    outline: none;
+  }
+  .tile p {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+
+  /* What a workshop looks like: three stills of the Session demo, each laid
+     out at a desktop width and scaled down to its frame, so it keeps the
+     side-by-side dashboard however narrow the column. */
+  .frames {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    counter-reset: frame;
+  }
+  .frame {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    margin: 0;
+  }
+  .shot {
+    container-type: inline-size;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-surface);
+  }
+  .shot-canvas {
+    width: 900px;
+    /* The frame's width over the canvas's, as a plain number. A browser
+       without it shows the still's left part, the instructions, at full
+       size. */
+    zoom: tan(atan2(100cqi, 900px));
+  }
+  .frame figcaption {
+    display: grid;
+    gap: 4px;
+  }
+  .frame strong {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .frame strong::before {
+    content: counter(frame);
+    counter-increment: frame;
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font: 600 13px/1 var(--font-mono);
+  }
+  .frame span {
+    color: var(--color-ink-muted);
+  }
+
+  /* Features by job: a column per job. */
+  .jobs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .job {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    padding: 24px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-background);
+  }
+  .job h3 {
+    font-size: 20px;
+  }
+  .who {
+    margin: -6px 0 0;
+    color: var(--color-ink-muted);
+    font-size: 14px;
+  }
+  .job-features {
+    display: grid;
+    gap: 16px;
+  }
+  .job-features p {
+    margin: 0;
+  }
+  .feature-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    font-weight: 600;
+  }
+  .feature-name a {
+    color: var(--color-ink);
+    text-underline-offset: 3px;
+  }
+  .feature-name a:hover {
+    color: var(--color-accent-strong);
+  }
+  .flag {
+    padding: 4px 6px;
+    border-radius: 5px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font: 600 11px/1 var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .sentence {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+
+  /* Featured Content: the Learn page's cards. */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
+  }
+  .cards > li {
+    display: flex;
+  }
+  .cards > li > :global(*) {
+    flex: 1;
+  }
+
+  /* The strip: soft tinted panels. */
+  .strip-section {
+    padding-top: 0;
+  }
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+  }
+  .strip h2 {
+    font-size: 18px;
+  }
+  .strip p {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+
+  @media (max-width: 960px) {
+    .hero .wrap {
+      padding-block: 40px;
+    }
+    .hero-top,
+    .jobs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    /* A frame per row: the still beside its caption. */
+    .frames {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .frame {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px 24px;
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .section {
+      padding-block: 52px;
+    }
+    .tiles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tile {
+      padding: 20px;
+    }
+    .frame {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

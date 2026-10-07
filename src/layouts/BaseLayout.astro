@@ -146,6 +146,8 @@ const structuredData = {
       is:inline
       set:html={JSON.stringify(structuredData)}
     />
+    {/* What a page adds to its head, such as a script to run before first paint. */}
+    <slot name="head" />
   </head>
   <body
     data-section={section}
