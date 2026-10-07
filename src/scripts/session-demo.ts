@@ -15,7 +15,7 @@ import {
   sessionDemoLoop,
   sessionDemoStates,
   terminalView,
-  type ActionLook,
+  type ClickableActionState,
   type SessionDemoState,
   type SessionDemoTab,
 } from "../lib/session-demo.ts";
@@ -29,8 +29,8 @@ export function setUpSessionDemos(): void {
 }
 
 /** A click or a result in progress, settled as it would end. */
-const settle = (look: ActionLook): ActionLook =>
-  look === "pressed" || look === "running" ? "done" : look;
+const settle = (state: ClickableActionState): ClickableActionState =>
+  state === "pressed" || state === "running" ? "done" : state;
 
 function setUpSessionDemo(root: HTMLElement): void {
   const find = <T extends HTMLElement>(selector: string) =>

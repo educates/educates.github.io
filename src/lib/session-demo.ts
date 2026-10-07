@@ -12,10 +12,10 @@ export const sessionDemoTabs = [
 export type SessionDemoTab = (typeof sessionDemoTabs)[number];
 
 /**
- * How a clickable action looks: not clicked yet, being clicked, waiting on
- * its result (as the Editor's actions do), or done.
+ * The state of a clickable action: not clicked yet, being clicked, waiting
+ * on its result (as the Editor's actions do), or done.
  */
-export type ActionLook = "idle" | "pressed" | "running" | "done";
+export type ClickableActionState = "idle" | "pressed" | "running" | "done";
 
 /** Everything the demo shows at one moment. */
 export interface SessionDemoState {
@@ -25,7 +25,11 @@ export interface SessionDemoState {
    * The three clickable actions in the instructions, in page order: run a
    * command in the Terminal, select text in the Editor, open the Console.
    */
-  actions: readonly [ActionLook, ActionLook, ActionLook];
+  actions: readonly [
+    ClickableActionState,
+    ClickableActionState,
+    ClickableActionState,
+  ];
   /** The action the pointer is on, or null when the pointer is hidden. */
   pointer: 0 | 1 | 2 | null;
   /**
