@@ -130,6 +130,16 @@ export interface FeatureLinkEntry {
   data: { name: string; flagship: boolean };
 }
 
+/**
+ * Where a link to a Feature leads: a flagship's deep page, or any other
+ * Feature's block on the overview.
+ */
+export function featureHref(entry: FeatureLinkEntry): string {
+  return entry.data.flagship
+    ? featurePath(entry.id)
+    : `${featuresPath}#${entry.id}`;
+}
+
 /** A link to a Feature's page: its name and where it leads. */
 export interface FeatureLink {
   name: string;
@@ -155,11 +165,6 @@ export function featureLinks(
         `${usedBy} names Feature "${id}", which the site does not show: it is missing from src/content/features/ or hidden until Educates 4.0 is released`,
       );
     }
-    return {
-      name: entry.data.name,
-      href: entry.data.flagship
-        ? featurePath(entry.id)
-        : `${featuresPath}#${entry.id}`,
-    };
+    return { name: entry.data.name, href: featureHref(entry) };
   });
 }
