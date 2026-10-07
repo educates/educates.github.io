@@ -64,7 +64,7 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
         ...Object.values(homepageAnchorForwards),
       ],
     }),
-    // The Educates Hub moves into the site at /hub; until then it stays empty.
+    // /hub is reserved: nothing may be built at it or under it.
     reservedPaths({ paths: ["/hub"] }),
     // Links keep the site's URL form: the homepage and the redirect pages
     // at directory URLs are the only paths served with a trailing slash.
