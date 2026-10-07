@@ -29,6 +29,7 @@ import { elsewhere, getStarted } from "../lib/navigation.ts";
 import { getHelp, getHelpBuildingYours } from "../lib/project.ts";
 import { currentCapabilities } from "../lib/use-cases.ts";
 import { site } from "../site.ts";
+import "../styles/section-page.css";
 
 export interface Props {
   /** A use case with a `page`. */
@@ -64,209 +65,212 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   section="Use case"
   breadcrumbs={breadcrumbs(path, name)}
 >
-  <header class="outcome">
-    <div class="wrap">
-      <p class="kicker">{name}</p>
-      <h1>{page.headline}</h1>
-      <p class="reader">{page.reader}</p>
-      <p class="lede">{page.lede}</p>
-      <div class="actions">
-        <a class="button button-primary" href={lead.href}>
-          {lead.label}
-        </a>
-        <a class="button button-secondary" href={second.href}>
-          {second.label}
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <section class="band" id="problem" aria-labelledby="problem-heading">
-    <div class="wrap">
-      <h2 id="problem-heading">The problem</h2>
-      <ol class="problems">
-        {page.problems.map((problem) => (
-          <li>
-            <h3>{problem.title}</h3>
-            <p>{problem.text}</p>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <section class="band alt" id="fit" aria-labelledby="fit-heading">
-    <div class="wrap">
-      <h2 id="fit-heading">How Educates fits</h2>
-      <ul class="cards capabilities">
-        {capabilities.map((capability) => (
-          <Card as="li">
-            <h3>{capability.title}</h3>
-            <p>{capability.text}</p>
-            <p class="features">
-              {capability.links.map((link) => (
-                <ArrowLink href={link.href}>{link.name}</ArrowLink>
-              ))}
-            </p>
-          </Card>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section class="band" id="how-it-works" aria-labelledby="how-heading">
-    <div class="wrap">
-      <p class="kicker">For the Builder</p>
-      <h2 id="how-heading">How it works</h2>
-      <div class="prose how">
-        <slot />
-      </div>
-    </div>
-  </section>
-
-  <section class="band alt" id="what-you-bring" aria-labelledby="bring-heading">
-    <div class="wrap">
-      <h2 id="bring-heading">What you bring</h2>
-      <p class="intro">
-        Educates is the core, not the whole job. This is what it leaves to you,
-        so you can plan for it before you commit.
-      </p>
-      <ul class="cards bring">
-        {page.bring.map((item) => (
-          <Card as="li">
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-            {item.docs && (
-              <p class="docs">
-                <ArrowLink href={item.docs} external>
-                  What the docs say
-                  <span class="sr-only">{`: ${item.title}`}</span>
-                </ArrowLink>
-              </p>
-            )}
-          </Card>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section class="band" id="proof" aria-labelledby="proof-heading">
-    <div class="wrap">
-      <h2 id="proof-heading">Proof</h2>
-      {page.proof.facts.length > 0 && (
-        <ul class="facts">
-          {page.proof.facts.map((fact) => (
-            <Card as="li" tone="soft">
-              <p class="figure">{fact.figure}</p>
-              <p>{fact.text}</p>
-              <p class="source">
-                <ArrowLink
-                  href={fact.source.href}
-                  external={isExternal(fact.source.href)}
-                >
-                  {fact.source.label}
-                </ArrowLink>
-              </p>
-            </Card>
-          ))}
-        </ul>
-      )}
-      {page.proof.stories.length > 0 && (
-        <ul class="cards stories" aria-label="Stories from teams using it">
-          {page.proof.stories.map((story) => (
-            <Card as="li">
-              <h3>{story.title}</h3>
-              <p>{story.text}</p>
-            </Card>
-          ))}
-        </ul>
-      )}
-      <div class="evidence">
-        {page.proof.content.length > 0 && (
-          <div class="column">
-            <h3>Read how it is done</h3>
-            <ul class="links">
-              {page.proof.content.map((item) => (
-                <li>
-                  <span class="kind">{item.kind}</span>
-                  <ArrowLink href={item.href} external={isExternal(item.href)}>
-                    {item.title}
-                  </ArrowLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div class="column">
-          <h3>Deploy it from the Hub</h3>
-          <p>
-            The Hub is a catalog of workshops you deploy on your own Educates,
-            each with one command.
-          </p>
-          {workshops.length > 0 && (
-            <ul class="links">
-              {workshops.map((workshop) => (
-                <li>
-                  <ArrowLink href={workshop.url} external>
-                    {workshop.title}
-                  </ArrowLink>
-                </li>
-              ))}
-            </ul>
-          )}
-          <p>
-            <a class="button button-secondary" href={elsewhere.hub.href}>
-              Explore the Hub
-            </a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band alt" id="next" aria-labelledby="next-heading">
-    <div class="wrap close">
-      <Card tone="soft" class="call">
-        <h2 id="next-heading">Try it yourself, or talk to us</h2>
-        <p>
-          Get started runs Educates on your laptop with a first workshop in a
-          few commands. Get help is where the community answers questions, and
-          where you can hire the people who build Educates.
-        </p>
+  <div class="section-page">
+    <header class="outcome">
+      <div class="wrap">
+        <p class="kicker">{name}</p>
+        <h1>{page.headline}</h1>
+        <p class="reader">{page.reader}</p>
+        <p class="lede">{page.lede}</p>
         <div class="actions">
-          <a class="button button-primary" href={getStarted.href}>
-            {getStarted.label}
+          <a class="button button-primary" href={lead.href}>
+            {lead.label}
           </a>
-          <a class="button button-secondary" href={getHelp.href}>
-            {getHelp.label}
+          <a class="button button-secondary" href={second.href}>
+            {second.label}
           </a>
         </div>
-      </Card>
-      <nav class="related" aria-labelledby="related-heading">
-        <h2 id="related-heading">Other use cases</h2>
-        <ul>
-          {related.map((other) => (
+      </div>
+    </header>
+
+    <section class="band" id="problem" aria-labelledby="problem-heading">
+      <div class="wrap">
+        <h2 id="problem-heading">The problem</h2>
+        <ol class="problems">
+          {page.problems.map((problem) => (
             <li>
-              <a href={useCasePath(other.id)}>{other.data.name}</a>
-              <p>{other.data.promise}</p>
+              <h3>{problem.title}</h3>
+              <p>{problem.text}</p>
             </li>
           ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="band alt" id="fit" aria-labelledby="fit-heading">
+      <div class="wrap">
+        <h2 id="fit-heading">How Educates fits</h2>
+        <ul class="cards capabilities">
+          {capabilities.map((capability) => (
+            <Card as="li">
+              <h3>{capability.title}</h3>
+              <p>{capability.text}</p>
+              <p class="features">
+                {capability.links.map((link) => (
+                  <ArrowLink href={link.href}>{link.name}</ArrowLink>
+                ))}
+              </p>
+            </Card>
+          ))}
         </ul>
-      </nav>
-    </div>
-  </section>
+      </div>
+    </section>
+
+    <section class="band" id="how-it-works" aria-labelledby="how-heading">
+      <div class="wrap">
+        <p class="kicker">For the Builder</p>
+        <h2 id="how-heading">How it works</h2>
+        <div class="prose how">
+          <slot />
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="band alt"
+      id="what-you-bring"
+      aria-labelledby="bring-heading"
+    >
+      <div class="wrap">
+        <h2 id="bring-heading">What you bring</h2>
+        <p class="intro">
+          Educates is the core, not the whole job. This is what it leaves to
+          you, so you can plan for it before you commit.
+        </p>
+        <ul class="cards bring">
+          {page.bring.map((item) => (
+            <Card as="li">
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              {item.docs && (
+                <p class="docs">
+                  <ArrowLink href={item.docs} external>
+                    What the docs say
+                    <span class="sr-only">{`: ${item.title}`}</span>
+                  </ArrowLink>
+                </p>
+              )}
+            </Card>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" id="proof" aria-labelledby="proof-heading">
+      <div class="wrap">
+        <h2 id="proof-heading">Proof</h2>
+        {page.proof.facts.length > 0 && (
+          <ul class="facts">
+            {page.proof.facts.map((fact) => (
+              <Card as="li" tone="soft">
+                <p class="figure">{fact.figure}</p>
+                <p>{fact.text}</p>
+                <p class="source">
+                  <ArrowLink
+                    href={fact.source.href}
+                    external={isExternal(fact.source.href)}
+                  >
+                    {fact.source.label}
+                  </ArrowLink>
+                </p>
+              </Card>
+            ))}
+          </ul>
+        )}
+        {page.proof.stories.length > 0 && (
+          <ul class="cards stories" aria-label="Stories from teams using it">
+            {page.proof.stories.map((story) => (
+              <Card as="li">
+                <h3>{story.title}</h3>
+                <p>{story.text}</p>
+              </Card>
+            ))}
+          </ul>
+        )}
+        <div class="columns">
+          {page.proof.content.length > 0 && (
+            <div class="column">
+              <h3>Read how it is done</h3>
+              <ul class="links">
+                {page.proof.content.map((item) => (
+                  <li>
+                    <span class="kind">{item.kind}</span>
+                    <ArrowLink
+                      href={item.href}
+                      external={isExternal(item.href)}
+                    >
+                      {item.title}
+                    </ArrowLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div class="column">
+            <h3>Deploy it from the Hub</h3>
+            <p>
+              The Hub is a catalog of workshops you deploy on your own Educates,
+              each with one command.
+            </p>
+            {workshops.length > 0 && (
+              <ul class="links">
+                {workshops.map((workshop) => (
+                  <li>
+                    <ArrowLink href={workshop.url} external>
+                      {workshop.title}
+                    </ArrowLink>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p>
+              <a class="button button-secondary" href={elsewhere.hub.href}>
+                Explore the Hub
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="next" aria-labelledby="next-heading">
+      <div class="wrap close">
+        <Card tone="soft" class="call">
+          <h2 id="next-heading">Try it yourself, or talk to us</h2>
+          <p>
+            Get started runs Educates on your laptop with a first workshop in a
+            few commands. Get help is where the community answers questions, and
+            where you can hire the people who build Educates.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href={getStarted.href}>
+              {getStarted.label}
+            </a>
+            <a class="button button-secondary" href={getHelp.href}>
+              {getHelp.label}
+            </a>
+          </div>
+        </Card>
+        <nav class="related" aria-labelledby="related-heading">
+          <h2 id="related-heading">Other use cases</h2>
+          <ul>
+            {related.map((other) => (
+              <li>
+                <a href={useCasePath(other.id)}>{other.data.name}</a>
+                <p>{other.data.promise}</p>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
+  /* The look the sections share is in src/styles/section-page.css. */
   .outcome .wrap {
     padding-block: 32px 64px;
-  }
-  .kicker {
-    margin: 0 0 12px;
-    color: var(--color-accent-strong);
-    font: 600 13px/1 var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
   }
   h1 {
     max-width: 18em;
@@ -283,40 +287,6 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     margin: 8px 0 28px;
     color: var(--color-ink-muted);
     font-size: 18px;
-  }
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .actions .button {
-    white-space: normal;
-  }
-
-  /* A section of the page; `alt` sections sit on the surface colour. */
-  .band {
-    padding-block: 72px;
-    scroll-margin-top: 72px;
-  }
-  .band.alt {
-    border-block: 1px solid var(--color-line);
-    background: var(--color-surface);
-  }
-  h2 {
-    margin-bottom: 32px;
-    font-size: clamp(28px, 3vw, 38px);
-    line-height: 1.15;
-  }
-  h3 {
-    font-size: 19px;
-  }
-  p {
-    margin: 0;
-  }
-  .intro {
-    max-width: 40em;
-    margin: -16px 0 32px;
-    color: var(--color-ink-muted);
   }
 
   /* The problem: numbered pains in columns. */
@@ -354,20 +324,8 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     color: var(--color-ink-muted);
   }
 
-  /* Cards in a grid; on a surface section they take the page colour. */
   .cards {
-    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-    gap: 20px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .alt .cards > :global(.card.surface) {
-    background: var(--color-background);
-  }
-  .cards p {
-    color: var(--color-ink-muted);
   }
   /* Four capabilities, or more points, read best two by two. */
   .capabilities:has(> :nth-child(4)),
@@ -381,10 +339,6 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   }
   .bring > :global(.card) {
     gap: 8px;
-  }
-
-  .how {
-    max-width: 52em;
   }
 
   /* Proof. */
@@ -405,55 +359,10 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   .stories {
     margin-bottom: 32px;
   }
-  .evidence {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-    gap: 32px 48px;
-  }
-  .column {
-    display: grid;
-    gap: 14px;
-    align-content: start;
-  }
-  .column > p {
-    color: var(--color-ink-muted);
-  }
-  .links {
-    display: grid;
-    gap: 14px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .links li {
-    display: grid;
-    gap: 2px;
-    justify-items: start;
-  }
-  .kind {
-    color: var(--color-ink-muted);
-    font: 600 12px/1.4 var(--font-mono);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
 
-  /* The close. */
+  /* The close: the call to action, then the other use cases. */
   .close {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 32px 48px;
-    align-items: start;
-  }
-  .call {
-    gap: 16px;
-    padding: 32px;
-  }
-  .call h2 {
-    margin: 0;
-    font-size: clamp(24px, 2.6vw, 30px);
-  }
-  .call p {
-    color: var(--color-ink-muted);
+    --close-columns: minmax(0, 7fr) minmax(0, 5fr);
   }
   .related h2 {
     margin-bottom: 16px;
@@ -474,20 +383,9 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     font-size: 15px;
   }
 
-  @media (max-width: 860px) {
-    .close {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
   @media (max-width: 640px) {
-    .band {
-      padding-block: 52px;
-    }
     .outcome .wrap {
       padding-block: 24px 48px;
-    }
-    .call {
-      padding: 24px;
     }
   }
 </style>
