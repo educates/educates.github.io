@@ -2,6 +2,7 @@
 // Every published post, at /blog/<slug>.
 import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
+import { postComponents } from "../../components/post-components.ts";
 import PostLayout from "../../layouts/PostLayout.astro";
 import { posts } from "../../lib/posts.ts";
 
@@ -16,5 +17,5 @@ const { Content } = await render(post);
 ---
 
 <PostLayout post={post}>
-  <Content />
+  <Content components={postComponents} />
 </PostLayout>

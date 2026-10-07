@@ -1,0 +1,28 @@
+---
+// Plays an Asciinema cast from /asciinemas/ in a post. The player is a React
+// island that loads when it scrolls into view; without JavaScript, the
+// reader gets a link to the cast instead. MDX posts use it as
+// <AsciinemaPlayer src="/asciinemas/<name>.cast" />, with the player's
+// options, such as autoPlay and loop, as further props.
+import AsciinemaIsland, { type AsciinemaOptions } from "./AsciinemaIsland.tsx";
+
+export interface Props extends AsciinemaOptions {
+  /** The URL of the cast. */
+  src: string;
+}
+
+const { src, ...options } = Astro.props;
+---
+
+<figure class="cast">
+  <AsciinemaIsland client:visible src={src} options={options} />
+  <noscript>
+    <a href={src}>Download the terminal recording</a>
+  </noscript>
+</figure>
+
+<style>
+  .cast {
+    margin: 0 0 1.4em;
+  }
+</style>
