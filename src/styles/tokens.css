@@ -23,6 +23,12 @@
   --color-highlight-ink: #5a4600;
   --color-chrome: #e8edf4;
   --color-shadow: rgba(14, 26, 43, 0.08);
+  /* Callouts: tip and danger, beside the accent (info) and highlight
+     (warning). */
+  --color-tip: #17702f;
+  --color-tip-soft: #e8f5ec;
+  --color-danger: #c2262f;
+  --color-danger-soft: #fdecec;
 
   /* The Session dashboard's own colors, the same in both themes. */
   --color-dashboard-bar: #2a6bd6;
@@ -61,6 +67,10 @@
     --color-highlight-ink: #f3e3a0;
     --color-chrome: #1b2738;
     --color-shadow: rgba(0, 0, 0, 0.45);
+    --color-tip: #56d364;
+    --color-tip-soft: #10261a;
+    --color-danger: #ff7b72;
+    --color-danger-soft: #331517;
   }
 }
 
@@ -80,4 +90,8 @@
   --color-highlight-ink: #f3e3a0;
   --color-chrome: #1b2738;
   --color-shadow: rgba(0, 0, 0, 0.45);
+  --color-tip: #56d364;
+  --color-tip-soft: #10261a;
+  --color-danger: #ff7b72;
+  --color-danger-soft: #331517;
 }

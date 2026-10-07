@@ -1,0 +1,159 @@
+/*
+ * Rendered Markdown and MDX: wrap a post's or a page's content in an
+ * element with the `prose` class. Code blocks are styled by Expressive Code
+ * (src/markdown/expressive-code.ts); callouts are the admonitions that
+ * src/markdown/admonitions.ts renders.
+ */
+
+.prose {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose :is(h1, h2, h3, h4) {
+  margin: 1.8em 0 0.6em;
+  scroll-margin-top: 96px;
+}
+
+.prose :is(h1, h2) {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.prose h3 {
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.prose h4 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.prose :is(p, ul, ol, blockquote, table) {
+  margin: 0 0 1.1em;
+}
+
+.prose :is(ul, ol) {
+  padding-left: 1.5em;
+}
+
+.prose li + li,
+.prose li > :is(ul, ol) {
+  margin-top: 0.35em;
+}
+
+.prose li > :is(p, ul, ol) {
+  margin-bottom: 0.5em;
+}
+
+.prose a {
+  text-underline-offset: 3px;
+}
+
+.prose :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+  background: var(--color-chrome);
+  font-size: 0.88em;
+}
+
+.prose img {
+  height: auto;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+}
+
+.prose iframe {
+  max-width: 100%;
+}
+
+.prose hr {
+  margin: 2.2em 0;
+  border: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.prose blockquote {
+  padding-left: 1em;
+  border-left: 4px solid var(--color-line);
+  color: var(--color-ink-muted);
+}
+
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.prose :is(th, td) {
+  padding: 8px 12px;
+  border: 1px solid var(--color-line);
+  text-align: left;
+}
+
+.prose .expressive-code {
+  margin: 0 0 1.4em;
+}
+
+/* Callouts: note, tip, info, warning and danger. */
+
+.callout {
+  margin: 0 0 1.4em;
+  padding: 14px 18px;
+  border: 1px solid var(--callout-line);
+  border-left-width: 4px;
+  border-radius: var(--radius-control);
+  background: var(--callout-ground);
+}
+
+.callout-title {
+  margin: 0 0 6px;
+  color: var(--callout-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.callout-body > :first-child {
+  margin-top: 0;
+}
+
+.callout-body > :last-child {
+  margin-bottom: 0;
+}
+
+.callout-note {
+  --callout-line: var(--color-line);
+  --callout-ground: var(--color-surface);
+  --callout-ink: var(--color-ink);
+  border-left-color: var(--color-ink-muted);
+}
+
+.callout-info {
+  --callout-line: var(--color-accent);
+  --callout-ground: var(--color-accent-soft);
+  --callout-ink: var(--color-accent-strong);
+}
+
+.callout-tip {
+  --callout-line: var(--color-tip);
+  --callout-ground: var(--color-tip-soft);
+  --callout-ink: var(--color-tip);
+}
+
+.callout-warning {
+  --callout-line: var(--color-highlight-ink);
+  --callout-ground: var(--color-highlight);
+  --callout-ink: var(--color-highlight-ink);
+}
+
+.callout-danger {
+  --callout-line: var(--color-danger);
+  --callout-ground: var(--color-danger-soft);
+  --callout-ink: var(--color-danger);
+}
