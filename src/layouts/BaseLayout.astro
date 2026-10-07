@@ -1,7 +1,8 @@
 ---
 // The page shell every page uses: the document head (title, description,
 // canonical URL, Open Graph tags, fonts, tokens, theme), the site header,
-// the page's content inside <main> after its breadcrumbs, and the footer.
+// the page's content inside <main> after its breadcrumbs, the footer, and
+// click-to-enlarge for any Mermaid diagram on the page.
 import "@fontsource/onest/400.css";
 import "@fontsource/onest/600.css";
 import "@fontsource/onest/700.css";
@@ -11,6 +12,7 @@ import "@fontsource/jetbrains-mono/700.css";
 import "../styles/tokens.css";
 import "../styles/global.css";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
+import DiagramEnlarge from "../components/DiagramEnlarge.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import ThemeScript from "../components/ThemeScript.astro";
@@ -105,6 +107,7 @@ const structuredData = {
       <slot />
     </main>
     <SiteFooter />
+    <DiagramEnlarge />
   </body>
 </html>
 
