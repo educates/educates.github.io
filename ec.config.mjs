@@ -7,9 +7,10 @@
 import { defineEcConfig } from "astro-expressive-code";
 
 export default defineEcConfig({
-  // The light theme is the base. The dark one applies when the system
-  // prefers dark unless the visitor chose light, and when the visitor chose
-  // dark: the same rules as src/styles/tokens.css.
+  // The light theme is the base. The dark one applies when `data-theme` is
+  // dark, which the theme script sets from the visitor's choice or the
+  // system theme, and without JavaScript when the system prefers dark: the
+  // same rules as src/styles/tokens.css.
   themes: ["github-light", "github-dark"],
   themeCssSelector: (theme) => `[data-theme='${theme.type}']`,
   styleOverrides: {

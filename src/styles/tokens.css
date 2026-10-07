@@ -1,10 +1,12 @@
 /*
  * Design tokens for educates.dev, named by role. This file holds custom
  * properties only, under three selectors: `:root` for the light theme, and
- * the dark theme twice, once for a system that prefers dark (unless the
- * visitor chose light) and once for a visitor who chose dark. Keep the two
- * dark blocks identical; src/styles/tokens.ts reads this file and refuses
- * any other selector or a mismatch.
+ * the dark theme twice, once for a system that prefers dark (unless
+ * `data-theme` says light) and once for `data-theme` set to dark. With
+ * JavaScript, the theme script always sets `data-theme`, from the visitor's
+ * choice or the system theme; without it, only the media query applies.
+ * Keep the two dark blocks identical; src/styles/tokens.ts reads this file
+ * and refuses any other selector or a mismatch.
  */
 
 :root {
