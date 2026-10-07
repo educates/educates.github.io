@@ -19,6 +19,7 @@ import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
 import { stubPages } from "./stub-pages.ts";
 import { trailingSlashLinks } from "./trailing-slash-links.ts";
+import { visualPlaceholders } from "./visual-placeholders.ts";
 
 /** The old homepage's anchors whose sections the homepage keeps, by id. */
 const homepageAnchors = [
@@ -80,6 +81,8 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
     // that cached those items.
     frozenPaths({ origin: site.origin, paths: ["/assets/images"] }),
     stubPages({ severity: "error" }),
+    // Screenshots and recordings still to be captured: listed, never blocking.
+    visualPlaceholders(),
     // The use case pages say "air-gapped" only once Educates 4.0 is released.
     educates4OnlyTerms({
       educates4Released: site.educates4Released,
