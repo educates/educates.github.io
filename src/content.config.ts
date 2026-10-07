@@ -327,6 +327,8 @@ const outsideContent = defineCollection({
         tags: z.array(z.string()).default([]),
         /** One line for its card. */
         description: z.string().min(1),
+        /** Who wrote an article, as its cover's byline names them. */
+        author: z.string().optional(),
         /**
          * An image next to the entry, which the project has the right to
          * use, that replaces its generated cover.
