@@ -1,25 +1,31 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: a Node.js image to build the site.
-FROM node:26 AS base
+# The Node.js version; `npm run docker-build` passes the Volta pin from
+# package.json.
+ARG NODE_VERSION=26
+
+# The project's dependencies, installed from the lockfile.
+FROM node:${NODE_VERSION}-slim AS deps
 ## Disable colour output to make logs easier to read.
 ENV FORCE_COLOR=0
 WORKDIR /opt/site
-
-# Stage 2a: the Astro dev server over a mounted source.
-FROM base AS dev
-EXPOSE 4321
-CMD [ -d "node_modules" ] || npm install; npm run dev -- --host 0.0.0.0
-
-# Stage 2b: the production build.
-FROM base AS prod
-COPY . /opt/site/
+COPY package.json package-lock.json ./
 RUN npm ci
+
+# The Astro dev server over a source mounted at /opt/site. An anonymous volume
+# at /opt/site/node_modules keeps this image's dependencies, which are built
+# for Linux, in place of the host's.
+FROM deps AS dev
+EXPOSE 4321
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+# The site, built and checked.
+FROM deps AS build
+COPY . .
 RUN npm run build
 
-# Stage 3: the built site behind nginx.
+# The built site behind nginx, serving URLs the way GitHub Pages does.
 FROM nginx:alpine AS serve
-COPY --from=prod /opt/site/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=prod /opt/site/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /opt/site/dist /usr/share/nginx/html
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]

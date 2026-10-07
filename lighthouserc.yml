@@ -1,0 +1,31 @@
+# Lighthouse CI settings for the checks workflow. Lighthouse's default
+# settings audit a mobile device on a throttled connection.
+ci:
+  collect:
+    # Lighthouse CI serves dist/ with its own static server, which maps a URL
+    # to a file name only, so each page is named by its .html file.
+    staticDistDir: ./dist
+    url:
+      - http://localhost/
+      - http://localhost/use-cases/hands-on-events.html
+      - http://localhost/features/clickable-actions.html
+      - http://localhost/blog/getting-started-on-kind.html
+      - http://localhost/learn.html
+    numberOfRuns: 3
+  assert:
+    # The median of the three runs. Accessibility and SEO below 90 fail the
+    # checks; performance below 90 only warns, because shared runners vary
+    # too much to gate on it.
+    assertions:
+      categories:accessibility:
+        - error
+        - minScore: 0.9
+          aggregationMethod: median
+      categories:seo:
+        - error
+        - minScore: 0.9
+          aggregationMethod: median
+      categories:performance:
+        - warn
+        - minScore: 0.9
+          aggregationMethod: median

@@ -7,6 +7,9 @@ dist/
 # Types Astro generates
 .astro/
 
+# Lighthouse CI results
+.lighthouseci/
+
 # Misc
 .DS_Store
 .env

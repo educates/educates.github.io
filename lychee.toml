@@ -1,0 +1,12 @@
+# lychee settings for checking links in the built site, `dist/`. The checks
+# workflow and `npm run link-check` run lychee offline for internal links; the
+# external links workflow runs it online. Both pass `--root-dir` with the
+# absolute path of `dist/`, which root-relative links resolve against.
+
+# GitHub Pages serves `/page` from `page.html`, and a directory URL from the
+# directory's `index.html`. The `.` accepts a link such as `/blog` that names
+# a directory too: `blog/` holds the posts and `blog.html` is the page.
+fallback_extensions = ["html"]
+index_files = ["index.html", "."]
+
+no_progress = true

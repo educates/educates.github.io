@@ -1,0 +1,17 @@
+# The build installs its own dependencies and writes its own output.
+node_modules/
+dist/
+.astro/
+
+# Not part of the site.
+.git
+.github/
+.devcontainer/
+.claude/
+.scratch
+Dockerfile
+.dockerignore
+npm-debug.log*
+.DS_Store
+.env
+.env.*
