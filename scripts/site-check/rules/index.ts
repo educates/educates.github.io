@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
+import { site } from "../../../src/site.ts";
 import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
+import { canonicalUrls } from "./canonical-urls.ts";
 import { mustResolve } from "./must-resolve.ts";
 
 /**
@@ -15,5 +17,6 @@ export function siteRules(): Rule[] {
   return [
     // Missing entries warn; `missing: "error"` makes them block the build.
     mustResolve(mustResolveList, { missing: "warning" }),
+    canonicalUrls({ origin: site.origin }),
   ];
 }

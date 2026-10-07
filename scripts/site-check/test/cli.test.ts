@@ -24,6 +24,17 @@ describe("site-check command", () => {
     expect(status).toBe(0);
   });
 
+  it("fails a build with a malformed canonical URL", () => {
+    const { status, output } = runSiteCheck(
+      fixtureBuild({
+        "index.html": page("https://educates.dev/index.html"),
+        "sitemap.xml": sitemap("https://educates.dev/"),
+      }),
+    );
+    expect(output).toContain("index.html: canonical URL");
+    expect(status).toBe(1);
+  });
+
   it("fails when the build directory does not exist", () => {
     const { status, output } = runSiteCheck("/nonexistent/site-check/dist");
     expect(output).toContain("/nonexistent/site-check/dist");

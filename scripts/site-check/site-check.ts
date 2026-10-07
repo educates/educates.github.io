@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parse, type HTMLElement } from "node-html-parser";
 
 export type Severity = "error" | "warning";
 
@@ -32,6 +33,15 @@ export interface Build {
   resolve(urlPath: string): string | undefined;
   /** The text of a file in the build. */
   read(file: string): string;
+  /** An HTML file in the build, parsed. */
+  html(file: string): HTMLElement;
+  /** The HTML files in the build that are pages, not redirect pages. */
+  pages(): string[];
+}
+
+/** Whether a parsed HTML file is a redirect page (a meta refresh). */
+export function isRedirectPage(document: HTMLElement): boolean {
+  return document.querySelector('meta[http-equiv="refresh"]') !== null;
 }
 
 /** Runs every rule over the build in `buildDir` and returns their findings. */
@@ -42,7 +52,8 @@ export function checkSite(buildDir: string, rules: Rule[]): Finding[] {
 
 function loadBuild(root: string): Build {
   const files = new Set(listFiles(root));
-  return {
+  const parsed = new Map<string, HTMLElement>();
+  const build: Build = {
     files,
     resolve(urlPath) {
       const path = urlPath.replace(/^\//, "");
@@ -57,7 +68,22 @@ function loadBuild(root: string): Build {
     read(file) {
       return readFileSync(join(root, file), "utf8");
     },
+    html(file) {
+      let document = parsed.get(file);
+      if (!document) {
+        document = parse(build.read(file));
+        parsed.set(file, document);
+      }
+      return document;
+    },
+    pages() {
+      return [...files]
+        .filter((file) => file.endsWith(".html"))
+        .filter((file) => !isRedirectPage(build.html(file)))
+        .sort();
+    },
   };
+  return build;
 }
 
 function listFiles(root: string): string[] {
