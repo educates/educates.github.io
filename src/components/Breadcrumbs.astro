@@ -1,0 +1,72 @@
+---
+// The trail from Home to the current page. The last item is the current
+// page; a level without a page of its own is named but not linked.
+import type { Crumb } from "../lib/breadcrumbs.ts";
+
+export interface Props {
+  /** The levels below Home, ending with the current page. */
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+const trail: Crumb[] = [{ label: "Home", href: "/" }, ...items];
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {trail.map((item, index) =>
+      index === trail.length - 1 ? (
+        <li>
+          <span aria-current="page">{item.label}</span>
+        </li>
+      ) : (
+        <li>{item.href ? <a href={item.href}>{item.label}</a> : item.label}</li>
+      ),
+    )}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    padding-top: 20px;
+    color: var(--color-ink-muted);
+    font-size: 14px;
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  /* A chevron drawn with borders, so screen readers announce no separator. */
+  li + li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: rotate(45deg);
+  }
+  a {
+    color: var(--color-ink-muted);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--color-ink);
+    text-decoration-color: currentColor;
+  }
+  [aria-current="page"] {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+</style>
