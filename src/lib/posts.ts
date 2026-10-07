@@ -3,6 +3,7 @@
 
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import type { PostCover } from "./cover.ts";
+import { seriesOf, type PostSeries } from "./post-series.ts";
 import { readingMinutes } from "./reading-time.ts";
 
 export type Post = CollectionEntry<"posts">;
@@ -100,6 +101,23 @@ export async function postTags(post: Post): Promise<Tag[]> {
     }
     return tag;
   });
+}
+
+/**
+ * The series a post belongs to, with its published parts in order, or
+ * `undefined` when it is in none or is the only part published.
+ */
+export async function postSeries(post: Post): Promise<PostSeries | undefined> {
+  return seriesOf(
+    post.id,
+    (await posts()).map((entry) => ({
+      id: entry.id,
+      title: entry.data.title,
+      href: postPath(entry),
+      series: entry.data.series,
+      part: entry.data.part,
+    })),
+  );
 }
 
 /** The URL path of the index of every tag. */

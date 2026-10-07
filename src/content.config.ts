@@ -380,25 +380,38 @@ const posts = defineCollection({
     deferRender: true,
   }),
   schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      /** The post's URL is `/blog/<slug>`; it never changes once published. */
-      slug: z.string(),
-      /** One or two sentences for lists, search results and shared links. */
-      description: z.string().min(1),
-      date: z.coerce.date(),
-      /** Keys of `src/content/authors.yml`. */
-      authors: z.array(z.string()).min(1),
-      /** Keys of `src/content/tags.yml`. */
-      tags: z.array(z.string()).default([]),
-      /** The series the post belongs to, and its place in it. */
-      series: z.string().optional(),
-      part: z.number().int().positive().optional(),
-      /** An image next to the post that replaces its generated cover. */
-      cover: image().optional(),
-      /** A draft shows in the dev server only, never in a build. */
-      draft: z.boolean().default(false),
-    }),
+    z
+      .object({
+        title: z.string(),
+        /** The post's URL is `/blog/<slug>`; it never changes once published. */
+        slug: z.string(),
+        /** One or two sentences for lists, search results and shared links. */
+        description: z.string().min(1),
+        date: z.coerce.date(),
+        /** Keys of `src/content/authors.yml`. */
+        authors: z.array(z.string()).min(1),
+        /** Keys of `src/content/tags.yml`. */
+        tags: z.array(z.string()).default([]),
+        /**
+         * The name of the series the post belongs to, the same on every
+         * part, and its place in it, from 1. Once two parts are published,
+         * each shows a box listing the parts (see `seriesOf()` in
+         * src/lib/post-series.ts).
+         */
+        series: z.string().optional(),
+        part: z.number().int().positive().optional(),
+        /** An image next to the post that replaces its generated cover. */
+        cover: image().optional(),
+        /** A draft shows in the dev server only, never in a build. */
+        draft: z.boolean().default(false),
+      })
+      .refine(
+        (post) => (post.series === undefined) === (post.part === undefined),
+        {
+          message: "a post in a series needs both `series` and `part`",
+          path: ["series"],
+        },
+      ),
 });
 
 /**

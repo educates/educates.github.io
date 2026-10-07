@@ -1,20 +1,23 @@
 ---
 // A blog post's page: its title, date, reading time, authors and tags, the
-// post itself, and a link to edit it on GitHub. A post with three or more
-// headings has a table of contents beside it on wide screens. The cover is
-// not shown.
+// post itself, and a link to edit it on GitHub. A post in a series with two
+// or more parts published lists them in a box above the post, and a post
+// with three or more headings has a table of contents beside it on wide
+// screens. The cover is not shown.
 import type { MarkdownHeading } from "astro";
 import "../styles/prose.css";
 import BaseLayout from "./BaseLayout.astro";
 import PostAuthors from "../components/PostAuthors.astro";
 import PostByline from "../components/PostByline.astro";
 import PostTags from "../components/PostTags.astro";
+import SeriesBox from "../components/SeriesBox.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import { breadcrumbs } from "../lib/breadcrumbs.ts";
 import {
   postAuthors,
   postPath,
   postReadingMinutes,
+  postSeries,
   postTags,
   type Post,
 } from "../lib/posts.ts";
@@ -29,7 +32,11 @@ export interface Props {
 
 const { post, headings } = Astro.props;
 const { title, description } = post.data;
-const [authors, tags] = await Promise.all([postAuthors(post), postTags(post)]);
+const [authors, tags, series] = await Promise.all([
+  postAuthors(post),
+  postTags(post),
+  postSeries(post),
+]);
 const toc = postTableOfContents(headings);
 ---
 
@@ -53,6 +60,7 @@ const toc = postTableOfContents(headings);
         <PostByline post={post} />
         <PostAuthors authors={authors} />
       </header>
+      {series && <SeriesBox series={series} />}
       <div class="prose">
         <slot />
       </div>
