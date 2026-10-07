@@ -2,7 +2,14 @@
 // A small line icon in the current text color, sized by the font size.
 // Decorative: it is hidden from screen readers, so give its control a label.
 export interface Props {
-  name: "chevron-down" | "external" | "menu" | "close" | "github";
+  name:
+    | "chevron-down"
+    | "external"
+    | "menu"
+    | "close"
+    | "github"
+    | "arrow-right"
+    | "download";
   class?: string;
 }
 
@@ -13,6 +20,8 @@ const strokes: Record<string, string> = {
   external: "M8 16L16 8M10 8h6v6",
   menu: "M4 7h16M4 12h16M4 17h16",
   close: "M6 6l12 12M18 6L6 18",
+  "arrow-right": "M5 12h14M13 6l6 6-6 6",
+  download: "M12 4v11M7 10l5 5 5-5M5 20h14",
 };
 
 const github =

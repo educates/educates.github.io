@@ -23,13 +23,6 @@ const guides = "Getting Started Guides";
 
 export const stubs: readonly Stub[] = [
   {
-    path: "/features",
-    title: "Features",
-    description:
-      "What Educates gives the people who write workshops, the people who run them, and the platform team that keeps them running.",
-    section: "Feature",
-  },
-  {
     path: "/learn",
     title: "Learn",
     description:
@@ -137,30 +130,6 @@ export const stubs: readonly Stub[] = [
     description:
       "Deploy a workshop from the Hub, find the reference docs, and get help.",
     section: guides,
-  },
-  {
-    path: "/get-started",
-    title: "Get started",
-    description:
-      "Run Educates on your laptop, deploy a workshop from the Hub, or talk to us.",
-  },
-  {
-    path: "/get-help",
-    title: "Get help",
-    description:
-      "Ask the community on Slack or GitHub, or hire us to install Educates, build a Demo Platform or write workshops.",
-  },
-  {
-    path: "/community",
-    title: "Community",
-    description:
-      "The people behind Educates, how to contribute, and where to talk to us.",
-  },
-  {
-    path: "/downloads",
-    title: "Downloads",
-    description:
-      "The educates CLI for macOS and Linux, from the latest GitHub release.",
   },
   {
     path: "/privacy",
