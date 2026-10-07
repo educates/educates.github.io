@@ -61,6 +61,12 @@ page:
       - kind: Docs
         title: Portal integration, for a custom front end
         href: https://docs.educates.dev/en/stable/lookup-service/portal-integration.html
+      - kind: Example
+        title: Graham Dumpleton's labs, with GitHub sign-in and time windows
+        href: https://grahamdumpleton.me/labs/
+      - kind: Example
+        title: A Next.js front end with OAuth sign-in, on the lookup service
+        href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     hubWorkshops:
       - lab-lookup-installation
       - lab-lookup-configuration
