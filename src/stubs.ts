@@ -138,30 +138,6 @@ export const stubs: readonly Stub[] = [
     section: guides,
   },
   {
-    path: "/get-started",
-    title: "Get started",
-    description:
-      "Run Educates on your laptop, deploy a workshop from the Hub, or talk to us.",
-  },
-  {
-    path: "/get-help",
-    title: "Get help",
-    description:
-      "Ask the community on Slack or GitHub, or hire us to install Educates, build a Demo Platform or write workshops.",
-  },
-  {
-    path: "/community",
-    title: "Community",
-    description:
-      "The people behind Educates, how to contribute, and where to talk to us.",
-  },
-  {
-    path: "/downloads",
-    title: "Downloads",
-    description:
-      "The educates CLI for macOS and Linux, from the latest GitHub release.",
-  },
-  {
     path: "/privacy",
     title: "Privacy",
     description:

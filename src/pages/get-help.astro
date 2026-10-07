@@ -1,0 +1,141 @@
+---
+// Get help: free help from the community, and paid help from the team.
+// The use case pages' "Get help" links land here.
+import ArrowLink from "../components/ArrowLink.astro";
+import Card from "../components/Card.astro";
+import ProjectLayout from "../layouts/ProjectLayout.astro";
+import { elsewhere } from "../lib/navigation.ts";
+import { issuesUrl, kubernetesSlackInvite, paidHelp } from "../lib/project.ts";
+
+const slackInviteHost = new URL(kubernetesSlackInvite).host;
+---
+
+<ProjectLayout
+  title="Get help"
+  description="Ask the community on Slack or GitHub, or hire us to install Educates, build a Demo Platform or write workshops."
+  lede="Ask the community for free, or hire the people who build Educates."
+>
+  <div class="wrap paths">
+    <Card as="section" id="community">
+      <h2>Ask the community</h2>
+      <ul class="routes">
+        <li>
+          <h3>Questions</h3>
+          <p>
+            Ask about installing Educates, writing workshops or running a portal
+            in the Educates channel on the Kubernetes Slack, where the team and
+            other users answer. Not on the Kubernetes Slack yet? Get an invite
+            at <a href={kubernetesSlackInvite}>{slackInviteHost}</a>.
+          </p>
+          <ArrowLink href={elsewhere.slack.href} external>
+            Ask on Slack
+          </ArrowLink>
+        </li>
+        <li>
+          <h3>Bugs and feature requests</h3>
+          <p>
+            Open an issue on GitHub with the bug report or feature request
+            template, so it is tracked next to the code.
+          </p>
+          <ArrowLink href={issuesUrl} external>
+            Open an issue
+          </ArrowLink>
+        </li>
+        <li>
+          <h3>Reference</h3>
+          <p>
+            The docs are the reference for installing and configuring Educates
+            and for writing workshops.
+          </p>
+          <ArrowLink href={elsewhere.docs.href} external>
+            Read the docs
+          </ArrowLink>
+        </li>
+      </ul>
+    </Card>
+
+    <Card as="section" id="hire-us" tone="soft">
+      <h2>Hire us</h2>
+      <p>
+        When you need it done, or done sooner, the people who build Educates
+        take on paid work:
+      </p>
+      <ul class="offers">
+        {paidHelp.offers.map((offer) => (
+          <li>{offer}</li>
+        ))}
+      </ul>
+      <p>
+        Email us with what you are working on and when you need it, and we will
+        tell you how we can help.
+      </p>
+      <p class="contact">
+        <a class="button button-primary" href={`mailto:${paidHelp.email}`}>
+          Email {paidHelp.email}
+        </a>
+      </p>
+    </Card>
+  </div>
+</ProjectLayout>
+
+<style>
+  .paths {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 20px;
+    align-items: start;
+    padding-bottom: 96px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  h3 {
+    font-size: 17px;
+  }
+  p {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+  .routes {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .routes li {
+    display: grid;
+    gap: 8px;
+    justify-items: start;
+    padding-block: 18px;
+  }
+  .routes li + li {
+    border-top: 1px solid var(--color-line);
+  }
+  .routes li:last-child {
+    padding-bottom: 0;
+  }
+  .offers {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.2em;
+    font-weight: 600;
+  }
+  .offers li::marker {
+    color: var(--color-accent-strong);
+  }
+  .contact {
+    margin-top: 8px;
+  }
+  .contact .button {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 860px) {
+    .paths {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
