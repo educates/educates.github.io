@@ -18,10 +18,12 @@ npm.
 | `npm run site-check` | Checks the build in `dist/` again without rebuilding it. |
 | `npm run preview` | Serves the build in `dist/` locally. |
 | `npm run check` | Type-checks the project with `astro check`. |
+| `npm run format` | Formats the code files with Prettier, in place; content Markdown is excluded. |
 | `npm run format:check` | Checks the formatting of code files with Prettier; content Markdown is excluded. |
 | `npm test` | Runs the unit tests. |
 | `npm run link-check` | Checks the internal links in the build in `dist/`, offline. Needs [lychee](https://lychee.cli.rs/), for example from `brew install lychee`. |
 | `npm run url-check -- <base-url>` | Requests every URL of the must-resolve list from the site served at `<base-url>`, such as `https://educates.dev` after a deploy; see below. |
+| `npm run posters` | Downloads the poster of every video from the project's YouTube channel that has none, next to its outside Content entry in `src/content/outside-content/`. Run it after adding an entry for such a video, which fails the build until it has its poster, and commit each poster with its entry. |
 | `npm run docker-build` | Builds the Docker image; see below. |
 
 The site check, in `scripts/site-check/`, reads the build the way GitHub
