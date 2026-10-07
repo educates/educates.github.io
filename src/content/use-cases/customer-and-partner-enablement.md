@@ -58,6 +58,9 @@ page:
       - kind: Docs
         title: The portal REST API, for your own front end
         href: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
+      - kind: Example
+        title: Graham Dumpleton's labs, a public academy running on Educates
+        href: https://grahamdumpleton.me/labs/
     hubWorkshops:
       - lab-spring-boot-on-k8s
       - creating-a-spring-application
