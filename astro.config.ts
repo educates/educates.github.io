@@ -4,6 +4,7 @@ import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import expressiveCode from "astro-expressive-code";
+import { openGraphImages } from "./src/integrations/open-graph-images.ts";
 import { singleSitemap } from "./src/integrations/single-sitemap.ts";
 import { admonitions } from "./src/markdown/admonitions.ts";
 import { redirects } from "./src/redirects.ts";
@@ -37,6 +38,15 @@ export default defineConfig({
   },
   // Integrations run in this order. expressiveCode(), configured in
   // ec.config.mjs, must come before mdx() to render code blocks in MDX too;
-  // react() renders the islands; singleSitemap() reads sitemap()'s output.
-  integrations: [expressiveCode(), mdx(), react(), sitemap(), singleSitemap()],
+  // react() renders the islands; singleSitemap() reads sitemap()'s output;
+  // openGraphImages() draws every page's Open Graph image from the built
+  // pages.
+  integrations: [
+    expressiveCode(),
+    mdx(),
+    react(),
+    sitemap(),
+    singleSitemap(),
+    openGraphImages({ origin: site.origin }),
+  ],
 });
