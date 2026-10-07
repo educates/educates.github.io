@@ -3,8 +3,10 @@ import { site } from "../site.ts";
 import { currentFeatures, featureLinks } from "./features.ts";
 import { guidePath } from "./guide-path.ts";
 import { hubWorkshopLinks } from "./hub-workshops.ts";
+import { useCasesRelyingOn } from "./use-cases.ts";
 
 export { featurePath } from "./features.ts";
+export { useCasePath } from "./use-cases.ts";
 
 /** The Getting Started Guides' pages, and the path they make. */
 export async function guides() {
@@ -42,9 +44,12 @@ export async function flagshipFeatures() {
   return (await features()).filter((feature) => feature.data.flagship);
 }
 
-/** The URL path of a use case's page. */
-export function useCasePath(slug: string): string {
-  return `/use-cases/${slug}`;
+/**
+ * The use cases whose pages rely on the Feature `featureId`, naming it in
+ * one of their capabilities, in their menu order.
+ */
+export async function useCasesUsing(featureId: string) {
+  return useCasesRelyingOn(featureId, await useCases());
 }
 
 /**
