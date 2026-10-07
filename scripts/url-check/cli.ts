@@ -9,9 +9,7 @@
 // `npm run url-check -- http://localhost:8080` against the Docker image's
 // `serve` target. Exits 1 when any entry does not resolve.
 
-import { readFileSync } from "node:fs";
-import { redirects, staticRedirects } from "../../src/redirects.ts";
-import { parseMustResolveList } from "../site-check/must-resolve-list.ts";
+import { loadSiteUrls } from "../site-check/site-urls.ts";
 import { checkServedUrls } from "./url-check.ts";
 
 const baseUrl = process.argv[2];
@@ -20,17 +18,8 @@ if (!baseUrl || !URL.canParse(baseUrl)) {
   process.exit(1);
 }
 
-const entries = parseMustResolveList(
-  readFileSync(
-    new URL("../site-check/must-resolve.txt", import.meta.url),
-    "utf8",
-  ),
-);
-const results = await checkServedUrls({
-  baseUrl,
-  entries,
-  redirects: { ...redirects, ...staticRedirects },
-});
+const { entries, redirects } = loadSiteUrls();
+const results = await checkServedUrls({ baseUrl, entries, redirects });
 
 const failed = results.filter((result) => !result.ok);
 const lines = [

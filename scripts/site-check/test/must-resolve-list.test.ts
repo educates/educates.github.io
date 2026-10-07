@@ -1,6 +1,6 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { parseMustResolveList } from "../must-resolve-list.ts";
+import { loadSiteUrls } from "../site-urls.ts";
 
 describe("must-resolve list", () => {
   it("rejects an entry that is not a URL path", () => {
@@ -16,9 +16,7 @@ describe("must-resolve list", () => {
   });
 
   describe("the committed list", () => {
-    const entries = parseMustResolveList(
-      readFileSync(new URL("../must-resolve.txt", import.meta.url), "utf8"),
-    );
+    const { entries } = loadSiteUrls();
     const count = (section: string) =>
       entries.filter((entry) => entry.section === section).length;
 

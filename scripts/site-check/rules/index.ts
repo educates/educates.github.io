@@ -1,10 +1,9 @@
-import { readFileSync } from "node:fs";
 import { homepageAnchorForwards } from "../../../src/lib/anchor-forwards.ts";
-import { redirects, staticRedirects } from "../../../src/redirects.ts";
+import { staticRedirects } from "../../../src/redirects.ts";
 import { site } from "../../../src/site.ts";
 import type { LiveSitemap } from "../live-sitemap.ts";
-import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
+import { loadSiteUrls } from "../site-urls.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
 import { educates4OnlyTerms } from "./educates4-only-terms.ts";
 import { feedIdentity } from "./feed-identity.ts";
@@ -41,21 +40,16 @@ export interface SiteRulesOptions {
  * and test it against small fixture builds in `../test/`.
  */
 export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
-  const mustResolveList = parseMustResolveList(
-    readFileSync(new URL("../must-resolve.txt", import.meta.url), "utf8"),
-  );
+  const { entries, redirects } = loadSiteUrls();
   return [
-    mustResolve(mustResolveList, { missing: "error" }),
+    mustResolve(entries, { missing: "error" }),
     // A page published on the live site since the build last matched it,
     // such as a new blog post, fails the build until it is converted.
     liveSitemap(live),
     canonicalUrls({ origin: site.origin }),
     openGraphImages({ origin: site.origin }),
     sitemap({ origin: site.origin }),
-    redirectPages({
-      origin: site.origin,
-      redirects: { ...redirects, ...staticRedirects },
-    }),
+    redirectPages({ origin: site.origin, redirects }),
     // The old homepage's anchors: the sections the homepage keeps, and the
     // places its inline script forwards the others to.
     keptAnchors({

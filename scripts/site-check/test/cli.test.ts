@@ -1,12 +1,10 @@
 import { execFile } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { redirects, staticRedirects } from "../../../src/redirects.ts";
-import { parseMustResolveList } from "../must-resolve-list.ts";
+import { loadSiteUrls } from "../site-urls.ts";
 import {
   atomFeed,
   fixtureBuild,
@@ -167,15 +165,9 @@ function servedSite(): Record<string, string> {
     "blog/rss.xml": rssFeed(),
     "blog/atom.xml": atomFeed({}),
   };
-  const allRedirects: Record<string, string> = {
-    ...redirects,
-    ...staticRedirects,
-  };
-  const list = parseMustResolveList(
-    readFileSync(new URL("../must-resolve.txt", import.meta.url), "utf8"),
-  );
-  for (const { path } of list) {
-    if (path in allRedirects || `${path.slice(1)}` in files) continue;
+  const { entries, redirects } = loadSiteUrls();
+  for (const { path } of entries) {
+    if (path in redirects || `${path.slice(1)}` in files) continue;
     if (path === "/404.html") {
       Object.assign(files, sitePage("404.html", "https://educates.dev/404"));
     } else if (/\.[a-z]+$/.test(path) || path === "/.nojekyll") {
@@ -187,7 +179,7 @@ function servedSite(): Record<string, string> {
       );
     }
   }
-  for (const [source, target] of Object.entries(allRedirects)) {
+  for (const [source, target] of Object.entries(redirects)) {
     const file = source.endsWith("/")
       ? `${source.slice(1)}index.html`
       : `${source.slice(1)}.html`;
