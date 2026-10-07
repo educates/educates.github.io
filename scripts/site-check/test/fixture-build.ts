@@ -21,6 +21,11 @@ export function page(url: string, extraHead = ""): string {
   return `<!doctype html><html lang="en"><head><title>Page</title><link rel="canonical" href="${url}"><meta property="og:url" content="${url}">${extraHead}</head><body><main><h1>Page</h1></main></body></html>`;
 }
 
+/** A stub page: the base layout's head for `url`, and the stub marker. */
+export function stubPage(url: string): string {
+  return page(url).replace("<body>", "<body data-stub>");
+}
+
 /** An HTML redirect page in the form Astro's `redirects` writes. */
 export function redirectPage(target: string): string {
   const canonical = new URL(target, "https://educates.dev").href;

@@ -6,6 +6,7 @@ import { canonicalUrls } from "./canonical-urls.ts";
 import { mustResolve } from "./must-resolve.ts";
 import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
+import { stubPages } from "./stub-pages.ts";
 
 /**
  * The rules the site-check command runs over every build. A rule is a
@@ -23,5 +24,7 @@ export function siteRules(): Rule[] {
     sitemap({ origin: site.origin }),
     // The Educates Hub moves into the site at /hub; until then it stays empty.
     reservedPaths({ paths: ["/hub"] }),
+    // Stub pages warn; `severity: "error"` makes them block the build.
+    stubPages({ severity: "warning" }),
   ];
 }
