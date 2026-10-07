@@ -21,8 +21,8 @@ page:
       text: Put the portal's URL and an event access code on your first slide. With anonymous access nobody registers an account, and a cap of one Session at a time per Attendee keeps anyone from starting a second.
       features: [training-portal]
     - title: The whole workshop on one page
-      text: Each Attendee works in a Session of their own, with the instructions beside terminals, a VS Code based editor, the Kubernetes console and your slides, all in the browser. With nothing to install, the first step is the workshop's first step.
-      features: [workshop-dashboard, isolated-sessions]
+      text: Each Attendee works in a Session of their own, with the instructions beside terminals, a VS Code based editor, the Kubernetes console and your slides, all in the browser. Steps can run with a click, and checks can tell each Attendee a step worked before the next one builds on it. With nothing to install, the first step is the workshop's first step.
+      features: [workshop-dashboard, isolated-sessions, clickable-actions, examiner-checks]
     - title: Booths and laptops too
       text: At a booth, run a portal of short workshops; visitors pick a topic, work through it, and their Session is deleted when they finish. With no cluster at all, a single workshop runs in one container on your laptop's Docker, for a demo across the table that needs no Kubernetes.
       features: [training-portal, local-authoring]
