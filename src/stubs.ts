@@ -46,10 +46,4 @@ export const stubs: readonly Stub[] = [
       "Where Educates came from, and how it became an independent open source project.",
     section: "About Educates",
   },
-  {
-    path: "/privacy",
-    title: "Privacy",
-    description:
-      "What educates.dev counts, what it stores in your browser, and how to opt out.",
-  },
 ];
