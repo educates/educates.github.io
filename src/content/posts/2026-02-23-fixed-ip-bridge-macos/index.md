@@ -9,7 +9,7 @@ tags: [educates, local, tips-and-tricks, dns, macos]
 
 When running Educates locally on macOS, your cluster's accessibility depends on your machine's IP address. Every time you move between networks — home, office, conference WiFi — your IP changes. DNS resolution breaks, cluster ingresses stop responding, and workshop URLs go stale. This can be a hassle — especially when you don't immediately realize the IP changed and spend time debugging something else entirely. You end up manually updating the resolver configuration before you can get back to work.
 
-In the [How to best work locally post](/blog/how-to-best-work-locally/), we showed how to configure a local DNS resolver with a recognizable domain like `educates.test`.  And in [Automating DNS Resolver Updates](/blog/sync-resolver-macos), we covered how to detect IP changes and re-sync the resolver automatically. Both of those approaches react to the IP change after it happens. The approach in this post eliminates the change altogether. A better approach is to prevent the problem entirely: give your machine a fixed IP that never changes, regardless of which physical network you're on.
+In the [How to best work locally post](/blog/how-to-best-work-locally), we showed how to configure a local DNS resolver with a recognizable domain like `educates.test`.  And in [Automating DNS Resolver Updates](/blog/sync-resolver-macos), we covered how to detect IP changes and re-sync the resolver automatically. Both of those approaches react to the IP change after it happens. The approach in this post eliminates the change altogether. A better approach is to prevent the problem entirely: give your machine a fixed IP that never changes, regardless of which physical network you're on.
 
 ## Why a Fixed IP Matters
 
@@ -301,10 +301,10 @@ The polling-based LaunchDaemon is intentionally simple. macOS offers `WatchPaths
 
 We chose a LaunchDaemon (system-level, runs as root) rather than a LaunchAgent (user-level) because `ifconfig` requires root privileges. A LaunchAgent would need workarounds for privilege escalation that add complexity without benefit.
 
-If you're combining this with the local resolver and CA setup from [How to best work locally](/blog/how-to-best-work-locally/), the fixed IP simplifies the overall stack. With a stable address, the auto-sync script from the [Automating DNS Resolver Updates post](/blog/sync-resolver-macos) becomes optional — your IP never changes, so the resolver never goes stale. The full recommended stack becomes:
+If you're combining this with the local resolver and CA setup from [How to best work locally](/blog/how-to-best-work-locally), the fixed IP simplifies the overall stack. With a stable address, the auto-sync script from the [Automating DNS Resolver Updates post](/blog/sync-resolver-macos) becomes optional — your IP never changes, so the resolver never goes stale. The full recommended stack becomes:
 
 1. Loopback alias via LaunchDaemon (this post)
-2. Local CA with `mkcert` ([How to best work locally](/blog/how-to-best-work-locally/))
+2. Local CA with `mkcert` ([How to best work locally](/blog/how-to-best-work-locally))
 3. DNS resolver with `educates.test` pointing to the fixed IP
 
 Once you have all three in place, you can destroy and create clusters freely, switch between networks, and your workshops will always be available at the same URLs.

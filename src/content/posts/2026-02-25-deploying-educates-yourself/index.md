@@ -8,7 +8,7 @@ authors: [graham]
 draft: false
 ---
 
-In our [last post](/blog/teaching-an-ai-about-educates/) we showed how an AI skill can generate a complete interactive workshop for the Educates training platform. The result was a working workshop for the Air Python web framework, and you can browse the source in the [GitHub repository](https://github.com/GrahamDumpleton/lab-python-air-intro). But having workshop source files sitting in a repository is only half the story. The question that naturally follows is: how do you actually deploy it?
+In our [last post](/blog/teaching-an-ai-about-educates) we showed how an AI skill can generate a complete interactive workshop for the Educates training platform. The result was a working workshop for the Air Python web framework, and you can browse the source in the [GitHub repository](https://github.com/GrahamDumpleton/lab-python-air-intro). But having workshop source files sitting in a repository is only half the story. The question that naturally follows is: how do you actually deploy it?
 
 If you've used platforms like Killercoda, Instruqt, or Strigo, the answer would be straightforward. You push your content to the platform, and it handles the rest. But that convenience comes with a trade-off that's easy to overlook until it bites you.
 

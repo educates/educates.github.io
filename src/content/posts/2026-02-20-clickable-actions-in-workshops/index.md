@@ -39,12 +39,10 @@ The end result is that learners can progress through an entire workshop without 
 
 To get a sense for what this looks like in practice, here are a couple of screenshots from an Educates workshop.
 
-<!-- TODO: Add screenshot showing terminal:execute action in instructions with command result in terminal -->
 ![Workshop instructions with a clickable terminal command and the result displayed in the terminal panel](terminal-execute-example.png)
 
 The instructions panel on the left contains a clickable action for running a command. When the learner clicks it, the command executes in the terminal panel and the output appears immediately. No copying, no pasting, no typing.
 
-<!-- TODO: Add screenshot showing editor with text selected/replaced via clickable actions -->
 ![The embedded editor showing text that has been selected and replaced through clickable actions in the instructions](editor-replace-example.png)
 
 Here the embedded editor shows the result of a select-and-replace flow. The instructions guided the learner through highlighting specific text in a file and then replacing it with updated content, all through clickable actions. The learner sees exactly what changed and why, without needing to manually locate the right line and make the edit themselves.
@@ -88,4 +86,4 @@ The YAML within each code block controls everything about the action: which file
 
 The progression from copy/paste tutorials to hosted environments to clickable commands to a fully guided experience like Educates is ultimately a progression toward removing every point where a learner might disengage. Each improvement eliminates another source of friction, another moment where someone might lose focus because they're fighting the tools instead of learning the material. When the mechanics of following instructions become invisible, learners stay engaged longer and absorb more of what the workshop is trying to teach.
 
-In our [previous post](/blog/when-ai-content-isnt-slop/) we discussed how this interactive format, combined with thoughtful use of AI for content generation, can produce workshop content that maintains consistent quality throughout. The clickable actions we've described here are what make that format possible. They're the mechanism that turns static instructions into a guided, interactive experience where the learner's attention stays on the concepts rather than the process.
+In our [previous post](/blog/when-ai-content-isnt-slop) we discussed how this interactive format, combined with thoughtful use of AI for content generation, can produce workshop content that maintains consistent quality throughout. The clickable actions we've described here are what make that format possible. They're the mechanism that turns static instructions into a guided, interactive experience where the learner's attention stays on the concepts rather than the process.

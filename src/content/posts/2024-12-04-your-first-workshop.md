@@ -62,7 +62,7 @@ kubectl apply -f resources/workshop.yaml
 
 When you list the workshop resources in the cluster, you will see nothing interesting:
 
-````
+```
 $ kubectl get workshop
 NAME          URL
 my-workshop

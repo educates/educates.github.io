@@ -105,7 +105,7 @@ clusterPackages:
         rulesEngine: kyverno
 ```
 
-__NOTE__: This configuration presents values that were introduced in our [previous blog](/blog/how-to-best-work-locally/)
+__NOTE__: This configuration presents values that were introduced in our [previous blog](/blog/how-to-best-work-locally)
 
 The `clusterPackages` section is the one that contains the configuration Educates installer will use when creating the cluster, but also when deploying the platform to remote clusters, but that's for another blog.
 As you will notice, only the `enabled` packages are installed, and the configuration in `settings` is the

@@ -8,7 +8,7 @@ authors: [graham]
 draft: false
 ---
 
-In our [previous post](/blog/deploying-educates-yourself/) we walked through deploying an AI-generated Educates workshop on a local Kubernetes cluster. The workshop was up and running, accessible through the training portal, and ready to be used. But having a workshop that runs is only the first step. The next question is whether it's actually any good.
+In our [previous post](/blog/deploying-educates-yourself) we walked through deploying an AI-generated Educates workshop on a local Kubernetes cluster. The workshop was up and running, accessible through the training portal, and ready to be used. But having a workshop that runs is only the first step. The next question is whether it's actually any good.
 
 Workshop review is traditionally a manual process. You open the workshop in a browser, click through each page, read the instructions, run the commands, check that everything works, and make notes on what could be improved. It's time-consuming and somewhat tedious, especially when you're the person who wrote the workshop in the first place and already know what it's supposed to do. Even this task, though, is one where AI can help.
 
