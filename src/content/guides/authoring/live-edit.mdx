@@ -52,7 +52,7 @@ sudo zypper install hugo
 For other distributions, please look
 [at the installation docs](https://gohugo.io/installation/linux/#package-managers).
 
-### Installing Hugo ond MacOS and Windows
+### Installing Hugo on macOS
 
 <Tabs label="Package manager">
 <TabItem label="Homebrew">
@@ -62,37 +62,38 @@ brew install hugo
 ```
 
 </TabItem>
-<TabItem label="Choco">
+<TabItem label="MacPorts">
 
 ```sh
-choco install hugo-extended
-```
-
-</TabItem>
-<TabItem label="Scoop">
-
-```sh
-scoop install hugo-extended
-```
-
-</TabItem>
-<TabItem label="WinGet">
-
-```sh
-winget install hugo-extended
+sudo port install hugo
 ```
 
 </TabItem>
 </Tabs>
 
+On Windows, install Hugo inside WSL with the Linux instructions.
+
 ## Patching a Workshop
 
 Once Hugo is installed, we can patch a deployed workshop and start
-hosting its instructions directly from our repository like this:
+hosting its instructions directly from our repository. Run this from the
+workshop's directory:
 
 ```sh title="Start live-editing workshops"
 educates serve-workshop --patch-workshop
 ```
 
-All we need to do afterwards is to start a new workshop session - it
-will have its instructions updated in realtime as we edit them locally.
+The command patches the workshop definition in the cluster, which starts a
+new workshop environment whose Sessions load their instructions from a web
+server the command runs on your machine. Start a new Session from the
+training portal: as you edit the pages under `workshop/content`, the
+instructions are regenerated and the page in your browser refreshes.
+
+When you are done, stop the command with Ctrl-C. That restores the
+workshop definition in the cluster, so new Sessions use the published
+workshop again. Then publish your changes with `educates publish-workshop`.
+
+Live editing covers the instructions only. Setup scripts, exercise files
+and anything else in the workshop still come from what you last published:
+to try changes to those, publish the workshop again and start a new
+Session.

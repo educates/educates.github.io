@@ -4,21 +4,25 @@ description: Create a local Kind cluster with Educates installed, in one command
 order: 4
 ---
 
-Once we got our prerequisites - Docker Desktop and Educates - installed  we can proceed
-with creating our Educates environment by issuing a single bootstrapping command:
+With Docker, kubectl and the Educates CLI installed, one command creates
+your local Educates environment. It needs ports 80, 443 and 5001 free on
+your machine, and no other Kind cluster running.
 
-```sh
+```sh title="Create the local Educates cluster"
 educates create-cluster
 ```
 
 This will do the following, in sequence:
 
-1. Create a purposefully crafted KinD configuration and save it to your local system.
-2. Create a local Kubernetes cluster using KinD and the configuration created in step 1.
-3. Set the context of `kubectl` to the created cluster.
-4. Create a local image registry to publish workshop images and resources to on `localhost:5001`
-5. Configure KinD cluster nodes to use the created registry on a node and cluster level.
-6. Deploy the Educates framework to the cluster using [`kapp`](https://carvel.dev/kapp/).
+1. Create a Kind configuration made for Educates, save it on your machine,
+   and create a local Kubernetes cluster from it.
+2. Set the context of `kubectl` to the new cluster, `kind-educates`.
+3. Deploy a local image registry on `localhost:5001`, for the workshops and
+   images you publish, and configure the cluster's nodes to use it.
+4. Install [Kyverno](https://kyverno.io), the security policy engine.
+5. Install [Contour](https://projectcontour.io/), the ingress controller,
+   and expose it on ports 80 and 443 of your machine.
+6. Deploy Educates.
 
 The output of this command will look like this:
 

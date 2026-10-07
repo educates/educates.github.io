@@ -4,13 +4,18 @@ description: Install Docker, kubectl and the Educates CLI, and create a local Ed
 order: 1
 ---
 
-As [Educates](https://educates.dev) is powered by [Kubernetes](https://kubernetes.io), we will
-need a way to run a cluster locally - luckily, the Educates CLI wraps [KinD](https://kind.sigs.k8s.io/)
-and can do the heavy-lifting for us.
+Educates runs on [Kubernetes](https://kubernetes.io), so to try it on your
+machine you need a local cluster. You don't have to build one: the Educates
+CLI creates a [Kind](https://kind.sigs.k8s.io/) cluster with Educates
+installed, in one command. Kind runs the cluster's nodes as containers, so
+you need a **container runtime** first. These guides use
+[Docker Desktop](https://www.docker.com/products/docker-desktop/), the
+runtime the Educates CLI has been tested with most.
 
-However, for this setup to work, we will need a **container runtime**. Our choice will be
-[Docker Desktop](https://www.docker.com/products/docker-desktop/), which is also the recommended runtime from KinD's/Educates' perspective.
+You will also install [`kubectl`](https://kubernetes.io/docs/reference/kubectl/),
+the Kubernetes CLI, to look inside the cluster in more detail than the
+Educates CLI shows.
 
-We will also install [`kubectl`](https://kubernetes.io/docs/reference/kubectl/), the official Kubernetes
-CLI, in order to interact with our cluster in a more fine-grained way than is possible with the Educates
-CLI.
+The Educates CLI runs on **macOS and Linux**. On Windows, work inside WSL,
+the Windows Subsystem for Linux, and follow the Linux instructions
+throughout.

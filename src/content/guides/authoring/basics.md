@@ -118,7 +118,7 @@ gets interpreted as:
 > - [x] Create a workshop on workshops
 > - [ ] Build a workshop in the workshop on workshops
 > - [ ] ???
->     - [x] ????
+>     - [ ] ????
 >     - [ ] more ?????
 > - [ ] Profit!
 
@@ -203,9 +203,12 @@ Checking training portal is ready.
 [/] Waiting...
 ```
 
-You should be greated by this screen:
+You should be greeted by this screen:
 
 ![TrainingPortal screenshot](img/trainingportal.png)
+
+Click **Start workshop** to start your own Session of the workshop, and look
+around: this is what the people taking your workshop will see.
 
 We did it! Within a few minutes, we deployed the first draft of our workshops!
 

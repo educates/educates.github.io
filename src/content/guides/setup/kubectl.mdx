@@ -18,9 +18,9 @@ to have a closer look at how things work within the platform.
 
 ## Installing kubectl on Linux
 
-On the **Debian, RedHat**, and **SUSE** families of operating systems, `kubectl`
+On the **Debian, Red Hat**, and **SUSE** families of operating systems, `kubectl`
 can be installed via native package management. On other Linux flavors, the release
-binaries can be downloaded instead.
+binaries can be downloaded instead. On Windows, follow these instructions inside WSL.
 
 ### Installing kubectl with Native Package Managers
 
@@ -85,9 +85,9 @@ chmod +x kubectl
 sudo mv kubectl /usr/local/bin/kubectl
 ```
 
-## Installing kubectl on MacOS and Windows
+## Installing kubectl on macOS
 
-On MacOS and Windows, `kubectl` can be installed with multiple available package managers:
+On macOS, `kubectl` can be installed with either of the common package managers:
 
 <Tabs label="Package manager">
 <TabItem label="Homebrew">
@@ -102,39 +102,6 @@ brew install kubectl
 ```sh
 sudo port selfupdate
 sudo port install kubectl
-```
-
-</TabItem>
-<TabItem label="Choco">
-
-```ps1
-choco install kubernetes-cli
-cd ~
-mkdir .kube
-cd .kube
-New-Item config -type file
-```
-
-</TabItem>
-<TabItem label="Scoop">
-
-```ps1
-scoop install kubectl
-cd ~
-mkdir .kube
-cd .kube
-New-Item config -type file
-```
-
-</TabItem>
-<TabItem label="WinGet">
-
-```ps1
-winget install -e --id Kubernetes.kubectl
-cd ~
-mkdir .kube
-cd .kube
-New-Item config -type file
 ```
 
 </TabItem>

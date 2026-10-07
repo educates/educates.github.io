@@ -5,19 +5,20 @@ order: 1
 ---
 
 First, we are going to install Docker.
-- On `MacOS` and `Windows` we will install Docker Desktop.
-[Click here to get to the download page.](https://www.docker.com/products/docker-desktop/)
-- On `Linux` we will install Docker engine [Click here to get to the download page.](https://docs.docker.com/engine/install/)
+
+- On macOS, install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+- On Linux, install [Docker Engine](https://docs.docker.com/engine/install/).
+- On Windows, install [Docker Desktop](https://www.docker.com/products/docker-desktop/),
+  and in its **Settings > Resources > WSL Integration** turn on the
+  integration with the WSL distribution you work in.
 
 :::note[***I don't want to use Docker Desktop***]
 If this is your stance, you probably already have an alternative container runtime
 installed on your machine - Podman, Docker daemon, Orbstack, etc.
 
-While these alternatives *should* work, there might be unforeseen consequences - let
-me know if you run into troubles and I'll try to help.
-
-You may also [open an issue](https://github.com/educates/educates-training-platform/issues/new) on
-this site's GitHub project describing your problem.
+While these alternatives *should* work, there might be unforeseen consequences. If
+you run into trouble, [open an issue](https://github.com/educates/educates-training-platform/issues/new)
+on the Educates GitHub project describing your problem.
 :::
 
 ## Configuring Docker Desktop
