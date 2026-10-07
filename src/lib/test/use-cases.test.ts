@@ -52,6 +52,8 @@ describe("currentCapabilities", () => {
   });
 });
 
+const before4 = { educates4Released: false };
+
 /** A capability resting on `features`. */
 const resting = (...features: string[]) => ({
   title: "A capability",
@@ -97,11 +99,11 @@ const teamTraining = {
 describe("useCasesRelyingOn", () => {
   it("lists each use case whose page names the Feature, once, in the order given", () => {
     expect(
-      useCasesRelyingOn("isolated-sessions", [
-        handsOnEvents,
-        demoPlatform,
-        teamTraining,
-      ]),
+      useCasesRelyingOn(
+        "isolated-sessions",
+        [handsOnEvents, demoPlatform, teamTraining],
+        before4,
+      ),
     ).toEqual([
       {
         name: "Hands-on events",
@@ -118,11 +120,11 @@ describe("useCasesRelyingOn", () => {
 
   it("leaves out use cases that do not name the Feature, and stubs without a page", () => {
     expect(
-      useCasesRelyingOn("portal-rest-api", [
-        handsOnEvents,
-        demoPlatform,
-        teamTraining,
-      ]),
+      useCasesRelyingOn(
+        "portal-rest-api",
+        [handsOnEvents, demoPlatform, teamTraining],
+        before4,
+      ),
     ).toEqual([
       {
         name: "Build your own Demo Platform",
@@ -131,11 +133,38 @@ describe("useCasesRelyingOn", () => {
       },
     ]);
     expect(
-      useCasesRelyingOn("examiner-checks", [
-        handsOnEvents,
-        demoPlatform,
-        teamTraining,
-      ]),
+      useCasesRelyingOn(
+        "examiner-checks",
+        [handsOnEvents, demoPlatform, teamTraining],
+        before4,
+      ),
     ).toEqual([]);
+  });
+
+  it("counts a Feature a capability names only from Educates 4.0 once 4.0 is released", () => {
+    const selfHostedTraining = {
+      id: "team-training",
+      data: {
+        name: "Team training",
+        promise: "Train your engineers on real environments.",
+        page: { capabilities: [selfHosted, portal] },
+      },
+    };
+    expect(
+      useCasesRelyingOn("air-gapped-install", [selfHostedTraining], {
+        educates4Released: false,
+      }),
+    ).toEqual([]);
+    expect(
+      useCasesRelyingOn("air-gapped-install", [selfHostedTraining], {
+        educates4Released: true,
+      }),
+    ).toEqual([
+      {
+        name: "Team training",
+        promise: "Train your engineers on real environments.",
+        href: "/use-cases/team-training",
+      },
+    ]);
   });
 });

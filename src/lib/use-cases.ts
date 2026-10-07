@@ -73,17 +73,19 @@ export interface UseCaseLink {
 
 /**
  * The use cases that rely on the Feature `featureId`: those whose page names
- * it in one of its capabilities, once each, in the order of `entries`. A use
+ * it in one of its capabilities as `release` has them (see
+ * `currentCapabilities()`), once each, in the order of `entries`. A use
  * case without a page names no Features, so it is never listed.
  */
 export function useCasesRelyingOn(
   featureId: string,
   entries: readonly UseCaseEntry[],
+  release: Release,
 ): UseCaseLink[] {
   return entries
     .filter((entry) =>
-      entry.data.page?.capabilities.some((capability) =>
-        capability.features.includes(featureId),
+      currentCapabilities(entry.data.page?.capabilities ?? [], release).some(
+        (capability) => capability.features.includes(featureId),
       ),
     )
     .map((entry) => ({
