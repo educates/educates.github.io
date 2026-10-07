@@ -229,6 +229,17 @@ const guides = defineCollection({
     description: z.string(),
     /** Where it sits among the parts, or among its part's pages. */
     order: z.number().int(),
+    /**
+     * A part's tags, keys of `src/content/tags.yml`, which give its card on
+     * the Learn page its Topics.
+     */
+    tags: z.array(z.string()).default([]),
+    /**
+     * Whether the part is a signpost to what comes after the path, such as
+     * Next steps, rather than a step of it. The Learn page lists a card for
+     * every other part.
+     */
+    signpost: z.boolean().default(false),
   }),
 });
 
@@ -352,6 +363,24 @@ const outsideContent = defineCollection({
       }),
 });
 
+/**
+ * The Topics the Learn page filters by, in src/content/topics.yml, keyed by
+ * the id its query string uses. Each is a set of tags; `topics()` in
+ * src/lib/content.ts lists them by `order` and fails the build on a tag
+ * `src/content/tags.yml` does not define.
+ */
+const topics = defineCollection({
+  loader: file("./src/content/topics.yml"),
+  schema: z.object({
+    /** The Topic's name, as its chip and the cards show it. */
+    label: z.string(),
+    /** Keys of `src/content/tags.yml`. */
+    tags: z.array(z.string()).min(1),
+    /** Where its chip sits, lowest first; cards list Topics in this order. */
+    order: z.number().int(),
+  }),
+});
+
 /** The authors of blog posts, by key, with the keys of Docusaurus's `authors.yml`. */
 const authors = defineCollection({
   loader: file("./src/content/authors.yml"),
@@ -386,6 +415,7 @@ export const collections = {
   about,
   posts,
   outsideContent,
+  topics,
   authors,
   tags,
 };
