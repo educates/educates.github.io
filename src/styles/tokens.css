@@ -41,6 +41,17 @@
   --color-editor-number: #b5cea8;
   --color-editor-selection: #264f78;
 
+  /* Content covers: the dotted ground, the window's shadow and the edge
+     of a clickable action follow the theme; the logo blue, the bar's ink
+     and the yellow play marker are the same in both themes. */
+  --color-cover-dots: #d3dcea;
+  --color-cover-shadow: rgba(14, 26, 43, 0.14);
+  --color-highlight-line: #edd57a;
+  --color-logo-blue: #326ce5;
+  --color-dashboard-bar-ink: #ffffff;
+  --color-play-marker: #ffd84a;
+  --color-play-marker-ink: #0e1a2b;
+
   --font-sans: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
@@ -71,6 +82,9 @@
     --color-tip-soft: #10261a;
     --color-danger: #ff7b72;
     --color-danger-soft: #331517;
+    --color-cover-dots: #1c2a40;
+    --color-cover-shadow: rgba(0, 0, 0, 0.5);
+    --color-highlight-line: #6b5a1c;
   }
 }
 
@@ -94,4 +108,7 @@
   --color-tip-soft: #10261a;
   --color-danger: #ff7b72;
   --color-danger-soft: #331517;
+  --color-cover-dots: #1c2a40;
+  --color-cover-shadow: rgba(0, 0, 0, 0.5);
+  --color-highlight-line: #6b5a1c;
 }
