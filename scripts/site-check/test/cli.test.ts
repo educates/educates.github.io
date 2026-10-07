@@ -22,9 +22,18 @@ describe("site-check command", () => {
   it("passes a build with warnings only, and lists them", () => {
     const { status, output } = runSiteCheck(
       fixtureBuild({
-        ...sitePage("index.html", "https://educates.dev/"),
+        ...sitePage(
+          "index.html",
+          "https://educates.dev/",
+          '<section id="use-cases"></section><section id="description"></section><section id="features"></section><section id="featured-content"></section><section id="pricing"></section>',
+        ),
         "sitemap.xml": sitemap("https://educates.dev/"),
         ...redirectsAndTargets(),
+        ...sitePage(
+          "community.html",
+          "https://educates.dev/community",
+          '<section id="team"></section>',
+        ),
       }),
     );
     expect(output).toContain("/downloads (Site pages) is not served");
@@ -85,13 +94,20 @@ function redirectsAndTargets(): Record<string, string> {
 
 /**
  * A page at `file`, served at `url`, with the Open Graph image the base
- * layout points to and the image itself.
+ * layout points to and the image itself, and `body` after its heading.
  */
-function sitePage(file: string, url: string): Record<string, string> {
+function sitePage(
+  file: string,
+  url: string,
+  body = "",
+): Record<string, string> {
   const path = new URL(url).pathname;
   const image = `og${path === "/" ? "/index" : path}.png`;
   return {
-    [file]: page(url, openGraphImageTags(`https://educates.dev/${image}`)),
+    [file]: page(
+      url,
+      openGraphImageTags(`https://educates.dev/${image}`),
+    ).replace("<h1>Page</h1>", `<h1>Page</h1>${body}`),
     [image]: "PNG",
   };
 }

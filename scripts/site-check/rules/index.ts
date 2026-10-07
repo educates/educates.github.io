@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { homepageAnchorForwards } from "../../../src/lib/anchor-forwards.ts";
 import { redirects, staticRedirects } from "../../../src/redirects.ts";
 import { site } from "../../../src/site.ts";
 import { parseMustResolveList } from "../must-resolve-list.ts";
@@ -8,12 +9,22 @@ import { educates4OnlyTerms } from "./educates4-only-terms.ts";
 import { feedIdentity } from "./feed-identity.ts";
 import { feedLinks } from "./feed-links.ts";
 import { frozenPaths } from "./frozen-paths.ts";
+import { keptAnchors } from "./kept-anchors.ts";
 import { mustResolve } from "./must-resolve.ts";
 import { openGraphImages } from "./open-graph-images.ts";
 import { redirectPages } from "./redirect-pages.ts";
 import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
 import { stubPages } from "./stub-pages.ts";
+
+/** The old homepage's anchors whose sections the homepage keeps, by id. */
+const homepageAnchors = [
+  "use-cases",
+  "description",
+  "features",
+  "featured-content",
+  "pricing",
+];
 
 /**
  * The rules the site-check command runs over every build. A rule is a
@@ -33,6 +44,14 @@ export function siteRules(): Rule[] {
     redirectPages({
       origin: site.origin,
       redirects: { ...redirects, ...staticRedirects },
+    }),
+    // The old homepage's anchors: the sections the homepage keeps, and the
+    // places its inline script forwards the others to.
+    keptAnchors({
+      anchors: [
+        ...homepageAnchors.map((id) => `/#${id}`),
+        ...Object.values(homepageAnchorForwards),
+      ],
     }),
     // The Educates Hub moves into the site at /hub; until then it stays empty.
     reservedPaths({ paths: ["/hub"] }),
