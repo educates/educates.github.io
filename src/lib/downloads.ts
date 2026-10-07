@@ -4,10 +4,10 @@
 // URL always serves that asset from the latest release, so these links stay
 // current without a site change.
 
-const repository = "https://github.com/educates/educates-training-platform";
+import { platformRepository } from "./project.ts";
 
 /** Every release, for versions other than the latest. */
-export const releasesUrl = `${repository}/releases`;
+export const releasesUrl = `${platformRepository}/releases`;
 
 /** The URL of the asset named `asset` on the latest release. */
 export function latestReleaseAsset(asset: string): string {
