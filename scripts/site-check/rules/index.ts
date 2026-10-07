@@ -17,6 +17,7 @@ import { redirectPages } from "./redirect-pages.ts";
 import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
 import { stubPages } from "./stub-pages.ts";
+import { textPlaceholders } from "./text-placeholders.ts";
 import { trailingSlashLinks } from "./trailing-slash-links.ts";
 import { visualPlaceholders } from "./visual-placeholders.ts";
 
@@ -77,6 +78,9 @@ export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
     stubPages(),
     // Screenshots and recordings still to be captured: listed, never blocking.
     visualPlaceholders(),
+    // Copy the cutover fills in, such as the date the privacy page names as
+    // the end of Google Analytics: listed, never blocking.
+    textPlaceholders({ placeholders: ["[cutover date]"] }),
     // The homepage and the sections that describe Educates as it is today
     // say "air-gapped" only once Educates 4.0 is released. The Blog and
     // Learn are left out: a dated post may mention what is coming.
