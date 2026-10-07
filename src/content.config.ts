@@ -58,9 +58,19 @@ const useCases = defineCollection({
         /**
          * How Educates fits: three or four capabilities, each naming the
          * Features it rests on by their ids in src/content/features/.
+         * A capability that Educates 4.0 extends adds `educates4Text`,
+         * `educates4Features` or both, which `site.educates4Released`
+         * switches to (see `currentCapabilities()` in
+         * src/lib/use-cases.ts); until then they stay hidden.
          */
         capabilities: z
-          .array(useCasePoint.extend({ features: z.array(z.string()).min(1) }))
+          .array(
+            useCasePoint.extend({
+              features: z.array(z.string()).min(1),
+              educates4Text: z.string().optional(),
+              educates4Features: z.array(z.string()).min(1).optional(),
+            }),
+          )
           .min(3)
           .max(4),
         /**
