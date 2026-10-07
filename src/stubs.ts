@@ -21,13 +21,6 @@ export interface Stub {
 
 export const stubs: readonly Stub[] = [
   {
-    path: "/features",
-    title: "Features",
-    description:
-      "What Educates gives the people who write workshops, the people who run them, and the platform team that keeps them running.",
-    section: "Feature",
-  },
-  {
     path: "/learn",
     title: "Learn",
     description:

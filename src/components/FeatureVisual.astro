@@ -1,0 +1,78 @@
+---
+// The visual slot of a Feature block: the Feature's screenshot, or for a
+// Feature without one, a placeholder frame drawn like a window, marked with
+// `data-visual-placeholder` and hidden from screen readers.
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+export interface Props {
+  /** The Feature's `visual`, from its entry in the Feature collection. */
+  visual?: { src: ImageMetadata; alt: string } | undefined;
+}
+
+const { visual } = Astro.props;
+---
+
+{visual ? (
+  <Image
+    class="visual"
+    src={visual.src}
+    alt={visual.alt}
+    widths={[480, 960]}
+    sizes="(min-width: 960px) 360px, (min-width: 640px) 50vw, 100vw"
+  />
+) : (
+  <div class="visual placeholder" data-visual-placeholder aria-hidden="true">
+    <span class="bar">
+      <i />
+      <i />
+      <i />
+    </span>
+    <span class="label">Screenshot coming</span>
+  </div>
+)}
+
+<style>
+  .visual {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    object-fit: cover;
+    object-position: left top;
+  }
+  .placeholder {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    background-color: var(--color-background);
+    background-image: radial-gradient(var(--color-line) 1px, transparent 1.5px);
+    background-size: 14px 14px;
+  }
+  .bar {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-chrome);
+  }
+  .bar i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-line);
+  }
+  .label {
+    align-self: center;
+    justify-self: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-ink-muted);
+    font: 600 12px/1.4 var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
