@@ -6,6 +6,7 @@ import type { Rule } from "../site-check.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
 import { feedIdentity } from "./feed-identity.ts";
 import { feedLinks } from "./feed-links.ts";
+import { frozenPaths } from "./frozen-paths.ts";
 import { mustResolve } from "./must-resolve.ts";
 import { redirectPages } from "./redirect-pages.ts";
 import { reservedPaths } from "./reserved-paths.ts";
@@ -37,6 +38,9 @@ export function siteRules(): Rule[] {
       origin: site.origin,
       feeds: ["/blog/rss.xml", "/blog/atom.xml"],
     }),
+    // The images the old feeds embedded, kept at their URLs for feed readers
+    // that cached those items.
+    frozenPaths({ origin: site.origin, paths: ["/assets/images"] }),
     // Stub pages warn; `severity: "error"` makes them block the build.
     stubPages({ severity: "warning" }),
   ];

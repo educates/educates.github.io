@@ -1,5 +1,6 @@
 import { parse } from "node-html-parser";
 import { atomFeed, rssItems } from "../feed-xml.ts";
+import { urlsIn } from "../html-urls.ts";
 import type { Finding, Rule } from "../site-check.ts";
 
 export interface FeedLinksOptions {
@@ -28,7 +29,7 @@ export function feedLinks({ origin, feeds }: FeedLinksOptions): Rule {
           ? rssItems(xml)
           : atomFeed(xml).entries;
         for (const { link, content } of items) {
-          for (const url of urlsIn(content ?? "")) {
+          for (const url of urlsIn(parse(content ?? ""))) {
             const problem = urlProblem(url);
             if (problem) {
               findings.push({
@@ -59,26 +60,4 @@ export function feedLinks({ origin, feeds }: FeedLinksOptions): Rule {
       }
     },
   };
-}
-
-/** Every link, image and media URL in a piece of HTML, in order. */
-function urlsIn(html: string): string[] {
-  const document = parse(html);
-  const urls: string[] = [];
-  for (const element of document.querySelectorAll(
-    "[href], [src], [srcset], [poster]",
-  )) {
-    for (const name of ["href", "src", "poster"]) {
-      const value = element.getAttribute(name);
-      if (value !== undefined) urls.push(value.trim());
-    }
-    const srcset = element.getAttribute("srcset");
-    if (srcset !== undefined) {
-      for (const candidate of srcset.split(",")) {
-        const url = candidate.trim().split(/\s+/)[0];
-        if (url) urls.push(url);
-      }
-    }
-  }
-  return urls;
 }
