@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npm run site-check",
     "preview": "astro preview",
     "check": "astro check",
+    "site-check": "node scripts/site-check/cli.ts dist",
     "format": "prettier --write \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "test": "vitest run"
