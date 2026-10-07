@@ -1,10 +1,10 @@
 ---
 // Links to the newer and older pages of a paginated list of posts. Shows
 // nothing when the list fits on one page.
-import type { Page } from "../lib/pagination.ts";
+import type { PaginatedListPage } from "../lib/pagination.ts";
 
 export interface Props {
-  page: Page<unknown>;
+  page: PaginatedListPage<unknown>;
 }
 
 const { page } = Astro.props;

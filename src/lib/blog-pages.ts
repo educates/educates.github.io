@@ -1,7 +1,7 @@
 // The paginated lists of the blog: every post, a tag's posts and an
 // author's posts, with the titles and descriptions of their pages.
 
-import { paginate, type Page } from "./pagination.ts";
+import { paginate, type PaginatedListPage } from "./pagination.ts";
 import {
   authorPath,
   authorsByKey,
@@ -16,7 +16,7 @@ import {
 
 /** A page of a list of posts, with what its head and heading say. */
 export interface PostListPage {
-  page: Page<Post>;
+  page: PaginatedListPage<Post>;
   title: string;
   heading: string;
   description: string;
@@ -24,7 +24,7 @@ export interface PostListPage {
 }
 
 /** ", page N" for pages after the first, so each page's title differs. */
-function pageSuffix(page: Page<Post>): string {
+function pageSuffix(page: PaginatedListPage<Post>): string {
   return page.number === 1 ? "" : `, page ${page.number}`;
 }
 

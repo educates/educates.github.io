@@ -1,5 +1,5 @@
 /** One page of a paginated list. */
-export interface Page<T> {
+export interface PaginatedListPage<T> {
   /** The page's number, from 1. */
   number: number;
   /** How many pages the list has. */
@@ -22,7 +22,7 @@ export function paginate<T>(
   items: readonly T[],
   basePath: string,
   size = 10,
-): Page<T>[] {
+): PaginatedListPage<T>[] {
   const count = Math.max(1, Math.ceil(items.length / size));
   const path = (number: number) =>
     number === 1 ? basePath : `${basePath}/page/${number}`;
