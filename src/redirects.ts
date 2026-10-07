@@ -12,6 +12,12 @@ export const redirects: Readonly<Record<string, string>> = {
   "/docs": "https://docs.educates.dev",
   "/team": "/community",
   "/resources": "/learn",
+  // About Educates went from six pages to three: Deployment is now
+  // Architecture's "Where it runs", Workshop Capabilities became the
+  // Features overview, and Local Development the guides' Set up part.
+  "/about-educates/deployment": "/about-educates",
+  "/about-educates/workshop-capabilities": "/features",
+  "/about-educates/local-dev": "/getting-started-guides/setup",
   // The guides' Components and CRDs pages became "What you just installed",
   // and their workflow page moved to About Educates.
   "/getting-started-guides/about/components": "/getting-started-guides/about",
