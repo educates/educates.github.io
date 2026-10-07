@@ -15,6 +15,7 @@ import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import ThemeScript from "../components/ThemeScript.astro";
 import type { Crumb } from "../lib/breadcrumbs.ts";
+import { feedPaths } from "../lib/posts.ts";
 import { canonicalUrl } from "../lib/urls.ts";
 import { site } from "../site.ts";
 
@@ -80,6 +81,18 @@ const structuredData = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      href={feedPaths.rss}
+      title="Educates Training Platform RSS Feed"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      href={feedPaths.atom}
+      title="Educates Training Platform Atom Feed"
+    />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />

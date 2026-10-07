@@ -9,18 +9,18 @@ import { Feed } from "feed";
 import { site } from "../site.ts";
 import { blogDescription } from "./blog-pages.ts";
 import { postFeedHtml } from "./post-feed-html.ts";
-import { blogPath, postAuthors, postPath, postTags, posts } from "./posts.ts";
-
-export type FeedFormat = "rss" | "atom";
+import {
+  blogPath,
+  feedPaths,
+  postAuthors,
+  postPath,
+  postTags,
+  posts,
+  type FeedFormat,
+} from "./posts.ts";
 
 /** How many of the newest posts the feeds carry. */
 export const feedSize = 20;
-
-/** The URL path of each feed. */
-export const feedPaths: Record<FeedFormat, string> = {
-  rss: `${blogPath}/rss.xml`,
-  atom: `${blogPath}/atom.xml`,
-};
 
 /** The URL path of the XSL stylesheet a browser shows each feed with. */
 const stylesheetPaths: Record<FeedFormat, string> = {
