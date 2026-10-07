@@ -9,7 +9,9 @@ import { educates4OnlyTerms } from "./educates4-only-terms.ts";
 import { feedIdentity } from "./feed-identity.ts";
 import { feedLinks } from "./feed-links.ts";
 import { frozenPaths } from "./frozen-paths.ts";
+import type { LiveSitemap } from "../live-sitemap.ts";
 import { keptAnchors } from "./kept-anchors.ts";
+import { liveSitemap } from "./live-sitemap.ts";
 import { mustResolve } from "./must-resolve.ts";
 import { openGraphImages } from "./open-graph-images.ts";
 import { redirectPages } from "./redirect-pages.ts";
@@ -26,18 +28,25 @@ const homepageAnchors = [
   "pricing",
 ];
 
+export interface SiteRulesOptions {
+  /** The live site's sitemap, as the site check fetched it. */
+  liveSitemap: LiveSitemap;
+}
+
 /**
  * The rules the site-check command runs over every build. A rule is a
  * function in this folder that returns a `Rule`; add it here to run it,
  * and test it against small fixture builds in `../test/`.
  */
-export function siteRules(): Rule[] {
+export function siteRules({ liveSitemap: live }: SiteRulesOptions): Rule[] {
   const mustResolveList = parseMustResolveList(
     readFileSync(new URL("../must-resolve.txt", import.meta.url), "utf8"),
   );
   return [
-    // Missing entries warn; `missing: "error"` makes them block the build.
-    mustResolve(mustResolveList, { missing: "warning" }),
+    mustResolve(mustResolveList, { missing: "error" }),
+    // A page published on the live site since the build last matched it,
+    // such as a new blog post, fails the build until it is converted.
+    liveSitemap(live),
     canonicalUrls({ origin: site.origin }),
     openGraphImages({ origin: site.origin }),
     sitemap({ origin: site.origin }),
@@ -63,8 +72,7 @@ export function siteRules(): Rule[] {
     // The images the old feeds embedded, kept at their URLs for feed readers
     // that cached those items.
     frozenPaths({ origin: site.origin, paths: ["/assets/images"] }),
-    // Stub pages warn; `severity: "error"` makes them block the build.
-    stubPages({ severity: "warning" }),
+    stubPages({ severity: "error" }),
     // The use case pages say "air-gapped" only once Educates 4.0 is released.
     educates4OnlyTerms({
       educates4Released: site.educates4Released,

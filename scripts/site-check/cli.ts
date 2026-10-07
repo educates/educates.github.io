@@ -1,20 +1,36 @@
 // The site check: inspects a finished build the way GitHub Pages serves it
-// and reports what is wrong. Usage: node scripts/site-check/cli.ts [dist]
-// Exits 1 when any rule reports an error; warnings are listed only.
+// and reports what is wrong.
+//
+// Usage: node scripts/site-check/cli.ts [dist] [--live-sitemap <url>]
+//
+// It first fetches the live site's sitemap, https://educates.dev/sitemap.xml
+// unless `--live-sitemap` names another, to check that the build serves
+// every URL it lists. Exits 1 when any rule reports an error; warnings are
+// listed only.
 
 import { existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
+import { parseArgs } from "node:util";
+import { site } from "../../src/site.ts";
+import { fetchLiveSitemap } from "./live-sitemap.ts";
 import { siteRules } from "./rules/index.ts";
 import { checkSite, type Finding } from "./site-check.ts";
 
-const buildDir = resolve(process.argv[2] ?? "dist");
+const { values, positionals } = parseArgs({
+  allowPositionals: true,
+  options: { "live-sitemap": { type: "string" } },
+});
+const buildDir = resolve(positionals[0] ?? "dist");
 
 if (!existsSync(buildDir) || !statSync(buildDir).isDirectory()) {
   console.error(`site check: no build output at ${buildDir}`);
   process.exit(1);
 }
 
-const findings = checkSite(buildDir, siteRules());
+const liveSitemap = await fetchLiveSitemap(
+  values["live-sitemap"] ?? `${site.origin}/sitemap.xml`,
+);
+const findings = checkSite(buildDir, siteRules({ liveSitemap }));
 console.log(report(buildDir, findings));
 process.exitCode = findings.some((finding) => finding.severity === "error")
   ? 1

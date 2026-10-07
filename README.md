@@ -27,7 +27,11 @@ The site check, in `scripts/site-check/`, reads the build the way GitHub
 Pages serves it and reports what is wrong: errors fail the build, warnings
 are listed. Its rules are in `scripts/site-check/rules/`, and
 `scripts/site-check/must-resolve.txt` lists every URL the site must keep
-serving.
+serving. It also fetches the live site's sitemap and fails when the build
+does not serve a URL it lists, such as a blog post published since; when
+the sitemap cannot be fetched, it skips that comparison with a warning.
+`npm run site-check -- --live-sitemap <url>` compares with another
+sitemap.
 
 The link check uses the settings in `lychee.toml`.
 
