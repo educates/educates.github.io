@@ -4,6 +4,7 @@ import { parseMustResolveList } from "../must-resolve-list.ts";
 import type { Rule } from "../site-check.ts";
 import { canonicalUrls } from "./canonical-urls.ts";
 import { mustResolve } from "./must-resolve.ts";
+import { reservedPaths } from "./reserved-paths.ts";
 import { sitemap } from "./sitemap.ts";
 
 /**
@@ -20,5 +21,7 @@ export function siteRules(): Rule[] {
     mustResolve(mustResolveList, { missing: "warning" }),
     canonicalUrls({ origin: site.origin }),
     sitemap({ origin: site.origin }),
+    // The Educates Hub moves into the site at /hub; until then it stays empty.
+    reservedPaths({ paths: ["/hub"] }),
   ];
 }
