@@ -1,7 +1,8 @@
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { fixtureBuild, page } from "./fixture-build.ts";
+import { redirects } from "../../../src/redirects.ts";
+import { fixtureBuild, page, redirectPage } from "./fixture-build.ts";
 
 const cli = fileURLToPath(new URL("../cli.ts", import.meta.url));
 
@@ -18,6 +19,7 @@ describe("site-check command", () => {
       fixtureBuild({
         "index.html": page("https://educates.dev/"),
         "sitemap.xml": sitemap("https://educates.dev/"),
+        ...redirectsAndTargets(),
       }),
     );
     expect(output).toContain("/downloads (Site pages) is not served");
@@ -41,6 +43,18 @@ describe("site-check command", () => {
     expect(status).toBe(1);
   });
 });
+
+/** The site's redirect pages, and the pages on the site they point to. */
+function redirectsAndTargets(): Record<string, string> {
+  const files: Record<string, string> = {};
+  for (const [source, target] of Object.entries(redirects)) {
+    files[`${source.slice(1)}.html`] = redirectPage(target);
+    if (target.startsWith("/")) {
+      files[`${target.slice(1)}.html`] = page(`https://educates.dev${target}`);
+    }
+  }
+  return files;
+}
 
 function sitemap(...urls: string[]): string {
   const entries = urls.map((url) => `<url><loc>${url}</loc></url>`).join("");
