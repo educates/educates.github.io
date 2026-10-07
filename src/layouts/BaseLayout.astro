@@ -1,7 +1,8 @@
 ---
 // The page shell every page uses: the document head (title, description,
-// canonical URL, Open Graph tags, fonts, tokens, theme), the site header,
-// the page's content inside <main> after its breadcrumbs, and the footer.
+// canonical URL, Open Graph tags, fonts, tokens, theme, the page view
+// counter), the site header, the page's content inside <main> after its
+// breadcrumbs, and the footer.
 import "@fontsource/onest/400.css";
 import "@fontsource/onest/600.css";
 import "@fontsource/onest/700.css";
@@ -10,6 +11,7 @@ import "@fontsource/jetbrains-mono/600.css";
 import "@fontsource/jetbrains-mono/700.css";
 import "../styles/tokens.css";
 import "../styles/global.css";
+import Analytics from "../components/Analytics.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -76,6 +78,7 @@ const structuredData = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <ThemeScript />
+    <Analytics />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />

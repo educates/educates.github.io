@@ -20,6 +20,16 @@ export interface SiteSettings {
    * project" shows only when this is on.
    */
   readonly sponsorsListingPublic: boolean;
+  /**
+   * GoatCounter, which counts page views: `endpoint` is the site's `/count`
+   * URL, where count.js sends each page view, and `script` is where
+   * count.js is loaded from. Hosted GoatCounter and a self-hosted instance
+   * differ only in these two URLs.
+   */
+  readonly goatCounter: {
+    readonly endpoint: string;
+    readonly script: string;
+  };
 }
 
 export const site: SiteSettings = {
@@ -29,4 +39,8 @@ export const site: SiteSettings = {
   sourceBranch: "develop",
   educates4Released: false,
   sponsorsListingPublic: false,
+  goatCounter: {
+    endpoint: "https://educates.goatcounter.com/count",
+    script: "https://gc.zgo.at/count.js",
+  },
 };
