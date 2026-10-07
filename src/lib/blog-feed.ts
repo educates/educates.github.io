@@ -20,7 +20,7 @@ import {
 } from "./posts.ts";
 
 /** How many of the newest posts the feeds carry. */
-export const feedSize = 20;
+const feedSize = 20;
 
 /** The URL path of the XSL stylesheet a browser shows each feed with. */
 const stylesheetPaths: Record<FeedFormat, string> = {
