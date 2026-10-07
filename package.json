@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "site-check": "node scripts/site-check/cli.ts dist",
+    "link-check": "lychee --offline --root-dir \"$PWD/dist\" 'dist/**/*.html'",
     "docker-build": "sh scripts/docker-build.sh",
     "format": "prettier --write \"**/*.{astro,ts,tsx,js,mjs,css}\"",
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,mjs,css}\"",
