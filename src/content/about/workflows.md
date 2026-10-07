@@ -33,6 +33,8 @@ Getting Started Guides takes you through the same steps hands-on.
 
 ```mermaid
 sequenceDiagram
+    accTitle: From source to Session
+    accDescr: You publish the workshop to the image registry, then deploy its Workshop and TrainingPortal resources. The Educates operator deploys the training portal. The portal creates a WorkshopEnvironment, for which the operator creates the environment namespace and shared resources. If the workshop keeps Sessions in reserve, the portal creates WorkshopSession resources too, and the operator creates each Session's namespace, access rules and workshop pod.
     actor You
     participant Registry as Image registry
     participant Operator as Educates operator<br>(session manager)
@@ -70,6 +72,8 @@ creates another one for the next Attendee.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Starting a Session
+    accDescr: The Attendee picks a workshop in the training portal. If a Session is waiting in reserve, the portal allocates it to the Attendee. If not, the portal creates a WorkshopSession, the operator creates the Session's namespace, access rules and workshop pod, and the portal allocates it. If the workshop keeps a reserve and is under its capacity, the portal creates the next reserve Session. The portal then sends the Attendee to the Session's dashboard.
     actor Attendee
     participant Portal as Training portal
     participant Operator as Educates operator<br>(session manager)
@@ -127,8 +131,10 @@ container image rebuilt.
 
 ```mermaid
 flowchart TD
+    accTitle: Changing a workshop
+    accDescr: For instructions you are writing, educates serve-workshop with the patch-workshop option serves them from your machine. For instructions, setup scripts or exercise files, run educates publish-workshop, then run update-workshop in the Session's terminal and reload the instructions, or start a new Session. For the workshop definition in resources/workshop.yaml, run educates update-workshop and start a new Session.
     edit["Edit the workshop"] --> what{"What changed?"}
-    what -- "Instructions, as you write" --> live["educates serve-workshop --patch-workshop<br>serves them from your machine"]
+    what -- "Instructions, as you write" --> live["educates serve-workshop<br>--patch-workshop"]
     what -- "Instructions, setup scripts<br>or exercise files" --> publish["educates publish-workshop"]
     publish --> update["update-workshop in the Session's terminal,<br>then reload the instructions"]
     publish --> fresh["Start a new Session"]

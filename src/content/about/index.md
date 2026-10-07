@@ -83,25 +83,26 @@ yourself:
   kept in reserve, or created when an Attendee asks for one.
 
 ```mermaid
-flowchart LR
+flowchart TB
+    accTitle: Educates on Kubernetes
+    accDescr: You apply Workshop and TrainingPortal resources to the Educates operator, which deploys the training portal. The portal creates WorkshopEnvironment and WorkshopSession resources, from which the operator creates a workshop environment namespace, holding the workshop pod of each Session, and a namespace for each Session. Each workshop pod reaches its own Session's namespace with kubectl.
     you(["You"])
-    attendee(["Attendee"])
-    subgraph cluster["Kubernetes cluster"]
-        operator["Educates operator<br>(session manager)"]
-        portal["Training portal"]
+    operator["Educates operator<br>(session manager)"]
+    portal["Training portal"]
+    subgraph created[" "]
         subgraph environment["Workshop environment namespace"]
-            pod["Workshop pod of each Session:<br>dashboard, terminals, editor"]
+            pod1["Workshop pod of Session 1:<br>dashboard, terminals, editor"]
+            pod2["Workshop pod of Session 2:<br>dashboard, terminals, editor"]
         end
-        session["Session namespace:<br>the Attendee's own workloads"]
+        session1["Session 1 namespace"]
+        session2["Session 2 namespace"]
     end
-    you -- "Workshop,<br>TrainingPortal" --> operator
+    you -- "Workshop, TrainingPortal" --> operator
     operator -- "deploys" --> portal
     portal -- "WorkshopEnvironment,<br>WorkshopSession" --> operator
-    operator -- "creates" --> environment
-    operator -- "creates" --> session
-    attendee -- "starts a workshop" --> portal
-    attendee -- "works in" --> pod
-    pod -- "kubectl" --> session
+    operator -- "creates" --> created
+    pod1 -- "kubectl" --> session1
+    pod2 -- "kubectl" --> session2
 ```
 
 Note where each part of a Session runs. Its workshop pod, the container
@@ -138,6 +139,8 @@ client of the API can reach.
 
 ```mermaid
 flowchart LR
+    accTitle: The lookup service in front of several training portals
+    accDescr: Your front end calls the lookup service's REST API. The lookup service watches the training portals on clusters A and B and requests Sessions from them.
     frontend["Your front end"] -- "REST API" --> lookup["Lookup service"]
     lookup -- "watches,<br>requests Sessions" --> portalA1["Training portal<br>on cluster A"]
     lookup --> portalA2["Training portal<br>on cluster A"]
