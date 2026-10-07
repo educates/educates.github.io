@@ -30,3 +30,19 @@ lab-lookup-configuration:
 lab-lookup-consumption:
   title: Using the Educates Lookup Service
   url: https://hub.educates.dev/lab-lookup-consumption/
+
+lab-integrated-editor:
+  title: Using Integrated Editor in Educates
+  url: https://hub.educates.dev/lab-integrated-editor/
+
+lab-examiner-scripts:
+  title: Using Examiner Scripts in Educates
+  url: https://hub.educates.dev/lab-examiner-scripts/
+
+lab-session-namespace:
+  title: Using Session Namespace in Educates
+  url: https://hub.educates.dev/lab-session-namespace/
+
+lab-virtual-cluster:
+  title: Using Virtual Cluster in Educates
+  url: https://hub.educates.dev/lab-virtual-cluster/
