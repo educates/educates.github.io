@@ -213,10 +213,14 @@ for (const heading of headings) {
   }
   .docs-nav-heading {
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    padding: 6px 10px;
     color: var(--color-ink);
     font-weight: 700;
     text-decoration: none;
+  }
+  .docs-nav-heading[aria-current="page"] {
+    color: var(--color-accent-strong);
   }
   .docs-nav ul {
     margin: 0;
@@ -239,7 +243,7 @@ for (const heading of headings) {
   .docs-nav a:hover {
     color: var(--color-ink);
   }
-  .docs-nav a[aria-current="page"] {
+  .docs-nav li a[aria-current="page"] {
     background: var(--color-accent-soft);
     color: var(--color-accent-strong);
     font-weight: 600;
