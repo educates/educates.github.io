@@ -32,7 +32,6 @@ describe("must-resolve list", () => {
       ["Author pages", 4],
       ["Not-found page", 1],
       ["Feeds", 2],
-      ["Feed stylesheets", 4],
       ["Crawler and host files", 3],
       ["Kept assets", 10],
       ["Content-hashed images embedded in the feeds", 24],

@@ -22,12 +22,6 @@ import {
 /** How many of the newest posts the feeds carry. */
 const feedSize = 20;
 
-/** The URL path of the XSL stylesheet a browser shows each feed with. */
-const stylesheetPaths: Record<FeedFormat, string> = {
-  rss: `${blogPath}/rss.xsl`,
-  atom: `${blogPath}/atom.xsl`,
-};
-
 /** The blog feed in `format`, with the newest posts in full, as XML. */
 export async function blogFeed(format: FeedFormat): Promise<string> {
   const newest = (await posts()).slice(0, feedSize);
@@ -46,7 +40,6 @@ export async function blogFeed(format: FeedFormat): Promise<string> {
       rss: `${site.origin}${feedPaths.rss}`,
       atom: `${site.origin}${feedPaths.atom}`,
     },
-    stylesheet: stylesheetPaths[format],
   });
   for (const post of newest) {
     const link = `${site.origin}${postPath(post)}`;

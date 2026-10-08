@@ -34,6 +34,10 @@ new post for every subscriber.
 - GitHub does not document the Pages behavior this URL form relies on, so
   a check of every published URL runs in CI against the build and once
   against the live site after a cutover.
+- The old feeds' XSLT stylesheets, `/blog/rss.xsl` and `/blog/atom.xsl`
+  with their CSS, are not kept, and the feeds link no stylesheet: only the
+  feeds linked them, and Chrome stops running XSLT in November 2026, with
+  Firefox and WebKit planning to follow.
 - `/Downloads`, renamed to `/downloads` in 2025, has no redirect:
   `Downloads.html` and `downloads.html` are the same file on macOS's
   case-insensitive file system.

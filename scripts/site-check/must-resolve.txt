@@ -1,7 +1,9 @@
 # Every URL the built site must serve: each page, feed, file and redirect
 # source the Docusaurus site published or linked, so links from elsewhere
-# keep working. One URL path per line; `[Section]` names the section of the
-# entries below it; `#` starts a comment.
+# keep working. The old feeds' XSLT stylesheets and their CSS are left out:
+# only the feeds linked them, and browsers are removing XSLT. One URL path
+# per line; `[Section]` names the section of the entries below it; `#`
+# starts a comment.
 
 [Site pages]
 /
@@ -90,12 +92,6 @@
 [Feeds]
 /blog/rss.xml
 /blog/atom.xml
-
-[Feed stylesheets]
-/blog/rss.xsl
-/blog/rss.css
-/blog/atom.xsl
-/blog/atom.css
 
 [Crawler and host files]
 /sitemap.xml
