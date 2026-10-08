@@ -49,7 +49,14 @@ const learnLinks: NavLink[] = [
   { label: "About Educates", href: "/about-educates" },
 ];
 
-/** The header's three menus, which the phone sheet lists open. */
+const projectLinks: NavLink[] = [
+  getStarted,
+  { label: "Get help", href: "/get-help" },
+  { label: "Community", href: "/community" },
+  { label: "Downloads", href: "/downloads" },
+];
+
+/** The header's four menus, which the phone sheet lists open. */
 export async function headerMenus(): Promise<NavGroup[]> {
   return [
     {
@@ -70,6 +77,7 @@ export async function headerMenus(): Promise<NavGroup[]> {
       ],
     },
     { label: "Learn", links: learnLinks },
+    { label: "Project", links: projectLinks },
   ];
 }
 
@@ -85,13 +93,7 @@ export async function footerColumns(): Promise<NavGroup[]> {
     },
     {
       label: "Project",
-      links: [
-        getStarted,
-        { label: "Get help", href: "/get-help" },
-        { label: "Community", href: "/community" },
-        { label: "Downloads", href: "/downloads" },
-        { label: "Privacy", href: "/privacy" },
-      ],
+      links: [...projectLinks, { label: "Privacy", href: "/privacy" }],
     },
     {
       label: "Elsewhere",

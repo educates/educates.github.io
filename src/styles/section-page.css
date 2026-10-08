@@ -113,8 +113,8 @@
 
 /*
  * The close: a call to action beside what comes next. Each layout sets the
- * two columns in `--close-columns`; at 960px and below, where the site
- * switches to its phone layout, they stack.
+ * two columns in `--close-columns`; at 960px and below, where the page
+ * layouts switch to their phone layout, they stack.
  */
 :where(.section-page) .close {
   display: grid;

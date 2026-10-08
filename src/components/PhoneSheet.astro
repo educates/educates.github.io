@@ -2,7 +2,8 @@
 // The phone menu: a button in the header that opens a full-height sheet
 // listing every header menu open, then the links elsewhere, with "Get
 // started" pinned at the bottom. Without JavaScript the button is a link to
-// the footer's site map. The sheet shows only in the phone layout.
+// the footer's site map. The sheet shows only below 1024px, where the
+// header menus no longer fit.
 import { elsewhere, getStarted, type NavGroup } from "../lib/navigation.ts";
 import { site } from "../site.ts";
 import Icon from "./Icon.astro";
@@ -97,8 +98,8 @@ const groups: NavGroup[] = [
   .close:hover {
     background: var(--color-accent-soft);
   }
-  /* The phone layout; PHONE_LAYOUT in src/scripts/site-menus.ts matches it. */
-  @media (max-width: 960px) {
+  /* The phone menu; PHONE_MENU in src/scripts/site-menus.ts matches it. */
+  @media (max-width: 1023px) {
     :global(html.js) button.menu-button,
     :global(html:not(.js)) .menu-link {
       display: inline-grid;

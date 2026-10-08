@@ -1,8 +1,9 @@
 ---
 // The sticky site header. On wide screens: the brand and the Use cases,
-// Features and Learn menus on the left; Docs and the Hub (both external),
-// GitHub, the theme toggle and "Get started" on the right. On phones: the
-// brand, the theme toggle and the menu button, which opens the phone sheet.
+// Features, Learn and Project menus on the left; Docs and the Hub (both
+// external), GitHub, the theme toggle and "Get started" on the right. On
+// phones: the brand, the theme toggle and the menu button, which opens the
+// phone sheet.
 import { headerMenus, elsewhere, getStarted } from "../lib/navigation.ts";
 import { pagePath } from "../lib/urls.ts";
 import { site } from "../site.ts";
@@ -119,6 +120,7 @@ const current = pagePath(Astro.url.pathname);
     color: var(--color-ink-muted);
     font-size: 15px;
     font-weight: 500;
+    white-space: nowrap;
     list-style: none;
     cursor: pointer;
     user-select: none;
@@ -212,8 +214,8 @@ const current = pagePath(Astro.url.pathname);
     font-size: 15px;
   }
 
-  /* The phone layout; PHONE_LAYOUT in src/scripts/site-menus.ts matches it. */
-  @media (max-width: 960px) {
+  /* The phone menu; PHONE_MENU in src/scripts/site-menus.ts matches it. */
+  @media (max-width: 1023px) {
     .menus,
     .wide-only {
       display: none;

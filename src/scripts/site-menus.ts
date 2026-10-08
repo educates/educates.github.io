@@ -10,8 +10,15 @@
 // phone layout close it. Without JavaScript the menu button is a link to
 // the footer's site map instead.
 
-/** The widths that show the phone sheet; the header's CSS uses the same. */
+/** The widths of the phone layout, where the page layouts go to one column. */
 export const PHONE_LAYOUT = "(max-width: 960px)";
+
+/**
+ * The widths that show the phone sheet instead of the header menus; the
+ * header's and the sheet's CSS use the same. Wider than the phone layout,
+ * because the four header menus and the header's links need 1024px.
+ */
+export const PHONE_MENU = "(max-width: 1023px)";
 
 export function setUpHeaderMenus(): void {
   const menus = [
@@ -65,7 +72,7 @@ export function setUpPhoneSheet(): void {
     if (target.closest("a, [data-sheet-close]")) sheet.close();
   });
 
-  const phone = window.matchMedia(PHONE_LAYOUT);
+  const phone = window.matchMedia(PHONE_MENU);
   phone.addEventListener("change", () => {
     if (!phone.matches && sheet.open) sheet.close();
   });
