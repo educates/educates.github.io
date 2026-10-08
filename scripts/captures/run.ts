@@ -222,14 +222,30 @@ async function sessionPages(
   return pages;
 }
 
+/**
+ * The pages a source shows side by side, Sessions or pages of Example
+ * Academy each in a browser of its own, or none for a source of one page.
+ */
+async function sideBySidePages(
+  source: Source,
+  context: Context,
+): Promise<Page[] | undefined> {
+  if ("sessions" in source) return sessionPages(source.sessions, context);
+  if (!("sites" in source)) return undefined;
+  const pages: Page[] = [];
+  for (const path of source.sites)
+    pages.push(await context.capture.sitePage(path, `site:${path}`));
+  return pages;
+}
+
 /** A screenshot of a page in the browser, after the shot's setup. */
 async function pageImage(
   shot: Shot,
   source: Source,
   context: Context,
 ): Promise<Buffer> {
-  if ("sessions" in source) {
-    const pages = await sessionPages(source.sessions, context);
+  const pages = await sideBySidePages(source, context);
+  if (pages) {
     await Promise.all(
       pages.map((page) => setWindow(page, shot, screenshotScale)),
     );
@@ -264,8 +280,12 @@ async function sourcePage(
     return context.capture.session(source.session, sessions[source.session]);
   if ("portal" in source) return context.capture.portalPage(source.portal);
   if ("site" in source) {
-    // A loop starts a Session, so it is a learner of its own.
-    const learner = shot.kind === "loop" ? `loop:${shot.id}` : "portal";
+    // A loop starts a Session, and so does a shot whose setup presses a
+    // button on the site, so each is a learner of its own.
+    const startsSession =
+      shot.kind === "loop" ||
+      (shot.setup ?? []).some((step) => "press" in step);
+    const learner = startsSession ? `${shot.kind}:${shot.id}` : "portal";
     return context.capture.sitePage(source.site, learner);
   }
   if ("url" in source) {
@@ -533,8 +553,8 @@ async function recordLoop(
   const source = shot.source;
   const seconds = shot.seconds ?? 8;
   const dir = join(context.work, shot.id.replace("/", "-"));
-  if ("sessions" in source) {
-    const pages = await sessionPages(source.sessions, context);
+  const pages = await sideBySidePages(source, context);
+  if (pages) {
     await Promise.all(pages.map((page) => setWindow(page, shot, 1)));
     for (const page of pages) await runSteps(page, shot.setup ?? [], fixtures);
     const recordings = await record(pages, dir, seconds, async () => {

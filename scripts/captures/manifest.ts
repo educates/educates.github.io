@@ -37,6 +37,8 @@ export type Source =
   | { portal: string }
   /** A page of Example Academy, the front end in captures/custom-site. */
   | { site: string }
+  /** Two pages of Example Academy, side by side, each in a browser of its own. */
+  | { sites: [string, string] }
   /** A page on this machine, such as a workshop running in Docker. */
   | { url: string }
   /** A terminal on the machine running the captures. */
@@ -374,11 +376,11 @@ export const shots: Shot[] = [
     setup: [{ click: 4 }, { pause: 1500 }],
   },
   {
-    id: "lookup-service/robot-account",
-    feature: "lookup-service",
-    slot: 0,
+    id: "portal-rest-api/request",
+    feature: "portal-rest-api",
+    slot: "visual",
     kind: "screenshot",
-    alt: "A terminal logging in to a training portal's REST API with its robot account, and listing the portal's workshops.",
+    alt: "Requests to a training portal's REST API: the workshops it serves, and a Session for one of the site's own users, with the URL to send them to.",
     source: tour,
     setup: [
       { page: "14-portal-rest-api" },
@@ -386,16 +388,9 @@ export const shots: Shot[] = [
       { pause: 2000 },
       { click: 2 },
       { pause: 2000 },
+      { click: 3 },
+      { pause: 5000 },
     ],
-  },
-  {
-    id: "portal-rest-api/request",
-    feature: "portal-rest-api",
-    slot: "visual",
-    kind: "screenshot",
-    alt: "Requests to a training portal's REST API: the workshops it serves, and a Session for one of the site's own users, with the URL to send them to.",
-    source: tour,
-    setup: [{ click: 3 }, { pause: 5000 }],
   },
   {
     id: "lookup-service/same-session",
@@ -423,23 +418,20 @@ export const shots: Shot[] = [
     ],
   },
   {
-    id: "lookup-service/tenants",
-    feature: "lookup-service",
-    slot: 3,
-    kind: "screenshot",
-    alt: "The lookup service's configuration in the editor: tenants that pick clusters and portals by name or by label, and a client granted one of them.",
-    source: tour,
-    viewport: editorWindow,
-    setup: [{ click: 4 }, { pause: 2500 }],
-  },
-  {
     id: "lookup-service/request",
     feature: "lookup-service",
     slot: 4,
     kind: "screenshot",
     alt: "A request to the lookup service for a learner's Session, with their name and email address, a workshop parameter, the page to return to and a webhook for its events, and the Session it got.",
     source: tour,
-    setup: [{ click: 5 }, { pause: 2000 }, { click: 6 }, { pause: 3000 }],
+    setup: [
+      { click: 4 },
+      { pause: 2500 },
+      { click: 5 },
+      { pause: 2000 },
+      { click: 6 },
+      { pause: 3000 },
+    ],
   },
   {
     id: "workshop-environments/java-workshop",
@@ -668,6 +660,34 @@ export const shots: Shot[] = [
     alt: "A training portal with a title and logo of its own, listing its workshops.",
     source: { portal: "/workshops/catalog/" },
     viewport: { width: 900, height: 562 },
+  },
+  // A catalog for the person signed in, on one portal's REST API alone,
+  // and two customers' sites, each reaching only its own lookup service
+  // tenant. They come after the analytics shot, so the Session the
+  // catalog starts sends that shot no events.
+  {
+    id: "lookup-service/signed-in-catalog",
+    feature: "lookup-service",
+    slot: 0,
+    kind: "screenshot",
+    alt: "A training team's own site listing a training portal's workshops for the person signed in, through the portal's REST API: how many Sessions each has free, and Resume on the workshop they already have a Session for.",
+    source: { site: "/portal" },
+    viewport: { width: 1024, height: 640 },
+    // The person starts the first workshop, which opens in a tab of its own,
+    // so the catalog offers to resume it.
+    setup: [{ press: "form.card button" }, { text: "Resume your Session" }],
+  },
+  {
+    id: "lookup-service/customers",
+    feature: "lookup-service",
+    slot: 3,
+    kind: "screenshot",
+    alt: "Two customers' own sites side by side, each listing the workshops of its own lookup service tenant: Acme Training shows two workshops, and Globex Academy a different one.",
+    source: { sites: ["/customers/acme", "/customers/globex"] },
+    // Side by side, two windows this size make one shot of 16:10.
+    viewport: { width: 512, height: 640 },
+    // The lookup service lists a customer's workshops once its portal runs.
+    setup: [{ text: "Start workshop" }],
   },
 
   // Terminals on the machine running the captures.

@@ -16,7 +16,10 @@ them, and `captures/` at the repository root holds what it drives:
   the kind a training team builds: it lists workshops from the lookup
   service and starts Sessions, embeds the training portal, receives the
   portal's analytics events, and runs an examiner check from outside a
-  Session.
+  Session. It also serves a catalog for the person signed in, built on
+  the portal's REST API alone, and the sites of two customers, Acme
+  Training and Globex Academy, each reaching only its own lookup service
+  tenant.
 
 The guides' command outputs are recaptured by hand; see
 [guide-outputs.md](guide-outputs.md).
@@ -73,8 +76,10 @@ and only for the run.
    training portal of its own, `site-captures`, and deploys the three
    workshop definitions to it. It registers the cluster with the lookup
    service, with a tenant and two clients, and deploys Example Academy in
-   the `site-captures-example-academy` namespace. Running it again
-   publishes the workshop again and updates the rest.
+   the `site-captures-example-academy` namespace. For the two customers it
+   creates a portal each, `site-captures-acme` and `site-captures-globex`,
+   listing different capture workshops, and a tenant and a client each.
+   Running it again publishes the workshop again and updates the rest.
 
 2. Take every shot, or only some, by shot id or Feature:
 
@@ -85,13 +90,14 @@ and only for the run.
 
    `npm run captures -- list` lists the shots. Each is defined in
    `manifest.ts`: the Feature entry and slot it fills, where it is taken
-   (a Session's dashboard, two side by side, the portal, Example Academy,
-   or a terminal on this machine), the steps that set it up, its window
-   and its alt text. Shots of the same Session run in the order of the
-   manifest, so a shot can rely on the steps of those before it. A shot
-   taken alone gets a new Session, so take a shot that needs an earlier
-   step, such as the application deployed, together with the shots
-   before it: `npm run captures -- clickable-actions examiner-checks`.
+   (a Session's dashboard, two side by side, the portal, a page of
+   Example Academy or two side by side, or a terminal on this machine),
+   the steps that set it up, its window and its alt text. Shots of the
+   same Session run in the order of the manifest, so a shot can rely on
+   the steps of those before it. A shot taken alone gets a new Session,
+   so take a shot that needs an earlier step, such as the application
+   deployed, together with the shots before it:
+   `npm run captures -- clickable-actions examiner-checks`.
 
    Screenshots are saved as WebP, next to their entry, such as
    `src/content/features/examiner-checks/question.webp`, at twice the
@@ -124,9 +130,9 @@ and only for the run.
    ```
 
    It deletes the `site-captures` portal with its Sessions, the workshop
-   definitions deployed to it, the portal the branding shot creates for
-   itself, Example Academy's namespace, and the lookup service resources
-   and cluster-wide resources labelled
+   definitions deployed to it, the customers' portals, the portal the
+   branding shot creates for itself, Example Academy's namespace, and the
+   lookup service resources and cluster-wide resources labelled
    `app.kubernetes.io/part-of=site-captures`, among them the
    `educates-config` namespace when `setup` created it. It leaves other
    portals alone. The workshop content images it published stay in the

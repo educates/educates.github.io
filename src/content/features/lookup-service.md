@@ -21,8 +21,8 @@ page:
     - title: Your own front end on one portal
       text: Each training portal comes with a robot account for its REST API. Your site logs in with it, lists the portal's workshops, asks for a Session for the person signed in, and sends their browser to the URL that comes back. Turn off the portal's own registration, as the docs recommend, so people come in through your site.
       visual:
-        src: ./lookup-service/robot-account.webp
-        alt: A terminal logging in to a training portal's REST API with its robot account, and listing the portal's workshops.
+        src: ./lookup-service/signed-in-catalog.webp
+        alt: "A training team's own site listing a training portal's workshops for the person signed in, through the portal's REST API: how many Sessions each has free, and Resume on the workshop they already have a Session for."
     - title: People get their own Session back
       text: Pass your own ID for each person with every request. Someone who closes the tab and clicks again gets the Session they already have, not a second one. A portal's API also lists a person's Sessions, extends one close to expiring where the workshop allows it, and ends one early.
       visual:
@@ -36,8 +36,8 @@ page:
     - title: A tenant for each customer
       text: Tenants pick clusters and portals by name or by label, and each client of the API reaches only the tenants it is granted. One lookup service can keep customers apart, or production apart from staging.
       visual:
-        src: ./lookup-service/tenants.webp
-        alt: "The lookup service's configuration in the editor: tenants that pick clusters and portals by name or by label, and a client granted one of them."
+        src: ./lookup-service/customers.webp
+        alt: "Two customers' own sites side by side, each listing the workshops of its own lookup service tenant: Acme Training shows two workshops, and Globex Academy a different one."
     - title: Set up each Session as it starts
       text: With each request, pass the parameters the workshop declares, the person's name and email address, the page to send them back to when the Session ends, and a webhook to receive that Session's analytics events.
       visual:

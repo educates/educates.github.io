@@ -1,7 +1,9 @@
 // Sets up and removes everything the captures need on the cluster: the
 // capture workshop in a training portal of its own, the lookup service's
-// cluster, tenant and clients, and Example Academy, the small front end in
-// captures/custom-site that stands in for a training team's own site.
+// cluster, tenant and clients, two customers kept apart by the lookup
+// service, each with a portal, a tenant and a client of its own, and
+// Example Academy, the small front end in captures/custom-site that stands
+// in for a training team's own site and for the customers' sites.
 //
 // Every resource it creates carries the label `partOf` (or is named for
 // the portal), so `teardown()` removes exactly what `setup()` created and
@@ -32,6 +34,46 @@ export const eventsUrl = `http://${siteHost}.${siteNamespace}.svc.cluster.local:
 
 /** The lookup service tenant Example Academy reaches. */
 export const lookupTenant = "example-academy";
+
+/**
+ * Two customers one lookup service keeps apart. Each has a training portal
+ * listing some of the capture workshops, by their definitions' names, a
+ * tenant that picks that portal, and a client granted only that tenant,
+ * which its site in Example Academy logs in as.
+ */
+export const customers = [
+  {
+    id: "acme",
+    name: "Acme Training",
+    initials: "AT",
+    colour: "#7a2e1f",
+    workshops: ["lab-site-captures", "lab-site-captures-vcluster"],
+  },
+  {
+    id: "globex",
+    name: "Globex Academy",
+    initials: "GA",
+    colour: "#1f5f4a",
+    workshops: ["lab-site-captures-python"],
+  },
+] as const;
+
+type Customer = (typeof customers)[number];
+
+/** A customer's training portal. */
+function customerPortal(customer: Customer) {
+  return `${portal}-${customer.id}`;
+}
+
+/** A customer's tenant of the lookup service. */
+function customerTenant(customer: Customer) {
+  return customer.id;
+}
+
+/** A customer's client of the lookup service, granted only its tenant. */
+function customerClient(customer: Customer) {
+  return `${customer.id}-site`;
+}
 
 const workshopDir = resolve("captures/workshop");
 const siteApp = resolve("captures/custom-site/app.py");
@@ -135,7 +177,11 @@ function password() {
   return randomBytes(18).toString("base64url");
 }
 
-function lookupConfig(sitePassword: string, adminPassword: string) {
+function lookupConfig(
+  sitePassword: string,
+  adminPassword: string,
+  customerPasswords: Record<string, string>,
+) {
   const metadata = (name: string) => ({
     name,
     namespace: "educates-config",
@@ -176,13 +222,37 @@ function lookupConfig(sitePassword: string, adminPassword: string) {
         tenants: ["*"],
       },
     },
+    ...customers.flatMap((customer) => [
+      {
+        apiVersion: "lookup.educates.dev/v1beta1",
+        kind: "TenantConfig",
+        metadata: metadata(customerTenant(customer)),
+        spec: {
+          clusters: { nameSelector: { matchNames: ["local-cluster"] } },
+          portals: {
+            nameSelector: { matchNames: [customerPortal(customer)] },
+          },
+        },
+      },
+      {
+        apiVersion: "lookup.educates.dev/v1beta1",
+        kind: "ClientConfig",
+        metadata: metadata(customerClient(customer)),
+        spec: {
+          client: { password: customerPasswords[customer.id] },
+          roles: ["tenant"],
+          tenants: [customerTenant(customer)],
+        },
+      },
+    ]),
   ];
 }
 
 function exampleAcademy(
   ingress: ReturnType<typeof clusterIngress>,
-  portalUrl: string,
+  details: ReturnType<typeof waitForPortal>,
   sitePassword: string,
+  customerPasswords: Record<string, string>,
 ) {
   const labels = { ...partOf, app: siteHost };
   const metadata = (name: string) => ({
@@ -223,6 +293,37 @@ function exampleAcademy(
       kind: "Secret",
       metadata: metadata("example-academy-lookup"),
       stringData: { password: sitePassword },
+    },
+    {
+      // The portal's robot account, for the catalog built on its REST API.
+      apiVersion: "v1",
+      kind: "Secret",
+      metadata: metadata("example-academy-portal"),
+      stringData: {
+        "client-id": details.robot.clientId,
+        "client-secret": details.robot.clientSecret,
+        username: details.robot.username,
+        password: details.robot.password,
+      },
+    },
+    {
+      // The customers' sites, each with the client it logs in as.
+      apiVersion: "v1",
+      kind: "Secret",
+      metadata: metadata("example-academy-customers"),
+      stringData: {
+        customers: JSON.stringify(
+          customers.map((customer) => ({
+            id: customer.id,
+            name: customer.name,
+            initials: customer.initials,
+            colour: customer.colour,
+            tenant: customerTenant(customer),
+            username: customerClient(customer),
+            password: customerPasswords[customer.id],
+          })),
+        ),
+      },
     },
     { apiVersion: "v1", kind: "ServiceAccount", metadata: metadata(siteHost) },
     {
@@ -283,7 +384,29 @@ function exampleAcademy(
                       },
                     },
                   },
-                  { name: "PORTAL_URL", value: portalUrl },
+                  { name: "PORTAL_URL", value: details.url },
+                  ...(
+                    [
+                      ["ROBOT_CLIENT_ID", "client-id"],
+                      ["ROBOT_CLIENT_SECRET", "client-secret"],
+                      ["ROBOT_USERNAME", "username"],
+                      ["ROBOT_PASSWORD", "password"],
+                    ] as const
+                  ).map(([name, key]) => ({
+                    name,
+                    valueFrom: {
+                      secretKeyRef: { name: "example-academy-portal", key },
+                    },
+                  })),
+                  {
+                    name: "CUSTOMERS",
+                    valueFrom: {
+                      secretKeyRef: {
+                        name: "example-academy-customers",
+                        key: "customers",
+                      },
+                    },
+                  },
                   { name: "SITE_URL", value: `${ingress.protocol}://${host}` },
                   { name: "EVENTS_URL", value: eventsUrl },
                   { name: "SSL_CERT_FILE", value: "/opt/ingress-ca/ca.crt" },
@@ -356,7 +479,8 @@ function exampleAcademy(
 
 /**
  * Publishes the capture workshop, deploys it to its own training portal,
- * and sets up the lookup service and Example Academy beside it.
+ * and sets up the lookup service, the customers' portals and Example
+ * Academy beside it.
  */
 export function setup(log: (message: string) => void = console.log) {
   const ingress = clusterIngress();
@@ -374,6 +498,9 @@ export function setup(log: (message: string) => void = console.log) {
   log("setup: configuring the lookup service");
   const sitePassword = password();
   const adminPassword = password();
+  const customerPasswords = Object.fromEntries(
+    customers.map((customer) => [customer.id, password()]),
+  );
   if (!namespaceExists("educates-config")) {
     apply([
       {
@@ -383,13 +510,13 @@ export function setup(log: (message: string) => void = console.log) {
       },
     ]);
   }
-  apply(lookupConfig(sitePassword, adminPassword));
+  apply(lookupConfig(sitePassword, adminPassword, customerPasswords));
 
   const details = waitForPortal();
   log(
     `setup: deploying Example Academy at ${ingress.protocol}://${siteHost}.${ingress.domain}`,
   );
-  apply(exampleAcademy(ingress, details.url, sitePassword));
+  apply(exampleAcademy(ingress, details, sitePassword, customerPasswords));
   kubectl([
     "-n",
     siteNamespace,
@@ -432,6 +559,28 @@ export function setup(log: (message: string) => void = console.log) {
   }
 
   waitForPortal();
+  // A customer's portal lists workshop definitions deployed above, so it is
+  // created once they exist.
+  for (const customer of customers) {
+    const name = customerPortal(customer);
+    if (!exists("trainingportal", name)) {
+      log(`setup: creating the training portal ${name} for ${customer.name}`);
+      const resource = trainingPortal(name, ingress);
+      // `educates deploy-workshop` names a definition after the portal, the
+      // workshop, and a hash of where the workshop's files are.
+      const listed = captureDefinitions();
+      resource.spec.workshops = customer.workshops.map((workshop) => {
+        const definition = listed.find((candidate) =>
+          new RegExp(`^${portal}--${workshop}-[0-9a-f]+$`).test(candidate),
+        );
+        if (!definition)
+          throw new Error(`the capture portal lists no workshop ${workshop}`);
+        return { name: definition, capacity: 1 };
+      }) as never[];
+      kubectl(["create", "-f", "-"], stringify(resource));
+    }
+  }
+  for (const customer of customers) waitForPortal(customerPortal(customer));
   kubectl([
     "-n",
     siteNamespace,
@@ -549,6 +698,19 @@ export function restartPortal() {
   waitForPortal();
 }
 
+/**
+ * The capture workshops' definitions, which `educates deploy-workshop`
+ * created for the capture portal, in the order it lists them.
+ */
+function captureDefinitions(): string[] {
+  const listed = json(["get", "trainingportal", portal]).spec.workshops as {
+    name: string;
+  }[];
+  return listed
+    .map(({ name }) => name)
+    .filter((name) => name.startsWith(`${portal}--lab-site-captures`));
+}
+
 /** The portal with a title and logo of its own, for the branding shot. */
 export const brandedPortal = `${portal}-academy`;
 
@@ -559,13 +721,10 @@ export const brandedPortal = `${portal}-academy`;
 export function createBrandedPortal(branding: { title: string; logo: string }) {
   const ingress = clusterIngress();
   const resource = trainingPortal(brandedPortal, ingress, branding);
-  // The capture workshops, in the order the capture portal lists them.
-  const listed = json(["get", "trainingportal", portal]).spec.workshops as {
-    name: string;
-  }[];
-  resource.spec.workshops = listed
-    .filter(({ name }) => name.startsWith(`${portal}--lab-site-captures`))
-    .map(({ name }) => ({ name, capacity: 1 })) as never[];
+  resource.spec.workshops = captureDefinitions().map((name) => ({
+    name,
+    capacity: 1,
+  })) as never[];
   kubectl(["delete", "trainingportal", brandedPortal, "--ignore-not-found"]);
   kubectl(["create", "-f", "-"], stringify(resource));
   return waitForPortal(brandedPortal);
@@ -593,7 +752,8 @@ export function teardown(log: (message: string) => void = console.log) {
   } catch {
     log(`teardown: no training portal ${portal}`);
   }
-  // Such as the portal with a title and logo of its own, for its shot.
+  // The customers' portals, and the portal with a title and logo of its
+  // own, for its shot.
   kubectl([
     "delete",
     "trainingportals",
