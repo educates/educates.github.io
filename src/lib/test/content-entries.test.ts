@@ -116,11 +116,86 @@ describe("featuredEntries", () => {
 });
 
 describe("relatedEntries", () => {
-  it("gives up to three other entries sharing a Topic, in the list's order", () => {
+  const ai = { topics: [topics[3]] };
+  const aiPost = entry("posts/post", { ...ai, date: day("2025-06-01") });
+
+  it("puts the entries sharing the most Topics with it first", () => {
     expect(ids(relatedEntries(list[2], list))).toEqual([
-      "posts/kind",
       "guides/setup",
+      "posts/kind",
     ]);
+  });
+
+  it("puts an entry sharing more Topics before a closer one sharing fewer", () => {
+    const post = entry("posts/cli", {
+      topics: [topics[1], topics[2]],
+      date: day("2025-06-01"),
+    });
+    expect(
+      ids(
+        relatedEntries(post, [
+          entry("posts/near", { topics: [topics[2]], date: day("2025-06-02") }),
+          post,
+          entry("posts/far", {
+            topics: [topics[1], topics[2]],
+            date: day("2019-01-01"),
+          }),
+        ]),
+      ),
+    ).toEqual(["posts/far", "posts/near"]);
+  });
+
+  it("puts the closest in date first, before or after it, among entries sharing as many Topics", () => {
+    const newestFirst = [
+      entry("posts/latest", { ...ai, date: day("2026-03-01") }),
+      entry("posts/later", { ...ai, date: day("2025-07-15") }),
+      aiPost,
+      entry("outside-content/talk", {
+        ...ai,
+        kind: "videos",
+        date: day("2025-03-01"),
+      }),
+    ];
+    expect(ids(relatedEntries(aiPost, newestFirst))).toEqual([
+      "posts/later",
+      "outside-content/talk",
+      "posts/latest",
+    ]);
+  });
+
+  it("puts an undated guide after the dated entries sharing as many Topics", () => {
+    expect(
+      ids(
+        relatedEntries(aiPost, [
+          entry("guides/ai", { ...ai, kind: "guides" }),
+          entry("posts/old", { ...ai, date: day("2019-03-01") }),
+          aiPost,
+        ]),
+      ),
+    ).toEqual(["posts/old", "guides/ai"]);
+  });
+
+  it("leaves out the parts of the post's own series", () => {
+    const series = "Installing Educates on a cloud provider";
+    const part1 = entry("posts/cloud-part-1", {
+      topics: [topics[1], topics[2]],
+      series,
+    });
+    expect(
+      ids(
+        relatedEntries(part1, [
+          entry("posts/cloud-part-2", {
+            topics: [topics[1], topics[2]],
+            series,
+          }),
+          part1,
+          entry("posts/kind", { topics: [topics[2]] }),
+        ]),
+      ),
+    ).toEqual(["posts/kind"]);
+  });
+
+  it("gives no more entries than asked for", () => {
     expect(ids(relatedEntries(list[1], list, 1))).toEqual(["posts/cli"]);
   });
 

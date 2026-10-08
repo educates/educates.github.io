@@ -58,6 +58,11 @@ export interface ContentEntry {
   length?: string;
   /** Its Topics, from its tags, in the Topics' order. */
   topics: readonly Topic[];
+  /**
+   * For a blog post in a series, the series' name, the same on each of its
+   * parts.
+   */
+  series?: string;
   /** For an outside entry, the event, channel or site it comes from. */
   source?: string;
   /** What its generated cover draws. */
@@ -107,8 +112,11 @@ export function featuredEntries(
 }
 
 /**
- * Up to `count` other entries that share a Topic with `entry`, in the
- * order of `entries`.
+ * Up to `count` other entries that share a Topic with `entry`, as a post's
+ * Related Content shows them: those sharing the most Topics first, and
+ * among those, the closest in date to `entry`. The parts of `entry`'s own
+ * series are left out, because its series box lists them. Remaining ties
+ * keep the order of `entries`.
  */
 export function relatedEntries(
   entry: ContentEntry,
@@ -116,11 +124,24 @@ export function relatedEntries(
   count = 3,
 ): ContentEntry[] {
   const own = new Set(entry.topics.map((topic) => topic.id));
+  const sharedTopicCount = (candidate: ContentEntry) =>
+    candidate.topics.filter((topic) => own.has(topic.id)).length;
+  // An undated entry, such as a guide, counts as farther than any dated one.
+  const dateDistance = (candidate: ContentEntry) =>
+    entry.date && candidate.date
+      ? Math.abs(candidate.date.getTime() - entry.date.getTime())
+      : Number.MAX_VALUE;
   return entries
     .filter(
       (candidate) =>
         candidate.id !== entry.id &&
-        candidate.topics.some((topic) => own.has(topic.id)),
+        (entry.series === undefined || candidate.series !== entry.series) &&
+        sharedTopicCount(candidate) > 0,
+    )
+    .sort(
+      (a, b) =>
+        sharedTopicCount(b) - sharedTopicCount(a) ||
+        dateDistance(a) - dateDistance(b),
     )
     .slice(0, count);
 }

@@ -203,8 +203,8 @@ export async function featuredContent(count = 3): Promise<ContentEntry[]> {
 }
 
 /**
- * Up to `count` entries sharing a Topic with the entry `id`, such as
- * `posts/<slug>`, in the Learn page's order.
+ * Up to `count` entries related to the entry `id`, such as `posts/<slug>`,
+ * ranked as `relatedEntries()` says.
  */
 export async function relatedContent(
   id: string,
@@ -240,6 +240,7 @@ async function postEntries(known: Topic[]): Promise<ContentEntry[]> {
         date: post.data.date,
         length: `${postReadingMinutes(post)} min read`,
         topics: topicsOf(post.data.tags, known),
+        series: post.data.series,
         cover: await postCover(post),
         coverImage: post.data.cover,
       } satisfies ContentEntry;
