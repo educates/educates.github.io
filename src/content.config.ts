@@ -302,7 +302,8 @@ const features = defineCollection({
           /**
            * Its limits, in the voice of a use case's "What you bring": what
            * it does not do, and what it needs from you, each with the docs
-           * page that says so where there is one.
+           * page, or the README section for a tool outside the platform, that
+           * says so where there is one.
            */
           limits: z
             .array(useCasePoint.extend({ docs: z.url().optional() }))

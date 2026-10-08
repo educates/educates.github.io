@@ -1,6 +1,7 @@
-// How the site arranges Features: the jobs they serve and the order it lists
-// them in. These helpers take entries as plain data, so they work on the
-// Feature collection and in tests alike.
+// How the site arranges Features and links to them: the jobs they serve,
+// the order it lists them in, and the wording of their links. These helpers
+// take entries as plain data, so they work on the Feature collection and in
+// tests alike.
 
 /** The jobs a Feature serves, in the order the site lists them. */
 export const jobIds = ["authoring", "delivering", "operating"] as const;
@@ -221,4 +222,33 @@ export function deepPageShowing(
   return page
     ? { id: page.id, name: page.data.name, href: featurePath(page.id) }
     : undefined;
+}
+
+/** What the pages call a Feature's `docs` link, by where it points. */
+export interface DocsLinkLabels {
+  /** The deep page's button. */
+  button: string;
+  /** The link on the Features overview. */
+  overview: string;
+  /** The link under each of a deep page's limits. */
+  limit: string;
+}
+
+/**
+ * The labels of a Feature's `docs` link: a link to GitHub opens a
+ * repository's README, and any other link opens the Educates docs.
+ */
+export function docsLinkLabels(href: string): DocsLinkLabels {
+  if (new URL(href).hostname.replace(/^www\./, "") === "github.com") {
+    return {
+      button: "Read the README",
+      overview: "README",
+      limit: "What the README says",
+    };
+  }
+  return {
+    button: "Read the docs",
+    overview: "Docs",
+    limit: "What the docs say",
+  };
 }

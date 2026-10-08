@@ -10,7 +10,11 @@ import FeatureVisual from "../../components/FeatureVisual.astro";
 import Icon from "../../components/Icon.astro";
 import { breadcrumbs } from "../../lib/breadcrumbs.ts";
 import { features } from "../../lib/content.ts";
-import { deepPageShowing, featuresByJob } from "../../lib/features.ts";
+import {
+  deepPageShowing,
+  docsLinkLabels,
+  featuresByJob,
+} from "../../lib/features.ts";
 
 const title = "Features";
 const description =
@@ -69,7 +73,7 @@ const groups = featuresByJob(all);
                     </a>
                   )}
                   <a class="docs" href={entry.data.docs}>
-                    Docs
+                    {docsLinkLabels(entry.data.docs).overview}
                     <span class="sr-only">
                       {` for ${entry.data.name} (external site)`}
                     </span>

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   currentFeatures,
   deepPageShowing,
+  docsLinkLabels,
   featureLinks,
   featuresByJob,
   homepageFeaturesByJob,
@@ -197,5 +198,37 @@ describe("deepPageShowing", () => {
 
   it("gives any other Feature no deep page", () => {
     expect(deepPageShowing("ready-sessions", withPages)).toBeUndefined();
+  });
+});
+
+describe("docsLinkLabels", () => {
+  it("labels a link to a repository on GitHub as its README", () => {
+    expect(
+      docsLinkLabels("https://github.com/educates/educates-terraform-modules"),
+    ).toEqual({
+      button: "Read the README",
+      overview: "README",
+      limit: "What the README says",
+    });
+  });
+
+  it("labels a link to a section of a README on GitHub as the README", () => {
+    expect(
+      docsLinkLabels(
+        "https://github.com/educates/educates-workshop-authoring-skill#compatibility",
+      ).limit,
+    ).toBe("What the README says");
+  });
+
+  it("labels a link to a docs.educates.dev page as the docs", () => {
+    expect(
+      docsLinkLabels(
+        "https://docs.educates.dev/en/stable/lookup-service/service-overview.html",
+      ),
+    ).toEqual({
+      button: "Read the docs",
+      overview: "Docs",
+      limit: "What the docs say",
+    });
   });
 });

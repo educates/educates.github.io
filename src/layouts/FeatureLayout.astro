@@ -35,7 +35,7 @@ import {
   loopMedia,
   useCasesUsing,
 } from "../lib/content.ts";
-import { jobs } from "../lib/features.ts";
+import { docsLinkLabels, jobs } from "../lib/features.ts";
 import { elsewhere, getStarted } from "../lib/navigation.ts";
 import { getHelp } from "../lib/project.ts";
 import { repositoryLinks } from "../lib/repositories.ts";
@@ -93,7 +93,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
               {getStarted.label}
             </a>
             <a class="button button-secondary" href={docs}>
-              Read the docs
+              {docsLinkLabels(docs).button}
               <Icon name="external" />
               <span class="sr-only">{` for ${name} (external site)`}</span>
             </a>
@@ -149,7 +149,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
               {limit.docs && (
                 <p class="docs">
                   <ArrowLink href={limit.docs} external>
-                    What the docs say
+                    {docsLinkLabels(limit.docs).limit}
                     <span class="sr-only">{`: ${limit.title}`}</span>
                   </ArrowLink>
                 </p>
