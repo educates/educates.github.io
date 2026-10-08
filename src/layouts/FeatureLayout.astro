@@ -148,9 +148,12 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
               <p>{limit.text}</p>
               {limit.docs && (
                 <p class="docs">
-                  <ArrowLink href={limit.docs} external>
+                  <ArrowLink
+                    href={limit.docs}
+                    external
+                    screenReaderContext={limit.title}
+                  >
                     {docsLinkLabels(limit.docs).limit}
-                    <span class="sr-only">{`: ${limit.title}`}</span>
                   </ArrowLink>
                 </p>
               )}
