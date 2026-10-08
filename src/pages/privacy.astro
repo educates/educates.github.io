@@ -13,8 +13,8 @@ import { THEME_STORAGE_KEY } from "../scripts/theme.ts";
 
 const contact = "contact@educates.dev";
 /** The day this site stopped loading Google Analytics. */
-const googleAnalyticsUntil = "[cutover date]";
-const lastUpdated = new Date("2026-10-07");
+const googleAnalyticsUntil = new Date("2026-10-09");
+const lastUpdated = new Date("2026-10-09");
 ---
 
 <ProjectLayout
@@ -37,9 +37,9 @@ const lastUpdated = new Date("2026-10-07");
         The site counts page views with GoatCounter. For each page you open,
         GoatCounter records the page, the site that sent you there, your browser
         and operating system, your screen size, your country, and the campaign
-        tags in the link you followed, such as{" "}
-        <code>utm_campaign</code>. It keeps these as separate totals per hour or
-        per day, which cannot be joined back into one visit.
+        tags in the link you followed, such as <code>utm_campaign</code>. It
+        keeps these as separate totals per hour or per day, which cannot be
+        joined back into one visit.
       </p>
       <p>
         The site sets no cookies. Your IP address and your browser's full user
@@ -147,11 +147,15 @@ const lastUpdated = new Date("2026-10-07");
 
       <h2 id="google-analytics">Before GoatCounter</h2>
       <p>
-        Until {googleAnalyticsUntil}, this site used Google Analytics. It no
-        longer loads it, and the Google Analytics property receives no new data;
-        it keeps the statistics collected before then. If you visited before
-        that date, your browser may still hold the <code>_ga</code> cookies it
-        set. This site no longer reads them, and you can delete them.
+        Until{" "}
+        <time datetime={isoDate(googleAnalyticsUntil)}>
+          {formatDate(googleAnalyticsUntil)}
+        </time>
+        , this site used Google Analytics. It no longer loads it, and the Google
+        Analytics property receives no new data; it keeps the statistics
+        collected before then. If you visited before that date, your browser may
+        still hold the <code>_ga</code> cookies it set. This site no longer
+        reads them, and you can delete them.
       </p>
 
       <h2 id="other-sites">Other Educates sites</h2>
