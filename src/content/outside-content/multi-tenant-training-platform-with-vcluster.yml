@@ -1,0 +1,8 @@
+title: Architecting a Multi-Tenant Kubernetes Training Platform with vCluster
+kind: video
+url: https://www.youtube.com/watch?v=2Rws1svy1b4
+date: 2025-12-12
+channel: "@vcluster"
+tags: [educates, kubernetes, installation]
+description: A walk through the Educates architecture, its multi-tenant model and its vCluster integration, and the lessons learned scaling hands-on training environments.
+length: "55:53"

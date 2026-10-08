@@ -1,128 +1,125 @@
-# Website
+# educates.dev
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+The Educates project's website, built with [Astro](https://astro.build/) as
+a static site and published to GitHub Pages at <https://educates.dev>.
 
-### Installation
+## Requirements
 
-```
-$ yarn
-```
+Node.js 26, pinned in `package.json` through [Volta](https://volta.sh/), and
+npm.
 
-### Local Development
+## Commands
 
-```
-$ yarn start
-```
+| Command | What it does |
+| --- | --- |
+| `npm install` | Installs the dependencies. |
+| `npm run dev` | Starts the dev server at `http://localhost:4321`. |
+| `npm run build` | Builds the site into `dist/`, then runs the site check over it. |
+| `npm run site-check` | Checks the build in `dist/` again without rebuilding it. |
+| `npm run preview` | Serves the build in `dist/` locally. |
+| `npm run check` | Type-checks the project with `astro check`. |
+| `npm run format` | Formats the code files with Prettier, in place; content Markdown is excluded. |
+| `npm run format:check` | Checks the formatting of code files with Prettier; content Markdown is excluded. |
+| `npm test` | Runs the unit tests. |
+| `npm run link-check` | Checks the internal links in the build in `dist/`, offline. Needs [lychee](https://lychee.cli.rs/), for example from `brew install lychee`. |
+| `npm run url-check -- <base-url>` | Requests every URL of the must-resolve list from the site served at `<base-url>`, such as `https://educates.dev` after a deploy; see below. |
+| `npm run posters` | Downloads the poster of every video from the project's YouTube channel that has none, next to its outside Content entry in `src/content/outside-content/`. Run it after adding an entry for such a video, which fails the build until it has its poster, and commit each poster with its entry. |
+| `npm run captures` | Takes the screenshots and loops on the Features pages from a running Educates, and wires them into the Feature entries; `npm run captures -- setup` deploys what it needs first. See [scripts/captures/README.md](scripts/captures/README.md). |
+| `npm run docker-build` | Builds the Docker image; see below. |
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+The site check, in `scripts/site-check/`, reads the build the way GitHub
+Pages serves it and reports what is wrong: errors fail the build, warnings
+are listed. Its rules are in `scripts/site-check/rules/`, and
+`scripts/site-check/must-resolve.txt` lists every URL the site must keep
+serving. It also fetches the live site's sitemap and fails when the build
+does not serve a URL it lists, such as a blog post published since; when
+the sitemap cannot be fetched, it skips that comparison with a warning.
+`npm run site-check -- --live-sitemap <url>` compares with another
+sitemap.
 
-### Build
+The URL check, in `scripts/url-check/`, checks the same must-resolve list
+against a served copy of the site instead of the build: every page and
+file must answer 200 without an HTTP redirect, and every redirect source
+must answer with a redirect page that names its target, which must answer
+200 in turn. Run it once after a deploy that changes URLs, against
+`https://educates.dev`, because GitHub does not document the Pages
+behavior the URL form relies on. It also runs against the Docker image's
+`serve` target at `http://localhost:8080`.
 
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
-
+The link check uses the settings in `lychee.toml`.
 
 ## Building the Docker image
 
-To build the docker image you will need to run the following command:
-
 ```
-docker build --target <target> -t <tag> .
+npm run docker-build [-- <target>]
 ```
 
-To deconstruct the above command:
-
-- docker build - This is the command to build a docker image.
-- --target <target> - This is the target to build. The target is the name of the stage in the dockerfile. Valid targets are dev, serve and caddy.
-- -t <tag> - This is the name and tag of the image that will be built. The format is <name>:<tag>. The name can be anything you want. The tag is optional. If you do not specify a tag, latest will be used.
-- . - This is the path to the build context. In this case we are using the current directory as the build context.
-
-## Running the Docker Image
-Depending on stage / target you will need to run the docker image differently.
-
-### Running Dev target
-To run the dev target you will need to run the following command:
-
+The script builds a target of the Dockerfile, `serve` unless you name
+another, as the image `educates-dev:<target>`, with Node.js at the Volta
+pin. Arguments after the target go to `docker buildx build`. The image is
+for your machine's architecture; to build other platforms, list them in
+`TARGET_PLATFORMS`:
 
 ```
-docker run --rm -d -p 3000:3000 -v $(pwd):/opt/docusaurus <tag>
+TARGET_PLATFORMS=linux/amd64,linux/arm64 npm run docker-build
 ```
 
-If using PowerShell you will need to use ${pwd} instead of $(pwd). On some systems you may need to replace $(pwd) with . or the full path to the directory you want to mount.
+A platform other than your machine's builds under emulation, and an image
+for more than one platform needs an image store that supports
+multi-platform images, as the containerd image store, Docker Desktop's
+default, does.
 
-To deconstruct the above command:
+The Dockerfile has two targets:
 
-- docker run - This is the command to run a docker image.
-- --rm - This is an optional flag that will remove the container when it exits.
-- -d - This is an optional flag that will run the container in detached mode.
-- -p 3000:3000 - This is an optional flag that will map port 3000 on the host to port 3000 in the container.
-- -v $(pwd):/var/docusaurus - This is an optional flag that will mount the current directory as a volume in the container.
-- <tag> - This is the name and tag of the image that will be run. Make sure to use the same tag that you used when building the image.
+- `serve` builds the site, runs the site check, and serves the result with
+  nginx the way GitHub Pages serves it: `/page` serves `page.html`, `/page/`
+  is a 404, a directory URL serves its `index.html`, and the redirect pages
+  work. Run it and open `http://localhost:8080`:
 
-### Running Serve target
+  ```
+  docker run --rm -p 8080:80 educates-dev:serve
+  ```
 
-To run the serve target you will need to run the following command:
+- `dev` runs the Astro dev server over your checkout, mounted into the
+  container. The second volume keeps the image's dependencies, which are
+  built for Linux, in place of yours. Run it and open
+  `http://localhost:4321`:
 
-```
-docker run --rm -d -p 3000:3000 <tag>
-```
+  ```
+  npm run docker-build -- dev
+  docker run --rm -it -p 4321:4321 -v "$(pwd)":/opt/site -v /opt/site/node_modules educates-dev:dev
+  ```
 
-To deconstruct the above command:
+## Continuous integration
 
-- docker run - This is the command to run a docker image.
-- --rm - This is an optional flag that will remove the container when it exits.
-- -d - This is an optional flag that will run the container in detached mode.
-- -p 3000:3000 - This is an optional flag that will map port 3000 on the host to port 3000 in the container.
-- <tag> - This is the name and tag of the image that will be run. Make sure to use the same tag that you used when building the image.
+Workflows in `.github/workflows/`:
 
-### Running Nginx target
+- **Checks** runs on every pull request to `develop` and `main`: the type
+  check, the formatting check, the build, the site check, the unit tests,
+  the internal link check, and Lighthouse on a mobile profile, the median of
+  three runs, on the pages listed in `lighthouserc.yml`. Accessibility or
+  SEO below 90 fails the checks; performance below 90 warns.
+- **Deploy to GitHub Pages** builds `main` and publishes it, on every push
+  to `main` and by hand.
+- **External links** checks the links to other sites every week and keeps
+  one issue, "Dead external links", listing the dead ones. It never blocks
+  a pull request.
 
-To run the nginx target you will need to run the following command:
-
-```
-docker run --rm -d -p 8080:80 <tag>
-```
-
-If using PowerShell you will need to use ${pwd} instead of $(pwd). On some systems you may need to replace $(pwd) with . or the full path to the directory you want to mount.
-
-To deconstruct the above command:
-
-- docker run - This is the command to run a docker image.
-- --rm - This is an optional flag that will remove the container when it exits.
-- -d - This is an optional flag that will run the container in detached mode.
-- -p 8080:80 - This is an optional flag that will map port 8080 on the host to port 80 in the container.
-- <tag> - This is the name and tag of the image that will be run. Make sure to use the same tag that you used when building the image.
+All of them run Node.js at the Volta pin in `package.json`. Dependabot
+opens a weekly pull request with the minor and patch updates for npm, one
+for GitHub Actions, and a pull request of its own for each major update.
 
 ## Publishing workflow for GitHub
 
-- Develop your code in branch `develop`
+- Develop your changes in branch `develop`.
 - Once you're done with your changes, commit them, push them and create a PR to incorporate the changes in `main`.
   ```
   git commit -m "Message"
   git push origin develop
   ```
-- There's a workflow that will test that everything builds fine, and if everything is ok, you should be able to merge the PR into `main`
-- There's a workflow that for the merged PR into `main` will also publish the generated site to `github pages` so that will become online
-- You need to pull down `main` branch and merge it into `develop` locally for your next iteration.
+- The checks workflow runs on the PR. Once it passes, you can merge the PR into `main`.
+- A workflow publishes the site built from `main` to GitHub Pages.
+- Pull `main` and merge it into `develop` locally for your next iteration.
   ```
   git checkout main
   git pull origin main

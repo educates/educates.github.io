@@ -1,0 +1,27 @@
+---
+// Runs in <head> before first paint. It sets `data-theme` on the root
+// element to the theme in use: the one the visitor chose with the toggle,
+// if any, otherwise the system's, so the page never flashes the other theme
+// and scripts that read the attribute, such as the Mermaid diagrams, see
+// the theme the page shows. It also marks the root element `js`, which
+// shows the toggle. Blocked storage leaves the page on the system theme.
+// Without JavaScript the attribute is absent and tokens.css follows
+// prefers-color-scheme.
+import { THEME_STORAGE_KEY } from "../scripts/theme.ts";
+---
+
+<script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
+  document.documentElement.classList.add("js");
+  let theme;
+  try {
+    theme = localStorage.getItem(storageKey);
+  } catch {
+    // Storage is blocked: follow the system theme.
+  }
+  if (theme !== "light" && theme !== "dark") {
+    theme = matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+  document.documentElement.dataset.theme = theme;
+</script>

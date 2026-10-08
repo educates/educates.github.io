@@ -1,0 +1,10 @@
+# Prettier formats code files only. Content Markdown keeps the formatting
+# its authors gave it.
+*.md
+*.mdx
+docs/
+
+# Generated
+dist/
+.astro/
+package-lock.json

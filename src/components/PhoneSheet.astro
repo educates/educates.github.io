@@ -1,0 +1,197 @@
+---
+// The phone menu: a button in the header that opens a full-height sheet
+// listing every header menu open, then the links elsewhere, with "Get
+// started" pinned at the bottom. Without JavaScript the button is a link to
+// the footer's site map. The sheet shows only below 1024px, where the
+// header menus no longer fit.
+import { elsewhere, getStarted, type NavGroup } from "../lib/navigation.ts";
+import { site } from "../site.ts";
+import Icon from "./Icon.astro";
+
+export interface Props {
+  /** The header menus, listed open. */
+  menus: NavGroup[];
+}
+
+const { menus } = Astro.props;
+const groups: NavGroup[] = [
+  ...menus,
+  {
+    label: "Elsewhere",
+    links: [elsewhere.docs, elsewhere.hub, elsewhere.github],
+  },
+];
+---
+
+<button
+  class="menu-button"
+  type="button"
+  data-sheet-open
+  aria-haspopup="dialog"
+  aria-controls="phone-sheet"
+  aria-expanded="false"
+>
+  <Icon name="menu" />
+  <span class="sr-only">Menu</span>
+</button>
+<a class="menu-button menu-link" href="#site-map">
+  <Icon name="menu" />
+  <span class="sr-only">Site map</span>
+</a>
+
+<dialog id="phone-sheet" class="sheet" data-sheet aria-label="Menu">
+  <div class="sheet-head">
+    <a class="brand" href="/">
+      <img src="/img/logo.svg" alt="" width="30" height="30" />
+      {site.name}
+    </a>
+    <button class="close" type="button" data-sheet-close>
+      <Icon name="close" />
+      <span class="sr-only">Close menu</span>
+    </button>
+  </div>
+  <nav class="sheet-body" aria-label="Main">
+    {groups.map((group) => (
+      <div class="group">
+        <h2>{group.label}</h2>
+        <ul>
+          {group.links.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </nav>
+  <div class="sheet-foot">
+    <a class="button button-primary" href={getStarted.href}>
+      {getStarted.label}
+    </a>
+  </div>
+</dialog>
+
+<script>
+  import { setUpPhoneSheet } from "../scripts/site-menus.ts";
+  setUpPhoneSheet();
+</script>
+
+<style>
+  .menu-button,
+  .close {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-ink);
+    font-size: 22px;
+    cursor: pointer;
+  }
+  .close {
+    display: inline-grid;
+  }
+  .menu-button:hover,
+  .close:hover {
+    background: var(--color-accent-soft);
+  }
+  /* The phone menu; PHONE_MENU in src/scripts/site-menus.ts matches it. */
+  @media (max-width: 1023px) {
+    :global(html.js) button.menu-button,
+    :global(html:not(.js)) .menu-link {
+      display: inline-grid;
+    }
+  }
+
+  .sheet {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    overscroll-behavior: contain;
+  }
+  .sheet[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .sheet::backdrop {
+    background: var(--color-background);
+  }
+  :global(html:has(.sheet[open])) {
+    overflow: hidden;
+  }
+  .sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) var(--space-gutter) 10px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-ink);
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .sheet-body {
+    display: grid;
+    flex: 1;
+    align-content: start;
+    gap: 24px;
+    padding: 20px var(--space-gutter) 24px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  h2 {
+    margin: 0 0 4px;
+    color: var(--color-ink-muted);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .group a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink);
+    font-size: 17px;
+    text-decoration: none;
+  }
+  .group a:hover {
+    color: var(--color-accent-strong);
+  }
+  .sheet-foot {
+    padding: 14px var(--space-gutter)
+      calc(18px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--color-line);
+  }
+  .sheet-foot .button {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+    font-size: 17px;
+  }
+</style>

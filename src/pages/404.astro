@@ -1,0 +1,57 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you asked for is not on educates.dev."
+>
+  <section class="not-found">
+    <div class="wrap">
+      <p class="code">404</p>
+      <h1>Page not found</h1>
+      <p class="lede">
+        The page you asked for is not here. It may have moved, or the link may
+        be mistyped.
+      </p>
+      <ul class="links">
+        <li>
+          <a href="/">Go to the homepage</a>
+        </li>
+        <li>
+          <a href="/learn">Browse all Content</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found .wrap {
+    padding-block: 72px 96px;
+  }
+  .code {
+    margin: 0 0 12px;
+    color: var(--color-accent-strong);
+    font: 600 14px/1 var(--font-mono);
+    letter-spacing: 0.08em;
+  }
+  h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 34em;
+    margin: 16px 0 24px;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  .links {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 600;
+  }
+</style>

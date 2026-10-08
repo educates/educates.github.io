@@ -1,0 +1,70 @@
+name: Checks
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Node.js at the Volta pin in package.json.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Install dependencies
+        id: install
+        run: npm ci
+
+      # Each check runs even when an earlier one fails, so a pull request
+      # sees every failure at once.
+      - name: Type-check
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run check
+
+      - name: Check formatting
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run format:check
+
+      - name: Build the site
+        id: build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npx astro build
+
+      - name: Run the site check
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: npm run site-check
+
+      - name: Run the unit tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm test
+
+      # Offline, as `npm run link-check` runs it, with lychee.toml's settings.
+      - name: Check internal links
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --root-dir "${{ github.workspace }}/dist" 'dist/**/*.html'
+
+      # The pages and thresholds are in lighthouserc.yml.
+      - name: Run Lighthouse
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.yml
+          uploadArtifacts: true

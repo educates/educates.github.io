@@ -1,0 +1,38 @@
+jorge:
+  name: Jorge Morales Pou
+  title: Lead Software Engineer
+  url: https://github.com/jorgemoralespou
+  image: ../assets/team/jorge-morales.jpg
+  page: true
+  socials:
+    # x: jorgemoralespou
+    linkedin: jorgemoralespou
+    github: jorgemoralespou
+
+graham:
+  name: Graham Dumpleton
+  title: Lead Software Engineer
+  url: https://github.com/grahamdumpleton
+  image: ../assets/team/graham-dumpleton.jpg
+  page: true
+    # # customize the url of the author page at /blog/authors/<permalink>
+    # permalink: '/all-grahamdumpleton-articles'
+  socials:
+    # x: grahamdumpleton
+    linkedin: grahamdumpleton
+    github: grahamdumpleton
+    # newsletter: https://thisweekinreact.com
+
+bill:
+  name: Bill Kable
+  title: Engineer
+  url: https://github.com/spinguard
+  image: ../assets/team/bill-kable.jpg
+  page: true
+    # # customize the url of the author page at /blog/authors/<permalink>
+    # permalink: '/all-grahamdumpleton-articles'
+  socials:
+    # x: grahamdumpleton
+    linkedin: billkable
+    github: billkable
+    # newsletter: https://thisweekinreact.com

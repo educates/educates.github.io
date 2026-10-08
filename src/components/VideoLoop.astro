@@ -1,0 +1,128 @@
+---
+// A short muted recording that loops, such as a Feature at work on its
+// deep page. It arrives as its poster frame with nothing else loaded; its
+// script (src/scripts/video-loop.ts) loads the video the first time it
+// should play, plays it while it is on screen, and keeps it paused for a
+// visitor who prefers reduced motion. A Play and Pause button lets the
+// visitor choose. Without JavaScript it stays a still of its poster.
+//
+// Until a recording is captured, the component shows a placeholder loop,
+// marked with `data-visual-placeholder` and labelled "Recording coming".
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import Icon from "./Icon.astro";
+import placeholderVideo from "../assets/placeholders/video-loop.mp4";
+import placeholderPoster from "../assets/placeholders/video-loop-poster.png";
+
+export interface Props {
+  /** What the recording shows, in a sentence: its accessible name. */
+  alt: string;
+  /**
+   * The recording: the built URL of its video, an MP4 or WebM file, and
+   * its poster, the frame shown before it plays. Without it, the
+   * placeholder loop.
+   */
+  media?: { src: string; poster: ImageMetadata } | undefined;
+}
+
+const { alt, media } = Astro.props;
+const placeholder = media === undefined;
+const { src, poster } = media ?? {
+  src: placeholderVideo,
+  poster: placeholderPoster,
+};
+const posterImage = await getImage({
+  src: poster,
+  format: "webp",
+  width: Math.min(poster.width, 1280),
+});
+const marks = placeholder ? { "data-visual-placeholder": "" } : {};
+---
+
+<figure class="video-loop" data-video-loop {...marks}>
+  <video
+    class="video"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster={posterImage.src}
+    data-src={src}
+    width={poster.width}
+    height={poster.height}
+    aria-label={alt}
+  ></video>
+  {placeholder && (
+    <span class="label" aria-hidden="true">
+      Recording coming
+    </span>
+  )}
+  <button type="button" class="toggle" data-video-loop-toggle hidden>
+    <Icon name="pause" class="pause" />
+    <Icon name="play" class="play" />
+    <span data-video-loop-action>Pause</span>
+    <span class="sr-only">{`: ${alt}`}</span>
+  </button>
+</figure>
+
+<script>
+  import { setUpVideoLoops } from "../scripts/video-loop.ts";
+  setUpVideoLoops();
+</script>
+
+<style>
+  .video-loop {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: var(--color-background);
+  }
+  .video {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  .label {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-ink-muted);
+    font: 600 12px/1.4 var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .toggle {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-accent-strong);
+    font: 600 13px/1 var(--font-sans);
+    cursor: pointer;
+  }
+  .toggle[hidden] {
+    display: none;
+  }
+  .toggle:hover {
+    border-color: var(--color-ink-muted);
+  }
+  .toggle :global(.icon) {
+    font-size: 13px;
+  }
+  .toggle[data-playing="false"] :global(.pause),
+  .toggle:not([data-playing="false"]) :global(.play) {
+    display: none;
+  }
+</style>

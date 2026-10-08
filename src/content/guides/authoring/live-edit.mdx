@@ -1,0 +1,99 @@
+---
+title: Live editing
+description: See changes to a workshop in a running Session as you make them.
+order: 3
+---
+
+import Tabs from "../../../components/Tabs.astro";
+import TabItem from "../../../components/TabItem.astro";
+
+While the authoring workflow is already quite fast by using the
+`publish-workshop` and `deploy-workshop` cmdlets of the Educates CLI
+or `update-workshop` from within a running session, an even better
+experience would be live previews _while_ we edit our workshop
+instructions.
+
+With the Educates CLI, we can **patch** a deployed workshop to render
+**local instructions** instead of the ones bundled and published with the
+workshop. For this to work, however, we need [Hugo](https://gohugo.io)
+installed locally.
+
+## Installing Hugo
+
+Hugo is a single Go binary that can be installed via package managers for
+most systems.
+
+### Installing Hugo on Linux
+
+<Tabs label="Linux distribution">
+<TabItem label="Debian">
+
+```sh
+sudo apt install hugo
+```
+
+</TabItem>
+<TabItem label="Fedora">
+
+```sh
+sudo dnf install hugo
+```
+
+</TabItem>
+<TabItem label="SUSE">
+
+```sh
+sudo zypper install hugo
+```
+
+</TabItem>
+</Tabs>
+
+For other distributions, please look
+[at the installation docs](https://gohugo.io/installation/linux/#package-managers).
+
+### Installing Hugo on macOS
+
+<Tabs label="Package manager">
+<TabItem label="Homebrew">
+
+```sh
+brew install hugo
+```
+
+</TabItem>
+<TabItem label="MacPorts">
+
+```sh
+sudo port install hugo
+```
+
+</TabItem>
+</Tabs>
+
+On Windows, install Hugo inside WSL with the Linux instructions.
+
+## Patching a Workshop
+
+Once Hugo is installed, we can patch a deployed workshop and start
+hosting its instructions directly from our repository. Run this from the
+workshop's directory:
+
+```sh title="Start live-editing workshops"
+educates serve-workshop --patch-workshop
+```
+
+The command patches the workshop definition in the cluster, which starts a
+new workshop environment whose Sessions load their instructions from a web
+server the command runs on your machine. Start a new Session from the
+training portal: as you edit the pages under `workshop/content`, the
+instructions are regenerated and the page in your browser refreshes.
+
+When you are done, stop the command with Ctrl-C. That restores the
+workshop definition in the cluster, so new Sessions use the published
+workshop again. Then publish your changes with `educates publish-workshop`.
+
+Live editing covers the instructions only. Setup scripts, exercise files
+and anything else in the workshop still come from what you last published:
+to try changes to those, publish the workshop again and start a new
+Session.

@@ -1,0 +1,38 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: lab-a01-first-deployment
+spec:
+  title: Your First Deployment
+  description: Deploy a web application to Kubernetes, expose it with a service, and scale it.
+  duration: 30m
+  difficulty: beginner
+  publish:
+    image: "$(image_repository)/lab-a01-first-deployment-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/lab-a01-first-deployment-files:$(workshop_version)"
+  session:
+    namespaces:
+      budget: medium
+      security:
+        token:
+          enabled: true
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+      examiner:
+        enabled: true

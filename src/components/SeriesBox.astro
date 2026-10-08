@@ -1,0 +1,97 @@
+---
+// The box at the top of a post in a series: the series' name, which part
+// the post is, and every published part in order, the post's own marked.
+// `postSeries()` in src/lib/posts.ts gives the series once two parts are
+// published.
+import type { PostSeries } from "../lib/post-series.ts";
+
+export interface Props {
+  series: PostSeries;
+}
+
+const { series } = Astro.props;
+---
+
+<nav class="series" aria-labelledby="series-heading">
+  <p class="kicker">
+    Series · Part {series.part} of {series.parts.length}
+  </p>
+  <h2 id="series-heading">{series.name}</h2>
+  <ol>
+    {series.parts.map(({ title, href, part, current }) => (
+      <li>
+        <a href={href} aria-current={current ? "page" : undefined}>
+          <span class="marker" aria-hidden="true">
+            {part}
+          </span>
+          <span class="sr-only">{`Part ${part}: `}</span>
+          {title}
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .series {
+    margin-bottom: 40px;
+    padding: 18px 20px 14px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .kicker {
+    margin: 0 0 6px;
+    color: var(--color-accent-strong);
+    font: 600 12px/1.2 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-inline: -10px;
+    padding: 6px 10px;
+    border-radius: var(--radius-control);
+    color: var(--color-ink-muted);
+    line-height: 1.4;
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-ink);
+  }
+  a[aria-current="page"] {
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    font-weight: 600;
+  }
+  .marker {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font: 600 12px/1 var(--font-mono);
+    transform: translateY(-1px);
+  }
+  [aria-current="page"] .marker {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+</style>

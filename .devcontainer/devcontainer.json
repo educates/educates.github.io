@@ -17,8 +17,7 @@
         }
       },
       "extensions": [
-        "dbaeumer.vscode-eslint",
-        "orta.vscode-jest",
+        "astro-build.astro-vscode",
         "esbenp.prettier-vscode",
         "streetsidesoftware.code-spell-checker"
       ]
@@ -26,11 +25,11 @@
   },
   // "forwardPorts": [3000],
   // "containerUser": "vscode",
-  "postCreateCommand": "yarn install",
-  "waitFor": "postCreateCommand", // otherwise automated jest tests fail
+  "postCreateCommand": "npm install",
+  "waitFor": "postCreateCommand",
   "features": {
     "node": {
-      "version": "18"
+      "version": "26"
     },
     "github-cli": "latest"
   }

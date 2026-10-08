@@ -1,0 +1,393 @@
+---
+// The deep page template. Every flagship Feature's deep page has the same
+// six parts, in this order, from its entry in the Feature collection
+// (src/content.config.ts):
+//
+// 1. What it is: the headline, a paragraph, and a recording of the Feature
+//    at work.
+// 2. What you can do with it: three to five things, each with a screenshot
+//    or a recording.
+// 3. How you use it: the entry's Markdown body, the real snippet that turns
+//    it on, passed in the default slot.
+// 4. Limits: what it does not do, and what it needs from you.
+// 5. Where it is used: the use cases whose pages rely on it or on a Feature
+//    the page covers, and where to try it: workshops to deploy from the
+//    Hub, or for a tool outside the platform, its repositories. With no use
+//    case to list, the part is "Where to try it".
+// 6. Read more and get started: docs, Blog posts and guides, "Get started"
+//    and "Get help", and the other flagship Features.
+//
+// A page that covers other Features, such as the portal REST API on the
+// lookup service's page, names them beside its own in the kicker.
+import type { CollectionEntry } from "astro:content";
+import ArrowLink from "../components/ArrowLink.astro";
+import Card from "../components/Card.astro";
+import FeatureVisual from "../components/FeatureVisual.astro";
+import Icon from "../components/Icon.astro";
+import VideoLoop from "../components/VideoLoop.astro";
+import BaseLayout from "./BaseLayout.astro";
+import { breadcrumbs } from "../lib/breadcrumbs.ts";
+import {
+  featureLinksFor,
+  featurePath,
+  flagshipFeatures,
+  hubWorkshops,
+  loopMedia,
+  useCasesUsing,
+} from "../lib/content.ts";
+import { docsLinkLabels, jobs } from "../lib/features.ts";
+import { elsewhere, getStarted } from "../lib/navigation.ts";
+import { getHelp } from "../lib/project.ts";
+import { repositoryLinks } from "../lib/repositories.ts";
+import "../styles/section-page.css";
+
+export interface Props {
+  /** A flagship Feature with a `page`. */
+  entry: CollectionEntry<"features">;
+}
+
+const { entry } = Astro.props;
+const { name, sentence, docs, job, page } = entry.data;
+const filePath = entry.filePath;
+if (!filePath || !page) {
+  throw new Error(
+    `${filePath ?? `The Feature "${entry.id}"`} has no page to render on the deep page template`,
+  );
+}
+
+const path = featurePath(entry.id);
+const jobName = jobs.find((each) => each.id === job)?.name;
+const covered = await featureLinksFor(page.covers, filePath);
+const kicker = new Intl.ListFormat("en", { type: "conjunction" }).format([
+  name,
+  ...covered.map((feature) => feature.name),
+]);
+const useCases = await useCasesUsing([entry.id, ...page.covers]);
+const workshops = await hubWorkshops(page.hubWorkshops, filePath);
+const repositories = repositoryLinks(page.repositories, filePath);
+const showHub = workshops.length > 0 || repositories.length === 0;
+const others = (await flagshipFeatures()).filter(
+  (other) => other.id !== entry.id,
+);
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+<BaseLayout
+  title={name}
+  description={sentence}
+  section="Feature"
+  breadcrumbs={breadcrumbs(path, name)}
+>
+  <div class="section-page">
+    <header class="what" id="what-it-is">
+      <div class="wrap what-grid">
+        <div class="what-text">
+          <p class="kicker">
+            {kicker}
+            {jobName && <span class="job">{jobName}</span>}
+          </p>
+          <h1>{page.headline}</h1>
+          <p class="lede">{page.what}</p>
+          <div class="actions">
+            <a class="button button-primary" href={getStarted.href}>
+              {getStarted.label}
+            </a>
+            <a class="button button-secondary" href={docs}>
+              {docsLinkLabels(docs).button}
+              <Icon name="external" />
+              <span class="sr-only">{` for ${name} (external site)`}</span>
+            </a>
+          </div>
+        </div>
+        <VideoLoop alt={page.loop.alt} media={loopMedia(page.loop, filePath)} />
+      </div>
+    </header>
+
+    <section class="band alt" id="what-you-can-do" aria-labelledby="do-heading">
+      <div class="wrap">
+        <h2 id="do-heading">What you can do with it</h2>
+        <ul class="things">
+          {page.things.map((thing) => (
+            <li class="thing">
+              {thing.loop ? (
+                <VideoLoop
+                  alt={thing.loop.alt}
+                  media={loopMedia(thing.loop, filePath)}
+                />
+              ) : (
+                <FeatureVisual visual={thing.visual} />
+              )}
+              <h3>{thing.title}</h3>
+              <p>{thing.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" id="how-you-use-it" aria-labelledby="how-heading">
+      <div class="wrap">
+        <h2 id="how-heading">How you use it</h2>
+        <div class="prose how">
+          <slot />
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="limits" aria-labelledby="limits-heading">
+      <div class="wrap">
+        <h2 id="limits-heading">Limits</h2>
+        <p class="intro">
+          What it does not do, and what it needs from you, so you can judge it
+          before you build on it.
+        </p>
+        <ul class="cards limits">
+          {page.limits.map((limit) => (
+            <Card as="li">
+              <h3>{limit.title}</h3>
+              <p>{limit.text}</p>
+              {limit.docs && (
+                <p class="docs">
+                  <ArrowLink
+                    href={limit.docs}
+                    external
+                    screenReaderContext={limit.title}
+                  >
+                    {docsLinkLabels(limit.docs).limit}
+                  </ArrowLink>
+                </p>
+              )}
+            </Card>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" id="where-it-is-used" aria-labelledby="used-heading">
+      <div class="wrap">
+        <h2 id="used-heading">
+          {useCases.length > 0 ? "Where it is used" : "Where to try it"}
+        </h2>
+        <div class="columns">
+          {useCases.length > 0 && (
+            <div class="column">
+              <h3>Use cases that rely on it</h3>
+              <ul class="links use-cases">
+                {useCases.map((useCase) => (
+                  <li>
+                    <ArrowLink href={useCase.href}>{useCase.name}</ArrowLink>
+                    <p>{useCase.promise}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {repositories.length > 0 && (
+            <div class="column">
+              <h3>Try it from its repositories</h3>
+              <p>
+                Each repository's README says how to install it and how to use
+                it.
+              </p>
+              <ul class="links repositories">
+                {repositories.map((repository) => (
+                  <li>
+                    <ArrowLink href={repository.href} external>
+                      {repository.name}
+                    </ArrowLink>
+                    <p>{repository.text}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {showHub && (
+            <div class="column">
+              <h3>Deploy it from the Hub</h3>
+              <p>
+                The Hub is a catalog of workshops you deploy on your own
+                Educates, each with one command.
+                {workshops.length > 0 &&
+                  " These ones show this Feature at work."}
+              </p>
+              {workshops.length > 0 && (
+                <ul class="links">
+                  {workshops.map((workshop) => (
+                    <li>
+                      <ArrowLink href={workshop.url} external>
+                        {workshop.title}
+                      </ArrowLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p>
+                <a class="button button-secondary" href={elsewhere.hub.href}>
+                  Explore the Hub
+                </a>
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="read-more" aria-labelledby="read-heading">
+      <div class="wrap close">
+        <div class="column">
+          <h2 id="read-heading">Read more</h2>
+          <ul class="links">
+            {page.reading.map((item) => (
+              <li>
+                <span class="kind">{item.kind}</span>
+                <ArrowLink href={item.href} external={isExternal(item.href)}>
+                  {item.title}
+                </ArrowLink>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <Card tone="soft" class="call">
+          <h2>Try it yourself, or talk to us</h2>
+          <p>
+            Get started runs Educates on your laptop with a first workshop in a
+            few commands. Get help is where you ask the community, and where you
+            can hire the people who build Educates.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href={getStarted.href}>
+              {getStarted.label}
+            </a>
+            <a class="button button-secondary" href={getHelp.href}>
+              {getHelp.label}
+            </a>
+          </div>
+        </Card>
+      </div>
+      {others.length > 0 && (
+        <nav class="wrap others" aria-labelledby="others-heading">
+          <h2 id="others-heading">Other flagship Features</h2>
+          <ul>
+            {others.map((other) => (
+              <li>
+                <a href={featurePath(other.id)}>{other.data.name}</a>
+                <p>{other.data.sentence}</p>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* The look the sections share is in src/styles/section-page.css. */
+  .what .wrap {
+    padding-block: 32px 64px;
+  }
+  .what-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 40px 56px;
+    align-items: center;
+  }
+  .kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+  .kicker .job {
+    padding-left: 12px;
+    border-left: 1px solid var(--color-line);
+    color: var(--color-ink-muted);
+  }
+  h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    font-weight: 700;
+  }
+  .lede {
+    margin: 20px 0 28px;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+
+  /* What you can do with it: a visual above each thing. */
+  .things {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 32px 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .thing {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .thing h3 {
+    margin-top: 6px;
+  }
+  .thing p {
+    color: var(--color-ink-muted);
+  }
+
+  /* Limits: cards two by two. */
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  }
+  .cards > :global(.card) {
+    gap: 8px;
+  }
+
+  /* Where it is used. */
+  .use-cases p,
+  .repositories p {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+
+  /* Read more and get started, then the other flagship Features. */
+  .close {
+    --close-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+  .close .column h2 {
+    margin-bottom: 4px;
+    font-size: clamp(24px, 2.6vw, 30px);
+  }
+  .others {
+    margin-top: 56px;
+  }
+  .others h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+  .others ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .others a {
+    font-weight: 600;
+  }
+  .others p {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+
+  @media (max-width: 960px) {
+    .what-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .what .wrap {
+      padding-block: 24px 48px;
+    }
+  }
+</style>

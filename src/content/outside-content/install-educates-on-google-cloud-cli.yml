@@ -1,0 +1,9 @@
+title: Install Educates on Google Cloud using the Command Line Interface
+kind: video
+url: https://www.youtube.com/watch?v=C6vCd6Nhf5M
+date: 2025-05-02
+channel: "@EducatesTrainingPlatform"
+tags: [educates, installation, cli]
+description: Install Educates on Google Cloud with the Educates CLI, from the DNS and cluster prerequisites to a running platform.
+length: "10:45"
+poster: ./install-educates-on-google-cloud-cli.jpg

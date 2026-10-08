@@ -1,0 +1,32 @@
+---
+// A shell command in a small terminal block, after a prompt that copying
+// leaves out. A long command, such as one with a URL, wraps inside the
+// block, so it never widens the page.
+export interface Props {
+  /** The command, as a visitor types it. */
+  command: string;
+}
+
+const { command } = Astro.props;
+---
+
+<pre class="command"><code>{command}</code></pre>
+
+<style>
+  .command {
+    margin: 0;
+    padding: 12px 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border-radius: var(--radius-control);
+    background: var(--color-terminal);
+    color: var(--color-terminal-ink);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .command code::before {
+    content: "$ ";
+    color: var(--color-terminal-success);
+    user-select: none;
+  }
+</style>

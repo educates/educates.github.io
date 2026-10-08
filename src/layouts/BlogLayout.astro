@@ -1,0 +1,101 @@
+---
+// A page of the blog that lists posts or the ways into them: its heading,
+// an optional lede, the links to the blog's indexes, and the page's content.
+import BaseLayout from "./BaseLayout.astro";
+import { breadcrumbs } from "../lib/breadcrumbs.ts";
+import { archivePath, authorsPath, blogPath, tagsPath } from "../lib/posts.ts";
+import { pagePath } from "../lib/urls.ts";
+
+export interface Props {
+  /** The page's title in the document head. */
+  title: string;
+  description: string;
+  /** The page's visible heading; the title unless given. */
+  heading?: string;
+  /** A sentence below the heading. */
+  lede?: string;
+}
+
+const { title, description, heading = title, lede } = Astro.props;
+const path = pagePath(Astro.url.pathname);
+
+const indexes = [
+  { label: "All posts", href: blogPath },
+  { label: "Tags", href: tagsPath },
+  { label: "Authors", href: authorsPath },
+  { label: "Archive", href: archivePath },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  breadcrumbs={path === blogPath ? undefined : breadcrumbs(path, title)}
+>
+  <div class="wrap blog">
+    <header>
+      <h1>{heading}</h1>
+      {lede && <p class="lede">{lede}</p>}
+      <nav aria-label="Blog">
+        <ul>
+          {indexes.map((index) => (
+            <li>
+              <a
+                href={index.href}
+                aria-current={index.href === path ? "page" : undefined}
+              >
+                {index.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .blog {
+    max-width: calc(860px + 2 * var(--space-gutter));
+    padding-block: 32px 80px;
+  }
+  header {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 40em;
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav a {
+    color: var(--color-ink-muted);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  nav a:hover {
+    color: var(--color-accent-strong);
+  }
+  nav a[aria-current="page"] {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+</style>

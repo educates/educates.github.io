@@ -1,0 +1,144 @@
+---
+// Click-to-enlarge for every Mermaid diagram on a page: the frame around
+// each diagram, with its "Enlarge" button below it, and the dialog that
+// shows the diagram enlarged, kept in a template until
+// src/scripts/diagram-enlarge.ts uses them. A page without a diagram
+// leaves them unused.
+import Icon from "./Icon.astro";
+---
+
+<template data-diagram-enlarge>
+  <div class="diagram" data-diagram>
+    <button
+      type="button"
+      class="diagram-button diagram-enlarge"
+      aria-label="Enlarge diagram"
+      hidden
+    >
+      <Icon name="expand" />
+      Enlarge
+    </button>
+  </div>
+  <dialog class="diagram-dialog" aria-label="Enlarged diagram">
+    <form method="dialog" class="diagram-dialog-bar">
+      <button type="submit" class="diagram-button diagram-close">
+        <Icon name="close" />
+        <span class="sr-only">Close</span>
+      </button>
+    </form>
+    <div class="diagram-dialog-view" data-diagram-view></div>
+  </dialog>
+</template>
+
+<script>
+  import { setUpDiagramEnlarge } from "../scripts/diagram-enlarge.ts";
+  setUpDiagramEnlarge();
+</script>
+
+<style is:global>
+  /* Until Mermaid draws it, a diagram's source stays hidden but keeps its
+     space; without JavaScript it shows as text. */
+  html.js pre.mermaid:not([data-processed]) {
+    color: transparent;
+  }
+
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 28px 0;
+    padding: 20px 20px 12px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .diagram > pre.mermaid {
+    margin: 0;
+    padding: 0;
+  }
+  /* The frame is the diagram's background: this outranks the tint
+     astro-mermaid's own styles give a drawn diagram. */
+  :root .diagram > pre.mermaid[data-processed] {
+    border-radius: 0;
+    background: none;
+  }
+  .diagram[data-ready] > pre.mermaid {
+    cursor: zoom-in;
+  }
+  /* Mermaid's dark theme sets edge labels in #ccc on #585858, 4.43:1, below
+     the WCAG AA minimum for text. On the frame's surface, inline or
+     enlarged, they keep it. Its styles are scoped by the diagram's id,
+     which only !important outranks. */
+  :root[data-theme="dark"] :is(pre.mermaid, .diagram-dialog) .edgeLabel,
+  :root[data-theme="dark"] :is(pre.mermaid, .diagram-dialog) .edgeLabel p,
+  :root[data-theme="dark"] :is(pre.mermaid, .diagram-dialog) .labelBkg {
+    background-color: var(--color-surface) !important;
+  }
+
+  .diagram-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+    color: var(--color-ink-muted);
+    font: 600 14px/1 var(--font-sans);
+    cursor: pointer;
+  }
+  .diagram-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-ink);
+  }
+  .diagram-button[hidden] {
+    display: none;
+  }
+  .diagram-enlarge {
+    align-self: flex-end;
+  }
+  .diagram-close {
+    padding: 0;
+    font-size: 18px;
+  }
+
+  .diagram-dialog {
+    width: min(96vw, 1400px);
+    max-width: none;
+    height: min(92vh, 1000px);
+    max-height: none;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    box-shadow: 0 24px 64px var(--color-shadow);
+  }
+  .diagram-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .diagram-dialog::backdrop {
+    background: rgb(0 0 0 / 0.6);
+  }
+  .diagram-dialog-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+  .diagram-dialog-view {
+    display: grid;
+    flex: 1;
+    place-items: center;
+    min-height: 0;
+    padding: 0 24px 24px;
+    overflow: auto;
+  }
+  .diagram-dialog-view svg {
+    width: 100%;
+    height: 100%;
+  }
+</style>

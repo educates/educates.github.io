@@ -1,0 +1,124 @@
+/*
+ * Design tokens for educates.dev, named by role. This file holds custom
+ * properties only, under three selectors: `:root` for the light theme, and
+ * the dark theme twice, once for a system that prefers dark (unless
+ * `data-theme` says light) and once for `data-theme` set to dark. With
+ * JavaScript, the theme script always sets `data-theme`, from the visitor's
+ * choice or the system theme; without it, only the media query applies.
+ * Keep the two dark blocks identical; src/styles/tokens.ts reads this file
+ * and refuses any other selector or a mismatch.
+ *
+ * Contrast (WCAG 2.2 AA, both themes): `ink`, `ink-muted` and
+ * `accent-strong` are text colors on `background`, `surface`, `chrome` and
+ * `accent-soft`, at 5.6:1 or more; `on-accent` is text on `accent` and
+ * `accent-strong`. `accent` is for marks that need 3:1, such as focus
+ * rings, borders, icons and fills; as text on the light `background` it
+ * measures 4.47:1, below the 4.5:1 text minimum, so links and text use
+ * `accent-strong`. Recheck these pairs when a value changes.
+ */
+
+:root {
+  --color-scheme: light;
+
+  --color-background: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-ink: #0e1a2b;
+  --color-ink-muted: #4f5e74;
+  --color-line: #dfe5ee;
+  --color-accent: #326ce5;
+  --color-accent-strong: #2553b8;
+  --color-on-accent: #ffffff;
+  --color-accent-soft: #e9f0fd;
+  --color-highlight: #fff4c2;
+  --color-highlight-ink: #5a4600;
+  --color-chrome: #e8edf4;
+  --color-shadow: rgba(14, 26, 43, 0.08);
+  /* Callouts: tip and danger, beside the accent (info) and highlight
+     (warning). */
+  --color-tip: #17702f;
+  --color-tip-soft: #e8f5ec;
+  --color-danger: #c2262f;
+  --color-danger-soft: #fdecec;
+
+  /* The Session dashboard's own colors, the same in both themes. */
+  --color-dashboard-bar: #2a6bd6;
+  --color-terminal: #0d1117;
+  --color-terminal-ink: #d6e2ec;
+  --color-terminal-success: #56d364;
+  --color-editor: #1e1e1e;
+  --color-editor-key: #569cd6;
+  --color-editor-string: #ce9178;
+  --color-editor-number: #b5cea8;
+  --color-editor-selection: #264f78;
+
+  /* Content covers: the dotted ground, the window's shadow and the edge
+     of a clickable action follow the theme; the logo blue, the bar's ink
+     and the yellow play marker are the same in both themes. */
+  --color-cover-dots: #d3dcea;
+  --color-cover-shadow: rgba(14, 26, 43, 0.14);
+  --color-highlight-line: #edd57a;
+  --color-logo-blue: #326ce5;
+  --color-dashboard-bar-ink: #ffffff;
+  --color-play-marker: #ffd84a;
+  --color-play-marker-ink: #0e1a2b;
+
+  --font-sans: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --space-gutter: clamp(16px, 4vw, 40px);
+  --width-content: 1200px;
+  --radius-control: 10px;
+  --radius-card: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-scheme: dark;
+
+    --color-background: #0c1420;
+    --color-surface: #131e2e;
+    --color-ink: #e7edf6;
+    --color-ink-muted: #9aa9be;
+    --color-line: #233149;
+    --color-accent: #6f9cff;
+    --color-accent-strong: #9dbcff;
+    --color-on-accent: #0a1220;
+    --color-accent-soft: #17284a;
+    --color-highlight: #3b3313;
+    --color-highlight-ink: #f3e3a0;
+    --color-chrome: #1b2738;
+    --color-shadow: rgba(0, 0, 0, 0.45);
+    --color-tip: #56d364;
+    --color-tip-soft: #10261a;
+    --color-danger: #ff7b72;
+    --color-danger-soft: #331517;
+    --color-cover-dots: #1c2a40;
+    --color-cover-shadow: rgba(0, 0, 0, 0.5);
+    --color-highlight-line: #6b5a1c;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-scheme: dark;
+
+  --color-background: #0c1420;
+  --color-surface: #131e2e;
+  --color-ink: #e7edf6;
+  --color-ink-muted: #9aa9be;
+  --color-line: #233149;
+  --color-accent: #6f9cff;
+  --color-accent-strong: #9dbcff;
+  --color-on-accent: #0a1220;
+  --color-accent-soft: #17284a;
+  --color-highlight: #3b3313;
+  --color-highlight-ink: #f3e3a0;
+  --color-chrome: #1b2738;
+  --color-shadow: rgba(0, 0, 0, 0.45);
+  --color-tip: #56d364;
+  --color-tip-soft: #10261a;
+  --color-danger: #ff7b72;
+  --color-danger-soft: #331517;
+  --color-cover-dots: #1c2a40;
+  --color-cover-shadow: rgba(0, 0, 0, 0.5);
+  --color-highlight-line: #6b5a1c;
+}

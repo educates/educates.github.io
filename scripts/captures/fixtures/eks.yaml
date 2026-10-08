@@ -1,0 +1,9 @@
+apiVersion: cli.educates.dev/v1alpha1
+kind: EducatesEKSConfig
+aws:
+  accountId: "123456789012"
+  region: eu-west-1
+  route53HostedZoneId: Z0123456789ABCDEF
+domain: educates.example.com
+acme:
+  email: admin@example.com

@@ -1,0 +1,199 @@
+---
+// The page shell every page uses: the document head (title, description,
+// canonical URL, Open Graph tags, fonts, tokens, theme, the page view
+// counter), the site header, the page's content inside <main> after its
+// breadcrumbs, the footer, and click-to-enlarge for any Mermaid diagram on
+// the page.
+import "@fontsource/onest/400.css";
+import "@fontsource/onest/600.css";
+import "@fontsource/onest/700.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/jetbrains-mono/700.css";
+import "../styles/tokens.css";
+import "../styles/global.css";
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import Analytics from "../components/Analytics.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import DiagramEnlarge from "../components/DiagramEnlarge.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import ThemeScript from "../components/ThemeScript.astro";
+import type { Crumb } from "../lib/breadcrumbs.ts";
+import { pageCoverAttribute, type PageCoverData } from "../lib/page-cover.ts";
+import { feedPaths } from "../lib/posts.ts";
+import { canonicalUrl, openGraphImageUrl } from "../lib/urls.ts";
+import { site } from "../site.ts";
+
+export interface Props {
+  /** The page's own title; the layout appends the site name. */
+  title: string;
+  /** One or two sentences for search results and shared links. */
+  description: string;
+  /**
+   * The site section the page belongs to, such as "Use case", "Feature"
+   * or "About Educates". Written as `data-section` on <body>, where the
+   * Open Graph image step reads it as the cover's kind.
+   */
+  section?: string;
+  /**
+   * What the page declares about its cover, beyond the title, section,
+   * `h2` headings and description the Open Graph image step reads from the
+   * built page: a blog post's slug, reading time and date, a guide's part,
+   * or the Session pane. Written as `data-cover` on <body>. A page without
+   * one gets the cover of any other page.
+   */
+  cover?: PageCoverData;
+  /**
+   * An image that replaces the page's generated Open Graph image, such as
+   * a post's `cover`. It is cropped to 1200 by 630 pixels.
+   */
+  coverImage?: ImageMetadata;
+  /**
+   * The breadcrumb trail below Home, ending with the page itself, shown at
+   * the top of <main>; `breadcrumbs()` in src/lib/breadcrumbs.ts builds it.
+   * Section pages have one; other pages leave it out.
+   */
+  breadcrumbs?: Crumb[];
+  /**
+   * Marks a stub, a placeholder for a page still to be written, with
+   * `data-stub` on <body>. The site check reports every stub page.
+   */
+  stub?: boolean;
+}
+
+const {
+  title,
+  description,
+  section,
+  cover,
+  coverImage,
+  breadcrumbs,
+  stub = false,
+} = Astro.props;
+const fullTitle = `${title} | ${site.name}`;
+const canonical = canonicalUrl(Astro.url.pathname);
+
+// Every page shares its own 1200 by 630 image: its cover image when it has
+// one, or else the cover src/integrations/open-graph-images.ts draws for it
+// after the build.
+const ogImage = { width: 1200, height: 630 };
+const ogImageUrl = coverImage
+  ? new URL(
+      (await getImage({ src: coverImage, ...ogImage, format: "png" })).src,
+      site.origin,
+    ).href
+  : openGraphImageUrl(Astro.url.pathname);
+
+// The site-wide structured data, with the social card as the logo.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Educates Training Platform",
+  description:
+    "A system for hosting interactive workshop environments in Kubernetes, or on top of a local container runtime.",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Kubernetes",
+  url: site.origin,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  sourceOrganization: {
+    "@type": "Organization",
+    name: "Educates",
+    url: site.origin,
+    logo: `${site.origin}/img/educates-social-card.png`,
+    sameAs: [
+      "https://github.com/educates/educates-training-platform",
+      "https://www.youtube.com/@EducatesTrainingPlatform",
+    ],
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ThemeScript />
+    <Analytics />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      href={feedPaths.rss}
+      title="Educates Training Platform RSS Feed"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      href={feedPaths.atom}
+      title="Educates Training Platform Atom Feed"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(ogImage.width)} />
+    <meta property="og:image:height" content={String(ogImage.height)} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
+    {/* What a page adds to its head, such as a script to run before first paint. */}
+    <slot name="head" />
+  </head>
+  <body
+    data-section={section}
+    data-cover={cover && pageCoverAttribute(cover)}
+    data-stub={stub ? "" : undefined}
+  >
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <SiteHeader />
+    <main id="main">
+      {breadcrumbs && (
+        <div class="wrap">
+          <Breadcrumbs items={breadcrumbs} />
+        </div>
+      )}
+      <slot />
+    </main>
+    <SiteFooter />
+    <DiagramEnlarge />
+  </body>
+</html>
+
+<style>
+  /* The footer sits at the bottom of the window on short pages. */
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  main {
+    flex: 1;
+  }
+  .skip-link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 50;
+    padding: 8px 14px;
+    border-radius: var(--radius-control);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 600;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+</style>

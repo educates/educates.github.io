@@ -1,0 +1,64 @@
+---
+// Every tag that has posts, with how many.
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { tagsWithPosts } from "../../../lib/blog-pages.ts";
+import { tagPath } from "../../../lib/posts.ts";
+
+const tags = (await tagsWithPosts()).sort((a, b) =>
+  a.tag.data.label.localeCompare(b.tag.data.label, "en", {
+    sensitivity: "base",
+  }),
+);
+---
+
+<BlogLayout
+  title="Tags"
+  description="Every tag on the Educates blog, with how many posts carry it."
+>
+  <ul class="tags">
+    {tags.map(({ tag, posts }) => (
+      <li>
+        <a href={tagPath(tag)}>
+          {tag.data.label}
+          <span class="count">{posts.length}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BlogLayout>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 8px 8px 16px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent-strong);
+  }
+  .count {
+    min-width: 28px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--color-chrome);
+    color: var(--color-ink-muted);
+    font-size: 13px;
+    text-align: center;
+  }
+</style>
