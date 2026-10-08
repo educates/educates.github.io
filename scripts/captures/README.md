@@ -33,9 +33,12 @@ local Kind cluster with HTTPS at `educates.test`:
 | Operator, session manager, secrets manager, training portal, lookup service | images built 2 October 2026 |
 | Workshop base image | built 5 October 2026 |
 | educates CLI | built 20 September 2026 |
+| Air-gapped install's image list | `educates-images-4.0.0-alpha.10.txt`, from the 4.0.0-alpha.10 release, in `fixtures/` |
 
-The site's 4.0 setting, `site.educates4Released`, was off. Once Educates
-4.0 is released, take the captures again from the release.
+The site's 4.0 setting, `site.educates4Released`, was off; 4.0-only
+Features are captured all the same, so their visuals are ready when it
+turns on. Once Educates 4.0 is released, take the captures again from the
+release.
 
 ## What you need
 

@@ -28,13 +28,12 @@ describe("visualSlots", () => {
     ]);
   });
 
-  it("leaves out 4.0-only Features until 4.0 is released", () => {
+  it("includes 4.0-only Features, so their visuals are ready before 4.0 is released", () => {
     const entries = [
       { id: "air-gapped-install", data: { educates4Only: true } },
     ];
 
-    expect(visualSlots(entries)).toEqual([]);
-    expect(visualSlots(entries, { educates4Released: true })).toEqual([
+    expect(visualSlots(entries)).toEqual([
       { feature: "air-gapped-install", slot: "visual", kind: "screenshot" },
     ]);
   });

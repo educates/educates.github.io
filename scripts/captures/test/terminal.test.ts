@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { screenRows } from "../terminal.ts";
+import { screenRows, terminalFontSize } from "../terminal.ts";
 
 describe("screenRows", () => {
   it("counts the lines a cast's output fills, wrapping long ones at the terminal's width", () => {
@@ -13,5 +13,16 @@ describe("screenRows", () => {
 
     // "~ $ echo hello" wraps to 2 rows, "hello" takes 1, 25 x to 3, the prompt 1.
     expect(screenRows(events, 10)).toBe(7);
+  });
+});
+
+describe("terminalFontSize", () => {
+  it("keeps the usual size up to the default width", () => {
+    expect(terminalFontSize(100)).toBe(15);
+    expect(terminalFontSize(80)).toBe(15);
+  });
+
+  it("shrinks a wider terminal's font in proportion, so its window still fits", () => {
+    expect(terminalFontSize(132)).toBe(11);
   });
 });

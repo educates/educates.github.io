@@ -16,7 +16,6 @@ import { join, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import type { Page } from "puppeteer-core";
 import sharp from "sharp";
-import { site } from "../../src/site.ts";
 import {
   Capture,
   defaultViewport,
@@ -63,6 +62,7 @@ import {
   recordTerminal,
   screenRows,
   startInTerminal,
+  terminalFontSize,
   terminalPrompt,
   terminalServer,
   typedCommand,
@@ -86,9 +86,7 @@ export async function main(args: string[]) {
   }
   if (args[0] === "check") {
     const entries = readFeatureEntries();
-    const slots = visualSlots(entries, {
-      educates4Released: site.educates4Released,
-    });
+    const slots = visualSlots(entries);
     const problems = [
       ...coverageProblems(shots, slots),
       ...wiringProblems(shots, entries),
@@ -121,13 +119,14 @@ interface Context {
 }
 
 async function takeShots(selected: readonly Shot[]) {
-  const ingress = clusterIngress();
-  const details = portalDetails();
-  const siteUrl = `${ingress.protocol}://${siteHost}.${ingress.domain}`;
-  const capture = await Capture.launch(
-    { url: details.url, accessCode: details.accessCode },
-    siteUrl,
-  );
+  const capture = await Capture.launch(() => {
+    const ingress = clusterIngress();
+    const details = portalDetails();
+    return {
+      portal: { url: details.url, accessCode: details.accessCode },
+      siteUrl: `${ingress.protocol}://${siteHost}.${ingress.domain}`,
+    };
+  });
   const workshops = join(tmpdir(), "site-captures", "workshops");
   mkdirSync(workshops, { recursive: true });
   const context: Context = {
@@ -411,6 +410,7 @@ function terminalPageUrl(
     title: script.title,
     cols: String(cast.width),
     rows: String(cast.height),
+    font: String(terminalFontSize(cast.width)),
     at: String(castLength(cast) + 1),
     play: options.play ? "1" : "0",
     backdrop: options.backdrop ? "1" : "0",

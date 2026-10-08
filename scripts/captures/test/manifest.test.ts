@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { site } from "../../../src/site.ts";
 import { readFeatureEntries } from "../entries.ts";
 import { shots } from "../manifest.ts";
 import { coverageProblems, visualSlots, wiringProblems } from "../slots.ts";
@@ -8,9 +7,7 @@ describe("the capture manifest", () => {
   const entries = readFeatureEntries();
 
   it("fills every visual slot of the Feature entries with one shot of its kind", () => {
-    const slots = visualSlots(entries, {
-      educates4Released: site.educates4Released,
-    });
+    const slots = visualSlots(entries);
 
     expect(coverageProblems(shots, slots)).toEqual([]);
   });

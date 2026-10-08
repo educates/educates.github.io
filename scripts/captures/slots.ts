@@ -51,33 +51,28 @@ export interface VisualSlot {
 }
 
 /**
- * Every visual slot of the Features the site shows, in the entries' order.
- * 4.0-only Features count only once 4.0 is released.
+ * Every visual slot of the Feature entries, in their order. 4.0-only
+ * Features count too, so their visuals are ready before 4.0 is released.
  */
-export function visualSlots(
-  entries: readonly FeatureEntry[],
-  options: { educates4Released?: boolean } = {},
-): VisualSlot[] {
-  return entries
-    .filter((entry) => options.educates4Released || !entry.data.educates4Only)
-    .flatMap((entry): VisualSlot[] => {
-      const page = entry.data.page;
-      const overview: VisualSlot = {
+export function visualSlots(entries: readonly FeatureEntry[]): VisualSlot[] {
+  return entries.flatMap((entry): VisualSlot[] => {
+    const page = entry.data.page;
+    const overview: VisualSlot = {
+      feature: entry.id,
+      slot: "visual",
+      kind: "screenshot",
+    };
+    if (!page) return [overview];
+    return [
+      overview,
+      { feature: entry.id, slot: "loop", kind: "loop" },
+      ...page.things.map((thing, index): VisualSlot => ({
         feature: entry.id,
-        slot: "visual",
-        kind: "screenshot",
-      };
-      if (!page) return [overview];
-      return [
-        overview,
-        { feature: entry.id, slot: "loop", kind: "loop" },
-        ...page.things.map((thing, index): VisualSlot => ({
-          feature: entry.id,
-          slot: index,
-          kind: thing.loop ? "loop" : "screenshot",
-        })),
-      ];
-    });
+        slot: index,
+        kind: thing.loop ? "loop" : "screenshot",
+      })),
+    ];
+  });
 }
 
 /** A shot of the capture manifest, as far as the slot it fills. */

@@ -19,6 +19,21 @@ export interface Cast {
 /** The terminal's width, and its most rows, unless a script asks for others. */
 export const defaultTerminalSize = { cols: 100, rows: 34 };
 
+/** The terminal's font size, in CSS pixels, at the default width or narrower. */
+const defaultFontSize = 15;
+
+/**
+ * The font size of a terminal `cols` wide: the usual size up to the default
+ * width, and smaller in proportion beyond it, so its window still fits the
+ * capture window.
+ */
+export function terminalFontSize(cols: number): number {
+  return Math.min(
+    defaultFontSize,
+    Math.floor((defaultFontSize * defaultTerminalSize.cols) / cols),
+  );
+}
+
 /** How long typing one character of a command takes, in seconds. */
 const keystroke = 0.03;
 

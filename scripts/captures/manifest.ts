@@ -855,6 +855,26 @@ export const shots: Shot[] = [
     },
   },
   {
+    id: "air-gapped-install/images",
+    feature: "air-gapped-install",
+    slot: "visual",
+    kind: "screenshot",
+    alt: "A terminal showing the image list a release publishes: one digest-pinned image reference per line, ready to mirror into your own registry.",
+    source: {
+      terminal: {
+        title: "~/educates",
+        cwd: "repository",
+        commands: [
+          {
+            show: "cat educates-images-4.0.0-alpha.10.txt",
+            run: "cat scripts/captures/fixtures/educates-images-4.0.0-alpha.10.txt",
+          },
+        ],
+        size: { cols: 132 },
+      },
+    },
+  },
+  {
     id: "day-2-operations/portals",
     feature: "day-2-operations",
     slot: "visual",

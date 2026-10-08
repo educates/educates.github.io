@@ -28,19 +28,29 @@ export interface Portal {
   accessCode: string;
 }
 
+/** Where shots of the cluster are taken: the capture portal and Example Academy. */
+export interface Targets {
+  portal: Portal;
+  siteUrl: string;
+}
+
 export class Capture {
   readonly #browser: Browser;
-  readonly #portal: Portal;
-  readonly #siteUrl: string;
+  readonly #findTargets: () => Targets;
+  #targets: Targets | undefined;
   readonly #pages = new Map<string, Page>();
 
-  private constructor(browser: Browser, portal: Portal, siteUrl: string) {
+  private constructor(browser: Browser, findTargets: () => Targets) {
     this.#browser = browser;
-    this.#portal = portal;
-    this.#siteUrl = siteUrl;
+    this.#findTargets = findTargets;
   }
 
-  static async launch(portal: Portal, siteUrl: string): Promise<Capture> {
+  /**
+   * Starts the browser. `findTargets` is asked for the portal and Example
+   * Academy the first time a shot needs them, so shots that need neither,
+   * such as a terminal's, run without the capture portal.
+   */
+  static async launch(findTargets: () => Targets): Promise<Capture> {
     const browser = await puppeteer.launch({
       executablePath: chromePath,
       headless: true,
@@ -48,7 +58,17 @@ export class Capture {
       defaultViewport: { ...defaultViewport, deviceScaleFactor: 1 },
       args: ["--hide-scrollbars", "--force-color-profile=srgb"],
     });
-    return new Capture(browser, portal, siteUrl);
+    return new Capture(browser, findTargets);
+  }
+
+  get #portal(): Portal {
+    this.#targets ??= this.#findTargets();
+    return this.#targets.portal;
+  }
+
+  get #siteUrl(): string {
+    this.#targets ??= this.#findTargets();
+    return this.#targets.siteUrl;
   }
 
   async close() {
