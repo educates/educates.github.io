@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { outsideEntryProblems } from "../outside-content.ts";
+import { isLanguageTag, outsideEntryProblems } from "../outside-content.ts";
 
 /** A video on the project's own YouTube channel, as an entry gives it. */
 const projectVideo = {
@@ -100,5 +100,16 @@ describe("outsideEntryProblems", () => {
         message: "an article needs its `author`, whom its cover names",
       },
     ]);
+  });
+});
+
+describe("isLanguageTag", () => {
+  it("accepts a language, alone or with its region", () => {
+    expect(isLanguageTag("es")).toBe(true);
+    expect(isLanguageTag("pt-BR")).toBe(true);
+  });
+
+  it("rejects a language and region joined by an underscore", () => {
+    expect(isLanguageTag("es_ES")).toBe(false);
   });
 });

@@ -45,6 +45,11 @@ export interface ContentEntry {
   /** A page on the site, or for an outside entry, its URL. */
   href: string;
   title: string;
+  /**
+   * For an outside entry in a language other than English, that language
+   * as a BCP 47 tag, such as `es`. Its card marks the title with it.
+   */
+  lang?: string;
   /** One line for its card. */
   description: string;
   /** When it was published or given; guides have none. */

@@ -3,6 +3,7 @@ import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { jobIds } from "./lib/features.ts";
 import {
+  isLanguageTag,
   outsideContentKinds,
   outsideEntryProblems,
 } from "./lib/outside-content.ts";
@@ -484,6 +485,18 @@ const outsideContent = defineCollection({
         description: z.string().min(1),
         /** Who wrote an article, as its cover's byline names them. */
         author: z.string().optional(),
+        /**
+         * The language the entry is in, as a BCP 47 tag such as `es`, when
+         * it is not English. Its card marks the title with it, so screen
+         * readers pronounce the title in that language; the description
+         * stays in English.
+         */
+        lang: z
+          .string()
+          .refine(isLanguageTag, {
+            message: "must be a BCP 47 language tag, such as `es` or `pt-BR`",
+          })
+          .optional(),
         /**
          * An image next to the entry, which the project has the right to
          * use, that replaces its generated cover.

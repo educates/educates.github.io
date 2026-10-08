@@ -49,6 +49,16 @@ export function isProjectVideo(entry: OutsideEntryFields): boolean {
   );
 }
 
+/** Whether `tag` is a well-formed BCP 47 language tag, such as `es` or `pt-BR`. */
+export function isLanguageTag(tag: string): boolean {
+  try {
+    Intl.getCanonicalLocales(tag);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Something wrong with an entry: the field at fault, and why. */
 export interface OutsideEntryProblem {
   field: keyof OutsideEntryFields;

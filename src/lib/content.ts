@@ -293,6 +293,7 @@ async function outsideEntries(known: Topic[]): Promise<ContentEntry[]> {
         id: `outside-content/${entry.id}`,
         href: data.url,
         title: data.title,
+        lang: data.lang,
         description: data.description,
         date: data.date,
         topics: topicsOf(data.tags, known),

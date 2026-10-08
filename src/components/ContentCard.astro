@@ -20,6 +20,11 @@ export interface Props {
   /** The kind of Content, such as "Blog post", "Guide" or "Video". */
   kind: string;
   title: string;
+  /**
+   * The title's language, as a BCP 47 tag such as `es`, when it is not the
+   * page's English.
+   */
+  titleLang?: string;
   /** The entry's one-line description. */
   description: string;
   /** When it was published; guides have none. */
@@ -45,6 +50,7 @@ const {
   href,
   kind,
   title,
+  titleLang,
   description,
   date,
   length,
@@ -69,7 +75,7 @@ const meta = date !== undefined || length !== undefined;
     <p class="kind">{kind}</p>
     <Heading class="title">
       <a href={href}>
-        {title}
+        {titleLang ? <span lang={titleLang}>{title}</span> : title}
         {source && <span class="sr-only">{" (external site)"}</span>}
       </a>
     </Heading>
