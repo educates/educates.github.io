@@ -25,7 +25,7 @@ page:
       text: Keep the catalog on your own site, which asks the portal's REST API for a Session and shows it in an iframe on your HTTPS pages. With the lookup service in front of several portals and clusters, one API serves them all, with a tenant for each customer.
       features: [portal-rest-api, embedding, lookup-service]
     - title: Workshops that keep up with the product
-      text: Workshops are Markdown in Git, reviewed and versioned like the product they teach, and published as an OCI image for each version. One workshop can hold several pathways through its pages. To see what gets used, record usage in Google Analytics, Microsoft Clarity or Amplitude, or post events to a webhook of yours.
+      text: Workshops are Markdown in Git, reviewed and versioned like the product they teach, and published as an OCI image for each version. One workshop can hold several pathways through its pages, and each portal picks the one its audience follows. To see what gets used, record usage in Google Analytics, Microsoft Clarity or Amplitude, or post events to a webhook of yours.
       features: [publishing-workshops, workshop-instructions, workshop-analytics]
   bring:
     - title: No LMS integration
@@ -39,7 +39,7 @@ page:
       text: A portal has its own accounts, or anonymous access, and nothing else. For customers and partners to sign in with the accounts they already have with you, your front end handles sign-in and calls the REST API with its own credentials.
       docs: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
       example:
-        title: An Apache 2.0 front end with OAuth sign-in to start from
+        title: An Apache 2.0 front end with OAuth sign-in, on the lookup service, to start from
         href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     - title: CRM links and partner reporting
       text: Educates does not connect to Salesforce or HubSpot, and nothing collects its webhook events for you. Tying training to an account, and reporting to each partner on their engineers, is yours to build.
@@ -47,10 +47,10 @@ page:
   proof:
     facts:
       - figure: "3"
-        text: "Public academies that use Educates: Spring Academy, Kube Academy and Tanzu Academy."
+        text: "Public academies Broadcom runs on Educates: Spring Academy, Kube Academy and Tanzu Academy."
         source:
-          label: The history of Educates
-          href: /about-educates/history
+          label: The Educates adopters file
+          href: https://github.com/educates/educates-training-platform/blob/develop/ADOPTERS.md
     content:
       - kind: Blog post
         title: Announcing Educates Hub
@@ -62,8 +62,14 @@ page:
         title: The portal REST API, for your own front end
         href: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
       - kind: Example
-        title: Graham Dumpleton's labs, a public academy running on Educates
+        title: Graham Dumpleton's labs, public courses on Educates with GitHub sign-in
         href: https://grahamdumpleton.me/labs/
+      - kind: Example
+        title: Viam Education, robotics courses on Educates
+        href: https://learn.viam.com
+      - kind: Example
+        title: The NWS Playground, NETWAYS' workshops on demand
+        href: https://playground.nws.netways.de/workshops/catalog/
     hubWorkshops:
       - lab-spring-boot-on-k8s
       - creating-a-spring-application

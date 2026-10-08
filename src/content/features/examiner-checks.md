@@ -10,7 +10,7 @@ flagship: true
 order: 3
 homepage: 2
 page:
-  headline: Check the learner's work, with instant feedback
+  headline: Check the work at each step, with instant feedback
   what: An examiner check is a clickable action that runs a test you write and shows whether it passed. Put one after a step, and the person taking the workshop knows at once whether the step worked, before the next step builds on it. It checks the work; it does not grade it.
   loop:
     alt: A check waits on the page while a pod starts in the terminal, then turns to passed once the pod is running.

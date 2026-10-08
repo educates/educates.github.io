@@ -9,7 +9,7 @@
 //    or a recording.
 // 3. How you use it: the entry's Markdown body, the real snippet that turns
 //    it on, passed in the default slot.
-// 4. Its limits: what it does not do, and what it needs from you.
+// 4. Limits: what it does not do, and what it needs from you.
 // 5. Where it is used: the use cases whose pages rely on it or on a Feature
 //    the page covers, and where to try it: workshops to deploy from the
 //    Hub, or for a tool outside the platform, its repositories. With no use
@@ -136,7 +136,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
 
     <section class="band alt" id="limits" aria-labelledby="limits-heading">
       <div class="wrap">
-        <h2 id="limits-heading">Its limits</h2>
+        <h2 id="limits-heading">Limits</h2>
         <p class="intro">
           What it does not do, and what it needs from you, so you can judge it
           before you build on it.
@@ -248,8 +248,8 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
           <h2>Try it yourself, or talk to us</h2>
           <p>
             Get started runs Educates on your laptop with a first workshop in a
-            few commands. Get help is where the community answers questions, and
-            where you can hire the people who build Educates.
+            few commands. Get help is where you ask the community, and where you
+            can hire the people who build Educates.
           </p>
           <div class="actions">
             <a class="button button-primary" href={getStarted.href}>
@@ -331,7 +331,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     color: var(--color-ink-muted);
   }
 
-  /* Its limits: cards two by two. */
+  /* Limits: cards two by two. */
   .cards {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
   }

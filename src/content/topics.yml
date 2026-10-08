@@ -17,7 +17,7 @@ installing-and-running:
 
 working-locally:
   label: Working locally
-  tags: [local, kind, macos, dns, resolver, cli]
+  tags: [local, kind, macos, dns, resolver]
   order: 3
 
 ai:

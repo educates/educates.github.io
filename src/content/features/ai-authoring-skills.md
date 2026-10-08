@@ -48,7 +48,7 @@ page:
       text: Both skills are developed and tested with Claude. Other agents that support the skills format may run them, but the READMEs warn that results vary with how much the agent already knows about Educates.
       docs: https://github.com/educates/educates-workshop-authoring-skill#other-ai-agents
     - title: Versioned apart from Educates
-      text: The skills live in their own repositories, with their own releases, outside the Educates releases. Install a .skill file from a tagged release when you want the same skill every time.
+      text: "The skills live in their own repositories, outside the Educates releases. The workshop authoring skill publishes tagged releases: install its .skill file from one when you want the same skill every time."
       docs: https://github.com/educates/educates-workshop-authoring-skill#from-github-release
   repositories:
     - name: educates/educates-workshop-authoring-skill
@@ -78,11 +78,11 @@ npx skills add https://github.com/educates/educates-course-design-skill
 ```
 
 To pin a version instead, download the `.skill` file from a tagged release and
-install it with the Claude Code CLI, here version 3.0 of the workshop authoring
+install it with the Claude Code CLI, here version 4.1 of the workshop authoring
 skill:
 
 ```shell
-curl -fLO https://github.com/educates/educates-workshop-authoring-skill/releases/download/3.0/educates-workshop-authoring.skill
+curl -fLO https://github.com/educates/educates-workshop-authoring-skill/releases/download/4.1/educates-workshop-authoring.skill
 claude skill install educates-workshop-authoring.skill
 ```
 

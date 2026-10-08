@@ -5,6 +5,6 @@ sentence: A portal can post events to a webhook of yours as Sessions start, page
 docs: https://docs.educates.dev/en/stable/custom-resources/training-portal.html#collecting-analytics-on-workshops
 visual:
   src: ./workshop-analytics/events.webp
-  alt: "Events a training portal posted to a training team's webhook as learners worked: Sessions started, pages viewed, and the page each learner reached."
+  alt: "Events a training portal posted to a training team's webhook as people worked: Sessions started, pages viewed, and the page each person reached."
 order: 19
 ---

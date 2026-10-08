@@ -52,17 +52,17 @@ const frames: { state: SessionDemoStateName; title: string; text: string }[] = [
   {
     state: "start",
     title: "Read the step",
-    text: "The instructions sit beside a terminal, an editor, the Kubernetes console and the workshop's slides.",
+    text: "Each step explains what to do and why, next to the tools you do it in.",
   },
   {
     state: "terminal",
     title: "Click to run it",
-    text: "A clickable action runs the command or opens the file for you.",
+    text: "A clickable action runs the command or opens the file for you, or type and click yourself.",
   },
   {
     state: "final",
     title: "Check the work",
-    text: "An examiner check confirms the step worked before you move on.",
+    text: "An optional examiner check can confirm the step worked before you move on.",
   },
 ];
 
@@ -80,7 +80,7 @@ const strip: (ProjectCall & { external: boolean })[] = [
   {
     title: "Get help",
     text: "Ask the community on Slack, or hire us.",
-    label: getHelp.label,
+    label: "Ways to get help",
     href: getHelp.href,
     external: false,
   },
@@ -116,9 +116,8 @@ const strip: (ProjectCall & { external: boolean })[] = [
       </div>
       <SessionDemo />
       <p class="caption">
-        Everyone gets a Session like this to themselves: the instructions beside
-        a terminal, an editor, the Kubernetes console and slides. Click the tabs
-        to look around.
+        This is what each person gets: a Session of their own. Click the tabs to
+        look around.
       </p>
     </div>
   </section>

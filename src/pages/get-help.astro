@@ -20,11 +20,21 @@ const slackInviteHost = new URL(kubernetesSlackInvite).host;
       <h2>Ask the community</h2>
       <ul class="routes">
         <li>
+          <h3>Docs</h3>
+          <p>
+            Start with the docs: they cover installing and configuring Educates,
+            and writing workshops.
+          </p>
+          <ArrowLink href={elsewhere.docs.href} external>
+            Read the docs
+          </ArrowLink>
+        </li>
+        <li>
           <h3>Questions</h3>
           <p>
             Ask about installing Educates, writing workshops or running a portal
-            in the Educates channel on the Kubernetes Slack, where the team and
-            other users answer. Not on the Kubernetes Slack yet? Get an invite
+            in the #educates channel on the Kubernetes Slack, which the
+            maintainers follow. Not on the Kubernetes Slack yet? Get an invite
             at <a href={kubernetesSlackInvite}>{slackInviteHost}</a>.
           </p>
           <ArrowLink href={elsewhere.slack.href} external>
@@ -39,16 +49,6 @@ const slackInviteHost = new URL(kubernetesSlackInvite).host;
           </p>
           <ArrowLink href={issuesUrl} external>
             Open an issue
-          </ArrowLink>
-        </li>
-        <li>
-          <h3>Reference</h3>
-          <p>
-            The docs are the reference for installing and configuring Educates
-            and for writing workshops.
-          </p>
-          <ArrowLink href={elsewhere.docs.href} external>
-            Read the docs
           </ArrowLink>
         </li>
       </ul>

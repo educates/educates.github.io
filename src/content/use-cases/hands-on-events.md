@@ -40,6 +40,12 @@ page:
       text: The portal can post events to your webhook as Sessions start, pages are viewed and Sessions finish, or send them to Google Analytics, which ad blockers and firewalls can stop. Nothing stores the webhook's events for you, and with anonymous access the portal never asks for a name, so you count Sessions, not people.
       docs: https://docs.educates.dev/en/stable/custom-resources/training-portal.html#collecting-analytics-on-workshops
   proof:
+    facts:
+      - figure: "5,000+"
+        text: "Workshops delivered at the online SpringOne 2020 conference, for an AWS bill of about $200."
+        source:
+          label: Open Sourcing Educates, on the VMware Tanzu blog
+          href: https://blogs.vmware.com/tanzu/open-sourcing-educates-platform/
     content:
       - kind: Blog post
         title: Installing Educates on a cloud provider (Part 1)

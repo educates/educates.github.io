@@ -31,10 +31,10 @@ page:
       educates4Features: [runs-on-your-cluster, air-gapped-install]
   bring:
     - title: Sign-in through your identity provider
-      text: The training portal has its own accounts, or anonymous access, and nothing else. For engineers to sign in with your company's identity provider, a front end of yours handles sign-in and requests Sessions through the REST API.
-      docs: https://docs.educates.dev/en/stable/portal-rest-api/client-authentication.html
+      text: The training portal has its own accounts, or anonymous access, and nothing else. For engineers to sign in with your company's identity provider, a front end of yours handles sign-in and requests Sessions through the lookup service.
+      docs: https://docs.educates.dev/en/stable/lookup-service/client-authentication.html
       example:
-        title: An Apache 2.0 front end with OAuth sign-in to start from
+        title: An Apache 2.0 front end with OAuth sign-in, on the lookup service, to start from
         href: https://github.com/jorgemoralespou/educates-oauth-simple-frontend
     - title: A record of who completed what
       text: Nothing keeps a history of who finished which workshop. The portal can post events to your webhook as Sessions start, pages are viewed and Sessions finish; storing them, and turning them into an onboarding report, is a service you build.

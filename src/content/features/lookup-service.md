@@ -27,7 +27,7 @@ page:
       text: Pass your own ID for each person with every request. Someone who closes the tab and clicks again gets the Session they already have, not a second one. A portal's API also lists a person's Sessions, extends one close to expiring where the workshop allows it, and ends one early.
       visual:
         src: ./lookup-service/same-session.webp
-        alt: Two requests for a Session for the same learner ID, answered with the same Session.
+        alt: Two requests for a Session for the same user ID, answered with the same Session.
     - title: One API in front of many clusters
       text: Register clusters with the lookup service, the one it runs on or remote ones, and it watches the training portals on each. A request for a Session goes to the portal with the most room, so the same workshop on several clusters shares the load, and an admin client sees every cluster, portal and Session from one place.
       visual:
@@ -42,7 +42,7 @@ page:
       text: With each request, pass the parameters the workshop declares, the person's name and email address, the page to send them back to when the Session ends, and a webhook to receive that Session's analytics events.
       visual:
         src: ./lookup-service/request.webp
-        alt: A request to the lookup service for a learner's Session, with their name and email address, a workshop parameter, the page to return to and a webhook for its events, and the Session it got.
+        alt: A request to the lookup service for a person's Session, with their name and email address, a workshop parameter, the page to return to and a webhook for its events, and the Session it got.
   limits:
     - title: Your site, your sign-in
       text: Neither API is a front end or a sign-in service. The catalog people browse, how they sign in, and the ID you pass for each person are yours to build.

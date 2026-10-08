@@ -10,7 +10,7 @@ flagship: true
 order: 20
 homepage: 3
 page:
-  headline: Write workshops on your own machine, and see each change in a running Session
+  headline: Write workshops on your own machine, and see the instructions change in a running Session
   what: The educates CLI runs all of Educates on your laptop. One command creates a Kind cluster with Educates in it and an image registry beside it, and another creates a workshop from a template. Publish it to that registry, deploy it, open it in the training portal, and see changes to its instructions as you save them, without publishing anything to a third party site.
   loop:
     alt: An instruction page is edited and saved on the laptop, and the running Session's instructions refresh to show the change.

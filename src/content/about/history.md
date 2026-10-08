@@ -17,6 +17,8 @@ config:
 ---
 timeline
     Dec 2019 : First commit
+    Sep 2020 : SpringOne 2020
+    Early 2021 : Learning Center fork
     Jun 2022 : Educates 2.0
     Aug 2024 : Educates 3.0
     Oct 2024 : Independent project
@@ -30,6 +32,19 @@ The first commit to the Educates repository dates from December 2019.
 [Jorge Morales](https://github.com/jorgemoralespou) developed it while
 working at VMware, for a team of developer advocates who needed to train
 people in Kubernetes and show developer tools running on it.
+
+The online SpringOne 2020 conference ran its workshops on Educates: over
+5,000 were delivered, for an AWS bill of about $200, as VMware's
+[Open Sourcing Educates](https://blogs.vmware.com/tanzu/open-sourcing-educates-platform/)
+post recounts.
+
+## Learning Center
+
+At the beginning of 2021, VMware took a fork of Educates 1.x into the Tanzu
+Application Platform as Learning Center. Workshops need changes to move
+between the two, as the
+[migration notes](https://docs.educates.dev/en/stable/workshop-migration/learning-center.html)
+explain.
 
 ## Educates 2.0
 
@@ -51,8 +66,9 @@ cloud providers.
 
 ## An independent project
 
-By then VMware was part of Broadcom, and in 2024 Broadcom's cuts left the
-project without active maintainers. Broadcom agreed to hand Educates over
+VMware became part of Broadcom in
+[November 2023](https://investors.broadcom.com/news-releases/news-release-details/broadcom-completes-acquisition-vmware),
+and in 2024 Broadcom's cuts left the project without active maintainers. Broadcom agreed to hand Educates over
 to the community, and in October 2024 it
 [became an independent project](/blog/educates-independent): it moved to
 its own GitHub organization, [github.com/educates](https://github.com/educates),
@@ -70,12 +86,13 @@ Two maintainers look after the project, as its
 [MAINTAINERS](https://github.com/educates/educates-training-platform/blob/develop/MAINTAINERS.md)
 file lists: Graham Dumpleton and Jorge Morales.
 
-Four organizations have added themselves to its
+Five organizations have added themselves to its
 [ADOPTERS](https://github.com/educates/educates-training-platform/blob/develop/ADOPTERS.md)
-file. Broadcom uses Educates for Spring Academy, Kube Academy and Tanzu
-Academy. The other three use it for a playground and internal learning
-platforms, workshops on demand for their customers, internal training, and
-demo environments. If you use Educates too, adding your organization to
+file: Broadcom, for Spring Academy, Kube Academy and Tanzu Academy;
+NETWAYS, for the NWS Playground, internal learning platforms and workshops
+on demand; 12F APS, for customer workshops and an internal sandbox;
+TeraSky, for internal training, customer workshops and demo environments;
+and Viam, for Viam Education's robotics courses. If you use Educates too, adding your organization to
 that file helps the project more than you might think.
 
 To follow what comes next, watch the

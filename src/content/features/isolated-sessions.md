@@ -21,7 +21,7 @@ page:
       text: Each Session gets a Kubernetes namespace of its own, with admin access to it by default, or edit or view when the workshop needs less. A workshop can add more namespaces per Session when it needs them.
       visual:
         src: ./isolated-sessions/namespace.webp
-        alt: A learner's pods in a namespace of their own, the rest of the cluster forbidden to them, and admin access in their namespace but none to create namespaces.
+        alt: A Session's pods in a namespace of its own, the rest of the cluster forbidden to it, and admin access in its namespace but none to create namespaces.
     - title: Quotas sized to the workshop
       text: Pick a budget, from small, at 1 CPU and 1 GiB of memory, to xxx-large, at 8 CPUs and 16 GiB, and each Session's namespace gets the matching quota and container defaults. Or choose custom and write your own.
       visual:
@@ -31,7 +31,7 @@ page:
       text: Turn on a virtual cluster, and each Session gets what looks like a cluster of its own, with cluster admin, to install operators and do what a namespace does not allow, without a real cluster for each person.
       visual:
         src: ./isolated-sessions/virtual-cluster.webp
-        alt: "A Session's virtual cluster: the learner lists its nodes and namespaces, is allowed everything, and creates a namespace and a custom resource definition."
+        alt: "A Session's virtual cluster: its nodes and namespaces listed, everything allowed, and a namespace and a custom resource definition created in it."
     - title: A virtual machine when a container is not enough
       text: Create a VM on the cluster's nodes with KubeVirt, or a remote one through an operator such as Crossplane, alone or beside a namespace, for a complete Linux environment with administrator access.
       visual:
