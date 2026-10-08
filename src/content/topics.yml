@@ -1,0 +1,36 @@
+# The Topics the Learn page filters by. Each groups tags from tags.yml;
+# Content carries tags, and a Topic shows the Content with any of its tags.
+# A tag may sit in two Topics. The key is how the query string names the
+# Topic, as in /learn?topic=working-locally, and `order` places its chip.
+#
+# The tags `educates`, `tips-and-tricks` and `resources` are in no Topic.
+
+authoring-workshops:
+  label: Authoring workshops
+  tags: [authoring, workshops, python]
+  order: 1
+
+installing-and-running:
+  label: Installing and running
+  tags: [installation, providers, terraform, kubernetes, getting-started, cli]
+  order: 2
+
+working-locally:
+  label: Working locally
+  tags: [local, kind, macos, dns, resolver]
+  order: 3
+
+ai:
+  label: AI
+  tags: [ai]
+  order: 4
+
+hub:
+  label: Hub
+  tags: [hub]
+  order: 5
+
+news:
+  label: News
+  tags: [announcement, releases]
+  order: 6

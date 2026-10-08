@@ -1,0 +1,27 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: lab-site-captures-python
+spec:
+  title: Python Without a Cluster
+  description: Start a Python project with uv, in a Session with the tools and no Kubernetes access at all.
+  duration: 15m
+  difficulty: beginner
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/lab-site-captures-files:$(workshop_version)"
+  session:
+    env:
+    - name: PATHWAY_NAME
+      value: no-kubernetes
+    namespaces:
+      security:
+        token:
+          enabled: false
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true

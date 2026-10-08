@@ -1,0 +1,73 @@
+---
+// A stub: a placeholder for a page still to be written, in the site's
+// layout, so every link to it resolves. It shows the page's title and
+// description, and the base layout marks it with `data-stub` for the site
+// check. Replace it with the real page.
+import BaseLayout from "./BaseLayout.astro";
+import { breadcrumbs } from "../lib/breadcrumbs.ts";
+import { elsewhere } from "../lib/navigation.ts";
+
+export interface Props {
+  /** The URL path of the page, such as `/features/lookup-service`. */
+  path: string;
+  title: string;
+  description: string;
+  /**
+   * The site section of the page, such as "Use case" or "Feature". A page
+   * in a section gets breadcrumbs.
+   */
+  section?: string;
+}
+
+const { path, title, description, section } = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  section={section}
+  breadcrumbs={section ? breadcrumbs(path, title) : undefined}
+  stub
+>
+  <div class="wrap stub">
+    {section && <p class="section">{section}</p>}
+    <h1>{title}</h1>
+    <p class="lede">{description}</p>
+    <p class="note">
+      This page is still being written. Until it is ready, the{" "}
+      <a href={elsewhere.docs.href}>Educates documentation</a> has the details.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .stub {
+    padding-block: 40px 96px;
+  }
+  .section {
+    margin: 0 0 12px;
+    color: var(--color-accent-strong);
+    font: 600 13px/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  h1 {
+    max-width: 18em;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 36em;
+    margin: 16px 0 28px;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  .note {
+    max-width: 36em;
+    margin: 0;
+    padding: 14px 18px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+</style>

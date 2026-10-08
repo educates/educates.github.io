@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bookshelf on Kubernetes</title>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <style>
+      .reveal h1, .reveal h2 { color: #1f3a5f; text-transform: none; }
+      .reveal .flow { display: flex; justify-content: center; align-items: center; gap: 0.6em; font-size: 0.8em; }
+      .reveal .flow span { padding: 0.4em 0.8em; border-radius: 0.4em; background: #e8eff8; }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>From manifest to running pods</h2>
+          <div class="flow">
+            <span>Deployment</span> &rarr; <span>ReplicaSet</span> &rarr; <span>Pods</span>
+          </div>
+          <p>Apply the manifest, and Kubernetes keeps the pods you asked for running.</p>
+        </section>
+        <section>
+          <h2>A service in front</h2>
+          <p>The service spreads requests over every ready pod.</p>
+        </section>
+        <section>
+          <h2>Check before you move on</h2>
+          <p>Each step ends with a check of the work you just did.</p>
+        </section>
+      </div>
+    </div>
+    <script src="dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({ hash: true });
+    </script>
+  </body>
+</html>

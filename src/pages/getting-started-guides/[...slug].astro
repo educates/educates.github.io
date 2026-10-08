@@ -1,0 +1,59 @@
+---
+// Every page of the Getting Started Guides, from the guides collection, in
+// the docs layout: the path numbered in the sidebar, the part a page
+// belongs to above its title, and the previous and next pages along the
+// path below it.
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import { breadcrumbs } from "../../lib/breadcrumbs.ts";
+import { guides } from "../../lib/content.ts";
+import type { PageCoverData } from "../../lib/page-cover.ts";
+import { editUrl } from "../../lib/urls.ts";
+
+export const getStaticPaths = (async () => {
+  const { entries, path } = await guides();
+  return entries.map((entry) => ({
+    params: { slug: entry.id === "index" ? undefined : entry.id },
+    props: { entry, path },
+  }));
+}) satisfies GetStaticPaths;
+
+const { entry, path } = Astro.props;
+const { Content, headings } = await render(entry);
+const href = path.href(entry.id);
+const part = path.partOf(entry.id);
+// A part's own page shows where it sits on the path; a page inside a part
+// names the part.
+const eyebrow =
+  part === undefined
+    ? undefined
+    : entry.id.includes("/")
+      ? `Part ${part.number}: ${part.title}`
+      : `Part ${part.number} of ${part.count}`;
+// A page of a part shows the path on its cover, with its part filled, as
+// the sidebar numbers it; the overview is drawn like any other page.
+const cover: PageCoverData | undefined = part && {
+  form: "guide",
+  part: part.number,
+  steps: path.sidebar.items.map((item, index) => ({
+    marker: item.marker ?? String(index + 1),
+    label: item.label,
+  })),
+};
+---
+
+<DocsLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  section={path.sidebar.label}
+  sidebar={path.sidebar}
+  headings={headings}
+  eyebrow={eyebrow}
+  pager={path.around(entry.id)}
+  cover={cover}
+  editUrl={entry.filePath && editUrl(entry.filePath)}
+  breadcrumbs={breadcrumbs(href, entry.data.title)}
+>
+  <Content />
+</DocsLayout>

@@ -1,0 +1,87 @@
+name: External links
+
+# Weekly, and by hand: checks the links from the built site to other sites,
+# and keeps one issue listing the dead ones. It never blocks a pull request.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: external-links
+  cancel-in-progress: true
+
+env:
+  ISSUE_TITLE: Dead external links
+
+jobs:
+  external-links:
+    name: External links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Node.js at the Volta pin in package.json.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the site
+        run: npx astro build
+
+      # Online, with lychee.toml's settings, for http and https links only.
+      # Links to educates.dev itself are left to the internal link check,
+      # which every pull request runs against the build.
+      - name: Check external links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --root-dir "${{ github.workspace }}/dist"
+            --scheme https --scheme http
+            --exclude '^https?://educates\.dev(/|$)'
+            --accept '100..=103,200..=299,429'
+            'dist/**/*.html'
+          fail: false
+
+      - name: Find the open dead links issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          number=$(gh issue list --state open --search "in:title \"$ISSUE_TITLE\"" \
+            --json number,title \
+            --jq "map(select(.title == \"$ISSUE_TITLE\")) | first | .number // empty")
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      # lychee exits with 2 when a link is dead.
+      - name: Open or update the dead links issue
+        if: ${{ steps.lychee.outputs.exit_code == '2' }}
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: ${{ env.ISSUE_TITLE }}
+          content-filepath: ./lychee/out.md
+          issue-number: ${{ steps.issue.outputs.number }}
+
+      - name: Close the dead links issue
+        if: ${{ steps.lychee.outputs.exit_code == '0' && steps.issue.outputs.number != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.issue.outputs.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: gh issue close "$NUMBER" --comment "No dead external links found in $RUN_URL."
+
+      # Any other exit code means lychee itself failed, not a link.
+      - name: Fail when lychee fails
+        if: ${{ steps.lychee.outputs.exit_code != '0' && steps.lychee.outputs.exit_code != '2' }}
+        run: |
+          echo "lychee exited with ${{ steps.lychee.outputs.exit_code }}"
+          exit 1

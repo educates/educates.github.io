@@ -1,0 +1,26 @@
+---
+// The blog's later pages of posts, at /blog/page/N.
+import type { GetStaticPaths } from "astro";
+import PageNavigation from "../../../components/PageNavigation.astro";
+import PostList from "../../../components/PostList.astro";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import { blogPages } from "../../../lib/blog-pages.ts";
+
+export const getStaticPaths = (async () =>
+  (await blogPages()).slice(1).map((listPage) => ({
+    params: { page: String(listPage.page.number) },
+    props: { listPage },
+  }))) satisfies GetStaticPaths;
+
+const { page, title, heading, description, lede } = Astro.props.listPage;
+---
+
+<BlogLayout
+  title={title}
+  heading={heading}
+  description={description}
+  lede={lede}
+>
+  <PostList posts={page.items} />
+  <PageNavigation page={page} />
+</BlogLayout>

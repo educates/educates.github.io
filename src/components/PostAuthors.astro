@@ -1,0 +1,71 @@
+---
+// The authors of a post with their pictures, names and titles. A name links
+// to the author's page when they have one, else to their own site.
+import { Image } from "astro:assets";
+import { authorPath, type Author } from "../lib/posts.ts";
+
+export interface Props {
+  authors: Author[];
+}
+
+const { authors } = Astro.props;
+---
+
+<ul class="authors">
+  {authors.map((author) => (
+    <li>
+      <Image
+        src={author.data.image}
+        alt=""
+        width={48}
+        height={48}
+        densities={[1, 2]}
+      />
+      <span class="who">
+        <a href={author.data.page ? authorPath(author) : author.data.url}>
+          {author.data.name}
+        </a>
+        <span class="title">{author.data.title}</span>
+      </span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  img {
+    flex: none;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    background: var(--color-chrome);
+  }
+  .who {
+    display: grid;
+    line-height: 1.3;
+  }
+  a {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+  }
+  .title {
+    color: var(--color-ink-muted);
+    font-size: 14px;
+  }
+</style>

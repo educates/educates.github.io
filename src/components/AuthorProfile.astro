@@ -1,0 +1,93 @@
+---
+// An author's picture, title and profiles elsewhere. In the index of
+// authors it also shows the name as a heading linking to their page; on
+// the author's own page the page heading is the name.
+import { Image } from "astro:assets";
+import { authorPath, type Author } from "../lib/posts.ts";
+
+export interface Props {
+  author: Author;
+  /** Shows the name as a heading of this level, linking to their page. */
+  headingLevel?: 2 | 3;
+}
+
+const { author, headingLevel } = Astro.props;
+const { name, title, image, socials } = author.data;
+
+/** Profile URLs for the social keys of `authors.yml`, by key. */
+const profiles: Record<string, { label: string; url: (id: string) => string }> =
+  {
+    github: { label: "GitHub", url: (id) => `https://github.com/${id}` },
+    linkedin: {
+      label: "LinkedIn",
+      url: (id) => `https://www.linkedin.com/in/${id}`,
+    },
+    x: { label: "X", url: (id) => `https://x.com/${id}` },
+  };
+const links = Object.entries(socials).flatMap(([key, id]) => {
+  const profile = profiles[key];
+  return profile ? [{ label: profile.label, href: profile.url(id) }] : [];
+});
+const Heading = headingLevel ? (`h${headingLevel}` as const) : undefined;
+---
+
+<div class="profile">
+  <Image src={image} alt="" width={72} height={72} densities={[1, 2]} />
+  <div>
+    {Heading && (
+      <Heading class="name">
+        <a href={authorPath(author)}>{name}</a>
+      </Heading>
+    )}
+    <p class="title">{title}</p>
+    {links.length > 0 && (
+      <ul class="links" aria-label={`${name} elsewhere`}>
+        {links.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</div>
+
+<style>
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  img {
+    flex: none;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    background: var(--color-chrome);
+  }
+  .name {
+    margin: 0 0 2px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .name a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .name a:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+  }
+  .title {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 15px;
+  }
+</style>

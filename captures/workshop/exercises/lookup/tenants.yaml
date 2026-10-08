@@ -1,0 +1,45 @@
+# Each customer gets a tenant, which picks the clusters and portals it
+# reaches by name or by label. A client of the API reaches only the tenants
+# it is granted.
+apiVersion: lookup.educates.dev/v1beta1
+kind: TenantConfig
+metadata:
+  name: example-academy
+  namespace: educates-config
+spec:
+  clusters:
+    nameSelector:
+      matchNames:
+      - local-cluster
+  portals:
+    nameSelector:
+      matchNames:
+      - site-captures
+---
+apiVersion: lookup.educates.dev/v1beta1
+kind: TenantConfig
+metadata:
+  name: customer-1-production
+  namespace: educates-config
+spec:
+  clusters:
+    labelSelector:
+      matchLabels:
+        customer: customer-1
+  portals:
+    labelSelector:
+      matchLabels:
+        environment: production
+---
+apiVersion: lookup.educates.dev/v1beta1
+kind: ClientConfig
+metadata:
+  name: example-academy-site
+  namespace: educates-config
+spec:
+  client:
+    password: change-me-to-a-long-password
+  roles:
+  - tenant
+  tenants:
+  - example-academy

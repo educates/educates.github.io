@@ -1,0 +1,32 @@
+---
+// A post's date and reading time, as one line of small print.
+import {
+  formatDate,
+  isoDate,
+  postReadingMinutes,
+  type Post,
+} from "../lib/posts.ts";
+
+export interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+---
+
+<p class="byline">
+  <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
+  <span aria-hidden="true">·</span>
+  <span>{postReadingMinutes(post)} min read</span>
+</p>
+
+<style>
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+</style>

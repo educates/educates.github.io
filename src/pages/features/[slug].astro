@@ -1,0 +1,34 @@
+---
+// A deep page per flagship Feature in the Feature collection: on the deep
+// page template for a Feature with a `page`, whose Markdown body is its
+// "How you use it" section, or a stub until its page is written.
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import FeatureLayout from "../../layouts/FeatureLayout.astro";
+import StubLayout from "../../layouts/StubLayout.astro";
+import { featurePath, flagshipFeatures } from "../../lib/content.ts";
+
+export const getStaticPaths = (async () =>
+  (await flagshipFeatures()).map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = entry.data.page
+  ? await render(entry)
+  : { Content: undefined };
+---
+
+{Content ? (
+  <FeatureLayout entry={entry}>
+    <Content />
+  </FeatureLayout>
+) : (
+  <StubLayout
+    path={featurePath(entry.id)}
+    title={entry.data.name}
+    description={entry.data.sentence}
+    section="Feature"
+  />
+)}

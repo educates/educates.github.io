@@ -1,0 +1,53 @@
+---
+// A list of posts as Content cards, in the order given.
+import ContentCard from "./ContentCard.astro";
+import {
+  postCover,
+  postPath,
+  postReadingMinutes,
+  type Post,
+} from "../lib/posts.ts";
+
+export interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+const cards = await Promise.all(
+  posts.map(async (post) => ({ post, cover: await postCover(post) })),
+);
+---
+
+<ol class="posts">
+  {cards.map(({ post, cover }) => (
+    <li>
+      <ContentCard
+        href={postPath(post)}
+        kind="Blog post"
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        length={`${postReadingMinutes(post)} min read`}
+        cover={cover}
+        coverImage={post.data.cover}
+      />
+    </li>
+  ))}
+</ol>
+
+<style>
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .posts > li {
+    display: flex;
+  }
+  .posts > li > :global(*) {
+    flex: 1;
+  }
+</style>

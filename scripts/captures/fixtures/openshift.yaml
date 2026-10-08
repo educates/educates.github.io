@@ -1,0 +1,8 @@
+apiVersion: cli.educates.dev/v1alpha1
+kind: EducatesInlineConfig
+domain: educates.apps.example.com
+ingressClassName: openshift-default
+wildcardCertificateSecret: wildcard-tls
+policyEnforcement:
+  clusterEngine: OpenShiftSCC
+  workshopEngine: Kyverno

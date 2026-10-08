@@ -1,0 +1,21 @@
+---
+// Every published post, at /blog/<slug>.
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import { postComponents } from "../../components/post-components.ts";
+import PostLayout from "../../layouts/PostLayout.astro";
+import { posts } from "../../lib/posts.ts";
+
+export const getStaticPaths = (async () =>
+  (await posts()).map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }))) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<PostLayout post={post} headings={headings}>
+  <Content components={postComponents} />
+</PostLayout>

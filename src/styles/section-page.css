@@ -1,0 +1,149 @@
+/*
+ * The look a use case page and a Feature deep page share: sections in
+ * bands that alternate with the surface colour, cards, columns of links,
+ * and a close that puts a call to action beside what comes next. Each of
+ * the two layouts imports this file and wraps its content in
+ * `.section-page`.
+ *
+ * Rules start from `:where(.section-page)`, which adds no specificity, so
+ * a layout's own scoped rules, such as its number of card columns, win
+ * over these. The few that must win over another component's own rules,
+ * such as the call to action's padding over the card's, start from
+ * `.section-page` instead. Headings and paragraphs inside `.prose`, such
+ * as the "How it works" text, keep the prose styles.
+ */
+
+:where(.section-page) p:not(:where(.prose *)) {
+  margin: 0;
+}
+/* Above the element defaults in global.css. */
+.section-page h2:not(:where(.prose *)) {
+  margin-bottom: 32px;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.15;
+}
+:where(.section-page) h3:not(:where(.prose *)) {
+  font-size: 19px;
+}
+
+:where(.section-page) .kicker {
+  margin: 0 0 12px;
+  color: var(--color-accent-strong);
+  font: 600 13px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+:where(.section-page) .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+:where(.section-page) .actions .button {
+  white-space: normal;
+}
+
+/* A section of the page; `alt` sections sit on the surface colour. */
+:where(.section-page) .band {
+  padding-block: 72px;
+  scroll-margin-top: 72px;
+}
+:where(.section-page) .band.alt {
+  border-block: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+:where(.section-page) .intro {
+  max-width: 40em;
+  margin: -16px 0 32px;
+  color: var(--color-ink-muted);
+}
+:where(.section-page) .how {
+  max-width: 52em;
+}
+
+/*
+ * Cards in a grid; on a surface section they take the page colour. Each
+ * layout sets how many columns.
+ */
+:where(.section-page) .cards {
+  display: grid;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.section-page) .alt .cards > .card.surface {
+  background: var(--color-background);
+}
+:where(.section-page) .cards p {
+  color: var(--color-ink-muted);
+}
+
+/* Columns of links, such as what to read and where to try it. */
+:where(.section-page) .columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 32px 48px;
+}
+:where(.section-page) .column {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+:where(.section-page) .column > p {
+  color: var(--color-ink-muted);
+}
+:where(.section-page) .links {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.section-page) .links li {
+  display: grid;
+  gap: 2px;
+  justify-items: start;
+}
+:where(.section-page) .kind {
+  color: var(--color-ink-muted);
+  font: 600 12px/1.4 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/*
+ * The close: a call to action beside what comes next. Each layout sets the
+ * two columns in `--close-columns`; at 960px and below, where the page
+ * layouts switch to their phone layout, they stack.
+ */
+:where(.section-page) .close {
+  display: grid;
+  grid-template-columns: var(--close-columns);
+  gap: 32px 48px;
+  align-items: start;
+}
+.section-page .card.call {
+  gap: 16px;
+  padding: 32px;
+}
+.section-page .call h2 {
+  margin: 0;
+  font-size: clamp(24px, 2.6vw, 30px);
+}
+:where(.section-page) .call p {
+  color: var(--color-ink-muted);
+}
+
+@media (max-width: 960px) {
+  :where(.section-page) .close {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  :where(.section-page) .band {
+    padding-block: 52px;
+  }
+  .section-page .card.call {
+    padding: 24px;
+  }
+}

@@ -1,0 +1,72 @@
+---
+// Every post, newest first, grouped by the year it was published.
+import BlogLayout from "../../layouts/BlogLayout.astro";
+import {
+  formatDate,
+  isoDate,
+  postPath,
+  posts,
+  type Post,
+} from "../../lib/posts.ts";
+
+const years = new Map<number, Post[]>();
+for (const post of await posts()) {
+  const year = post.data.date.getUTCFullYear();
+  years.set(year, [...(years.get(year) ?? []), post]);
+}
+---
+
+<BlogLayout
+  title="Archive"
+  description="Every post on the Educates blog, by the year it was published."
+>
+  {[...years].map(([year, posts]) => (
+    <section aria-labelledby={`year-${year}`}>
+      <h2 id={`year-${year}`}>{year}</h2>
+      <ul>
+        {posts.map((post) => (
+          <li>
+            <time datetime={isoDate(post.data.date)}>
+              {formatDate(post.data.date)}
+            </time>
+            <a href={postPath(post)}>{post.data.title}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</BlogLayout>
+
+<style>
+  section + section {
+    margin-top: 40px;
+  }
+  h2 {
+    margin-bottom: 14px;
+    font-size: 26px;
+    font-weight: 700;
+  }
+  ul {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 11em 1fr;
+    gap: 4px 16px;
+  }
+  time {
+    color: var(--color-ink-muted);
+  }
+  a {
+    font-weight: 600;
+  }
+  @media (max-width: 600px) {
+    li {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

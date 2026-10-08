@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Passes when a service named $1 exists and has at least one ready endpoint.
+
+kubectl get service "$1" > /dev/null || exit 1
+
+addresses=$(kubectl get endpoints "$1" -o jsonpath='{.subsets[*].addresses[*].ip}' 2> /dev/null)
+
+[ -n "$addresses" ]

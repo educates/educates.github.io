@@ -1,0 +1,34 @@
+---
+// A page per use case in the use case collection: on the use case template
+// for a use case with a `page`, whose Markdown body is its "How it works"
+// section, or a stub until its page is written.
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import StubLayout from "../../layouts/StubLayout.astro";
+import UseCaseLayout from "../../layouts/UseCaseLayout.astro";
+import { useCasePath, useCases } from "../../lib/content.ts";
+
+export const getStaticPaths = (async () =>
+  (await useCases()).map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = entry.data.page
+  ? await render(entry)
+  : { Content: undefined };
+---
+
+{Content ? (
+  <UseCaseLayout entry={entry}>
+    <Content />
+  </UseCaseLayout>
+) : (
+  <StubLayout
+    path={useCasePath(entry.id)}
+    title={entry.data.name}
+    description={entry.data.promise}
+    section="Use case"
+  />
+)}

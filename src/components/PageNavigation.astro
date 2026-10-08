@@ -1,0 +1,53 @@
+---
+// Links to the newer and older pages of a paginated list of posts. Shows
+// nothing when the list fits on one page.
+import type { PaginatedListPage } from "../lib/pagination.ts";
+
+export interface Props {
+  page: PaginatedListPage<unknown>;
+}
+
+const { page } = Astro.props;
+---
+
+{page.count > 1 && (
+  <nav class="pages" aria-label="More posts">
+    {page.previous ? (
+      <a href={page.previous} rel="prev">
+        Newer posts
+      </a>
+    ) : (
+      <span />
+    )}
+    <span class="where">
+      Page {page.number} of {page.count}
+    </span>
+    {page.next ? (
+      <a href={page.next} rel="next">
+        Older posts
+      </a>
+    ) : (
+      <span />
+    )}
+  </nav>
+)}
+
+<style>
+  .pages {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  a {
+    font-weight: 600;
+  }
+  a[rel="next"] {
+    justify-self: end;
+  }
+  .where {
+    color: var(--color-ink-muted);
+    font-size: 15px;
+  }
+</style>

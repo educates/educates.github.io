@@ -1,0 +1,17 @@
+---
+// One tab of a <Tabs> group: its label, and the content shown while it is
+// selected. <Tabs> reads the label from `data-tab-label` and turns each of
+// these into a tab panel. Without JavaScript the label shows above the
+// content instead, and every panel is visible.
+export interface Props {
+  /** The tab's name, such as "Homebrew" or "Debian". */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="tab-panel" data-tab-label={label}>
+  <p class="tab-panel-label">{label}</p>
+  <slot />
+</div>

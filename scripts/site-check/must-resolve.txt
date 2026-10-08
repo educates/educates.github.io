@@ -1,0 +1,146 @@
+# Every URL the built site must serve: each page, feed, file and redirect
+# source the Docusaurus site published or linked, so links from elsewhere
+# keep working. The old feeds' XSLT stylesheets and their CSS are left out:
+# only the feeds linked them, and browsers are removing XSLT. One URL path
+# per line; `[Section]` names the section of the entries below it; `#`
+# starts a comment.
+
+[Site pages]
+/
+/downloads
+/docs
+
+[About Educates]
+/about-educates
+/about-educates/deployment
+/about-educates/workshop-capabilities
+/about-educates/workflows
+/about-educates/local-dev
+/about-educates/history
+
+[Getting Started Guides]
+/getting-started-guides
+/getting-started-guides/setup
+/getting-started-guides/setup/docker
+/getting-started-guides/setup/kubectl
+/getting-started-guides/setup/educates
+/getting-started-guides/setup/create-cluster
+/getting-started-guides/about
+/getting-started-guides/about/components
+/getting-started-guides/about/crds
+/getting-started-guides/about/workflow
+/getting-started-guides/authoring
+/getting-started-guides/authoring/basics
+/getting-started-guides/authoring/explore
+/getting-started-guides/authoring/live-edit
+/getting-started-guides/authoring/startup-interactivity
+
+[Blog posts]
+/blog/educates-independent
+/blog/getting-started-on-kind
+/blog/your-first-workshop
+/blog/how-to-best-work-locally
+/blog/how-installer-works-part-1
+/blog/install-educates-cloud-cli
+/blog/verify-educates-cloud-install
+/blog/managing-multiple-versions-of-educates-cli
+/blog/terraform-quickstart
+/blog/announcing-educates-hub
+/blog/sync-resolver-macos
+/blog/when-ai-content-isnt-slop
+/blog/clickable-actions-in-workshops
+/blog/fixed-ip-bridge-macos
+/blog/teaching-an-ai-about-educates
+/blog/deploying-educates-yourself
+/blog/reviewing-workshops-with-ai
+
+[Blog index and archive]
+/blog
+/blog/page/2
+/blog/archive
+
+[Tag pages]
+/blog/tags
+/blog/tags/ai
+/blog/tags/announcement
+/blog/tags/authoring
+/blog/tags/cli
+/blog/tags/dns
+/blog/tags/educates
+/blog/tags/educates/page/2
+/blog/tags/getting-started
+/blog/tags/hub
+/blog/tags/installation
+/blog/tags/kind
+/blog/tags/local
+/blog/tags/macos
+/blog/tags/python
+/blog/tags/resolver
+/blog/tags/terraform
+/blog/tags/tips-and-tricks
+/blog/tags/workshops
+
+[Author pages]
+/blog/authors
+/blog/authors/bill
+/blog/authors/graham
+/blog/authors/jorge
+
+[Not-found page]
+/404.html
+
+[Feeds]
+/blog/rss.xml
+/blog/atom.xml
+
+[Crawler and host files]
+/sitemap.xml
+/robots.txt
+/.nojekyll
+
+[Kept assets]
+/img/educates-social-card.png
+/img/favicon.ico
+/favicon.ico
+/asciinemas/getting-started-on-kind.cast
+/asciinemas/install-educates-on-gcloud.cast
+/asciinemas/terraform-init.cast
+/asciinemas/terraform-plan.cast
+/asciinemas/terraform-apply.cast
+/asciinemas/terraform-verify-k8s-pods.cast
+/asciinemas/terraform-destroy.cast
+
+[Content-hashed images embedded in the feeds]
+/assets/images/air-framework-workshop-8ca71a831f82d614ac23141da7f5bf8b.png
+/assets/images/arch-be5e0caa423b4a512d9a52af5ec629c2.png
+/assets/images/ca_certificate-9df963f62f1778720ce2faf257ce3a4d.png
+/assets/images/certificate_not_trusted-211dd4ab441d5442c6523543c6ecbf39.png
+/assets/images/cluster-basics-68cfe6bfdd65b7ab0aa7720bb07f7990.png
+/assets/images/cluster-networking-578f02aaa87a5ea5171f9f542afe8467.png
+/assets/images/cluster-storage-cc481bf179af1718b8853db8f9d6674d.png
+/assets/images/dns-admin-role-b8bfce697e60f37fdf15c3f298352b17.png
+/assets/images/editor-replace-example-b5030836bb6ce40fde38a8c37c05694b.png
+/assets/images/initial-request-prompt-069903bb5efb9514c8235c3efb0f95a2.png
+/assets/images/network-trace-3c7bc5c29456557bf70ddecf11bf9cd8.png
+/assets/images/portal-787c66c9219ddc1d53bbe6796fd36eb9.png
+/assets/images/root-dns-zone-b6add9d7ceadf53b22c8a0bb226f7a98.png
+/assets/images/secured_workshop-0e56c65cb82aa3004714cd42a2e32dd1.png
+/assets/images/spinner-32dcb86f0224ca8b73ce066efa071d0f.png
+/assets/images/subdomain-dns-zone-eaabcc03f4495a6a1d4fb05739a39077.png
+/assets/images/summary-and-review-54ddcd33d4fdbede5a112ddec6b2fc85.png
+/assets/images/swiftbar-plugin-07da4379e84ecbec878d2005950f4458.png
+/assets/images/terminal-execute-example-b27034651e7ac08ba256e38d738ee3e8.png
+/assets/images/training-portal-a2d751f02d602f94c754eb87858dde39.png
+/assets/images/trigger-clickable-actions-d9f7e8dbe68494fd14b6913a840377dd.png
+/assets/images/workshop-dashboard-f829cad0e16049aa7f31485c48693347.png
+/assets/images/workshop-overview-1f160d4e24f46060019ee33157cbb857.png
+/assets/images/workshop-session-url-6d012eaa0b9c0d45321d5ddf1fa50c93.png
+
+[Redirect sources not listed above]
+# The other eight redirect sources were pages of the old site and are
+# listed in their sections: three About Educates pages, four Getting
+# Started Guides pages and /docs.
+/team
+/resources
+/posts/
+/posts/installation-kind/

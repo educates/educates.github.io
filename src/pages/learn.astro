@@ -1,0 +1,112 @@
+---
+// The Learn page: every kind of Content in one list. Its heading and
+// intro, the first three Featured Content entries pinned, then the kind and
+// Topic chips and the list, newest first with the guides after the dated
+// entries. The chips are the FacetFilter island; without JavaScript the
+// whole list shows.
+import ContentEntryCard from "../components/ContentEntryCard.astro";
+import FacetFilter from "../components/FacetFilter.tsx";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contentFacets, learnFacetGroups } from "../lib/content-entries.ts";
+import { contentEntries, featuredContent, topics } from "../lib/content.ts";
+
+const entries = await contentEntries();
+const featured = await featuredContent(3);
+const groups = learnFacetGroups(await topics());
+const listId = "learn-list";
+---
+
+<BaseLayout
+  title="Learn"
+  description="Blog posts, guides, videos and talks about Educates, in one list you can filter by kind and Topic."
+>
+  <div class="wrap learn">
+    <header class="page-head">
+      <h1>Learn</h1>
+      <p class="lede">
+        Blog posts, guides, videos and talks about Educates, in one list.
+      </p>
+    </header>
+
+    <section aria-labelledby="featured">
+      <h2 id="featured">Featured</h2>
+      <ol class="cards">
+        {featured.map((entry) => (
+          <li>
+            <ContentEntryCard entry={entry} heading="h3" />
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section aria-labelledby="all-content">
+      <h2 id="all-content">All Content</h2>
+      <FacetFilter
+        client:load
+        groups={groups}
+        entries={entries.map(contentFacets)}
+        list={listId}
+      />
+      <ol class="cards" id={listId}>
+        {entries.map((entry) => (
+          <li data-entry-id={entry.id}>
+            <ContentEntryCard entry={entry} heading="h3" />
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .learn {
+    padding-bottom: 80px;
+  }
+  .page-head {
+    padding-block: 64px 40px;
+  }
+  h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+  }
+  .lede {
+    max-width: 38em;
+    margin: 16px 0 0;
+    color: var(--color-ink-muted);
+    font-size: 18px;
+  }
+  section + section {
+    margin-top: 64px;
+  }
+  h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  #learn-list {
+    margin-top: 24px;
+  }
+  .cards > li {
+    display: flex;
+  }
+  /* The chips hide the entries they leave out. */
+  .cards > li[hidden] {
+    display: none;
+  }
+  .cards > li > :global(*) {
+    flex: 1;
+  }
+  @media (max-width: 640px) {
+    .page-head {
+      padding-block: 40px 28px;
+    }
+  }
+</style>

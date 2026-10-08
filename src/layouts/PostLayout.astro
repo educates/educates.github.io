@@ -1,0 +1,179 @@
+---
+// A blog post's page: its title, date, reading time, authors and tags, the
+// post itself, and a link to edit it on GitHub. A post in a series with two
+// or more parts published lists them in a box above the post, and a post
+// with three or more headings has a table of contents beside it on wide
+// screens. Below the post, Related Content shows up to three entries of any
+// kind that share the most Topics with it, closest in date first, outside
+// its own series. The cover is not shown.
+import type { MarkdownHeading } from "astro";
+import "../styles/prose.css";
+import BaseLayout from "./BaseLayout.astro";
+import ContentEntryCard from "../components/ContentEntryCard.astro";
+import PostAuthors from "../components/PostAuthors.astro";
+import PostByline from "../components/PostByline.astro";
+import PostTags from "../components/PostTags.astro";
+import SeriesBox from "../components/SeriesBox.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import { breadcrumbs } from "../lib/breadcrumbs.ts";
+import { relatedContent } from "../lib/content.ts";
+import {
+  postAuthors,
+  postPath,
+  postReadingMinutes,
+  postSeries,
+  postTags,
+  type Post,
+} from "../lib/posts.ts";
+import { postTableOfContents } from "../lib/table-of-contents.ts";
+import { editUrl } from "../lib/urls.ts";
+
+export interface Props {
+  post: Post;
+  /** The post's headings, as rendering the post returns them. */
+  headings: MarkdownHeading[];
+}
+
+const { post, headings } = Astro.props;
+const { title, description } = post.data;
+const [authors, tags, series, related] = await Promise.all([
+  postAuthors(post),
+  postTags(post),
+  postSeries(post),
+  relatedContent(`posts/${post.id}`),
+]);
+const toc = postTableOfContents(headings);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  section="Blog post"
+  cover={{
+    form: "post",
+    slug: post.id,
+    minutes: postReadingMinutes(post),
+    date: post.data.date,
+  }}
+  coverImage={post.data.cover}
+  breadcrumbs={breadcrumbs(postPath(post), title)}
+>
+  <div class="wrap post" class:list={{ "has-toc": toc.length > 0 }}>
+    <div class="post-body">
+      <article>
+        <header>
+          <h1>{title}</h1>
+          <PostByline post={post} />
+          <PostAuthors authors={authors} />
+        </header>
+        {series && <SeriesBox series={series} />}
+        <div class="prose">
+          <slot />
+        </div>
+        <footer>
+          <PostTags tags={tags} />
+          {post.filePath && (
+            <a class="edit" href={editUrl(post.filePath)}>
+              Edit this page
+            </a>
+          )}
+        </footer>
+      </article>
+      {toc.length > 0 && <TableOfContents entries={toc} />}
+    </div>
+    {related.length > 0 && (
+      <nav class="related" aria-labelledby="related-content-heading">
+        <h2 id="related-content-heading">Related Content</h2>
+        <ul>
+          {related.map((entry) => (
+            <li>
+              <ContentEntryCard entry={entry} heading="h3" />
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  /*
+   * The post is a 760px column. On wide screens a post with a table of
+   * contents gives it a column beside the post, where it stays in view until
+   * the post ends. Related Content below takes the width of both.
+   */
+  .post {
+    max-width: calc(760px + 48px + 200px + 2 * var(--space-gutter));
+    padding-block: 32px 80px;
+  }
+  .post-body {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  .has-toc .post-body {
+    display: grid;
+    grid-template-columns: minmax(0, 760px) 200px;
+    gap: 48px;
+    align-items: start;
+    max-width: none;
+  }
+  article {
+    min-width: 0;
+  }
+  header {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  h1 {
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 700;
+  }
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-line);
+  }
+  .edit {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .related {
+    margin-top: 64px;
+  }
+  .related h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .related ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related li {
+    display: flex;
+  }
+  .related li > :global(*) {
+    flex: 1;
+  }
+
+  /* Below wide screens the table of contents goes. */
+  @media (max-width: 1200px) {
+    .has-toc .post-body {
+      display: block;
+      max-width: 760px;
+    }
+  }
+</style>

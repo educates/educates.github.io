@@ -1,0 +1,1641 @@
+---
+// The Session demo: an HTML recreation of an Educates Session dashboard,
+// with a workshop step's instructions beside the Terminal, Console, Editor
+// and Slides tabs.
+//
+// Without a `state`, it is the live demo: a loop of about 20 seconds in
+// which three clickable actions run a command in the Terminal, select text
+// in the Editor and open the Console, and then the examiner check passes.
+// Its tabs are buttons; choosing one pauses the loop, and Replay starts it
+// again. Before its script runs, and with reduced motion, it shows the
+// loop's final state.
+//
+// With a `state`, one of the fixed states in src/lib/session-demo.ts, it is
+// a still picture of that moment, with no controls and no script.
+//
+// The layout follows the demo's own width, so a still in a narrow column
+// takes the stacked phone layout.
+import {
+  demoAttributes,
+  editorMatch,
+  editorStatus,
+  sessionDemoEditor,
+  sessionDemoStates,
+  sessionDemoTabs,
+  sessionDemoTerminal,
+  sessionNamespace,
+  terminalView,
+  yamlTokens,
+  type SessionDemoStateName,
+} from "../lib/session-demo.ts";
+
+export interface Props {
+  /** A fixed state to show as a still picture instead of the live demo. */
+  state?: SessionDemoStateName;
+  /** The accessible name of the demo, or of the still. */
+  label?: string;
+  /**
+   * The prefix of the live demo's element ids; give each live demo on a
+   * page its own.
+   */
+  id?: string;
+}
+
+const { state: still, id = "session-demo" } = Astro.props;
+const live = still === undefined;
+const state = sessionDemoStates[still ?? "final"];
+const stillLabels: Record<SessionDemoStateName, string> = {
+  start: "a workshop step's instructions beside its intro slide",
+  terminal: "a clickable action has run kubectl apply in the Terminal",
+  editor: "a clickable action has selected the image in the Editor",
+  console: "the Console shows the database running",
+  final: "the examiner check has passed",
+};
+const label =
+  Astro.props.label ??
+  `Example Session dashboard: ${
+    still
+      ? stillLabels[still]
+      : "a workshop step's instructions beside the Terminal, Console, Editor and Slides"
+  }`;
+
+const tabNames = {
+  terminal: "Terminal",
+  console: "Console",
+  editor: "Editor",
+  slides: "Slides",
+} as const;
+
+const terminal = terminalView(state);
+const match = editorMatch();
+const { folder, file } = sessionDemoEditor;
+
+// Each line of the file, split into colored runs; the run that is the
+// matching text is marked so the selection can cover it.
+const code = sessionDemoEditor.lines.map((line, index) => {
+  let column = 0;
+  return yamlTokens(line).map((token) => {
+    const start = column;
+    column += token.text.length;
+    const selection =
+      index === match.line && start === match.start && column === match.end;
+    return { ...token, selection };
+  });
+});
+
+// The minimap draws each line as a key block and a value block, one pixel
+// per character.
+const minimap = code.map((tokens) => {
+  const lead = tokens[0].kind ? 0 : tokens[0].text.length;
+  const key = tokens.find((token) => token.kind === "key");
+  const value = tokens.find(
+    (token) => token.kind === "string" || token.kind === "number",
+  );
+  const keyEnd = lead + (key?.text.length ?? 0);
+  const valueStart = keyEnd + 2;
+  const valueEnd = valueStart + (value?.text.length ?? 0);
+  return {
+    style: `--a:${lead}px;--b:${keyEnd}px;--c:${valueStart}px;--d:${valueEnd}px`,
+    number: value?.kind === "number",
+  };
+});
+
+const explorer = [
+  { name: "database", depth: 0, folder: "open" },
+  { name: "deployment.yaml", depth: 1, selected: true },
+  { name: "persistentvolumeclaim.yaml", depth: 1 },
+  { name: "secret.yaml", depth: 1 },
+  { name: "service.yaml", depth: 1 },
+  { name: "frontend", depth: 0, folder: "closed" },
+  { name: "frontend-src", depth: 0, folder: "closed" },
+];
+
+const actions = [
+  { label: "Terminal", body: sessionDemoTerminal.command, code: true },
+  { label: "Editor", body: `Select the image in ${folder}/${file}` },
+  { label: "Console", body: "Watch the database start" },
+];
+
+// The workshop step on show, and how far through the workshop it is, for
+// the step badge and the progress ring in the bottom bar. The ring's
+// circle has a circumference of 100, so the dash offset is the percentage
+// still to go.
+const workshopStep = { number: 3, of: 6 };
+const ringOffset = 100 - (workshopStep.number / workshopStep.of) * 100;
+---
+
+<div
+  class:list={["session-demo", { still: !live }]}
+  data-session-demo={live ? "" : undefined}
+  role={live ? "group" : "img"}
+  aria-label={label}
+  {...demoAttributes(state)}
+>
+  <div class="frame">
+    <div class="instructions">
+      <div class="bar" aria-hidden="true">
+        <span class="glyph home"></span>
+      </div>
+      <div class="page">
+        <p class="title">
+          <span class="title-step">{workshopStep.number}</span>Deploying an
+          application
+        </p>
+        <p class="prose">
+          Start with the database. Its resources are in the
+          <code>database</code> directory.
+        </p>
+        {actions.map((action, index) => (
+          <>
+            {index === 1 && (
+              <p class="prose">Its deployment sets the image it runs.</p>
+            )}
+            <div
+              class="action"
+              data-action={index}
+              data-look={state.actions[index]}
+            >
+              <span class="action-text">
+                <span class="action-label">{action.label}</span>
+                {action.code ? <code>{action.body}</code> : action.body}
+              </span>
+              <span class="glyph action-glyph" aria-hidden="true" />
+              <svg class="pointer" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 3l14 8-6 1.5L10 19z" />
+              </svg>
+            </div>
+          </>
+        ))}
+        <div class="check">
+          <span class="action-text">
+            <span class="action-label">Examiner</span>
+            The database is running
+          </span>
+          <span class="glyph check-glyph" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="step-bar" aria-hidden="true">
+        <span class="step-index">
+          <span class="glyph list"></span>
+        </span>
+        <span class="step-ring">
+          <svg viewBox="0 0 36 36">
+            <circle class="step-ring-track" cx="18" cy="18" r="15.9155" />
+            <circle
+              class="step-ring-fill"
+              cx="18"
+              cy="18"
+              r="15.9155"
+              stroke-dasharray="100"
+              stroke-dashoffset={ringOffset}
+            />
+          </svg>
+          <span class="step-ring-text">
+            {workshopStep.number}/{workshopStep.of}
+          </span>
+        </span>
+        <span class="step-back">
+          <span class="glyph left"></span>
+          <span class="step-label">Back</span>
+        </span>
+        <span
+          class="step-continue"
+          data-step-continue
+          aria-disabled={state.check === "passed" ? undefined : "true"}
+        >
+          <span class="step-label">Continue</span>
+          <span class="glyph right"></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="work">
+      <div class="toolbar">
+        <div
+          class="tabs"
+          role={live ? "tablist" : undefined}
+          aria-label={live ? "Dashboard tabs" : undefined}
+        >
+          {sessionDemoTabs.map((tab) =>
+            live ? (
+              <button
+                type="button"
+                class="tab"
+                role="tab"
+                id={`${id}-tab-${tab}`}
+                aria-controls={`${id}-panel-${tab}`}
+                aria-selected={tab === state.tab ? "true" : "false"}
+                tabindex={tab === state.tab ? 0 : -1}
+                data-tab-name={tab}
+              >
+                {tabNames[tab]}
+              </button>
+            ) : (
+              <span class="tab" data-tab-name={tab}>
+                {tabNames[tab]}
+              </span>
+            ),
+          )}
+        </div>
+        <div class="controls">
+          {live && (
+            <button type="button" class="control" data-control="pause" hidden>
+              <span class="glyph control-glyph" aria-hidden="true" />
+              <span class="control-text">Pause</span>
+            </button>
+          )}
+          <span class="timer" aria-hidden="true">
+            <span class="glyph stopwatch"></span>58:32
+          </span>
+          <span class="glyph sync" aria-hidden="true"></span>
+          <span class="glyph bars" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div
+          class="panel panel-terminal"
+          id={live ? `${id}-panel-terminal` : undefined}
+          role={live ? "tabpanel" : undefined}
+          aria-labelledby={live ? `${id}-tab-terminal` : undefined}
+          tabindex={live ? 0 : undefined}
+        >
+          <div class="terminal">
+            <div class="row">
+              <span class="prompt" set:text={sessionDemoTerminal.prompt} />
+              <span set:text={sessionDemoTerminal.history.command} />
+            </div>
+            {sessionDemoTerminal.history.output.map((line) => (
+              <div class="row">
+                <span set:text={line} />
+              </div>
+            ))}
+            <div class="row">
+              <span class="prompt" set:text={sessionDemoTerminal.prompt} />
+              <span
+                data-terminal="command"
+                hidden={!terminal.command}
+                set:text={sessionDemoTerminal.command}
+              />
+              <span
+                class="caret"
+                data-terminal="caret"
+                hidden={terminal.command}
+              />
+            </div>
+            {sessionDemoTerminal.output.map((line, index) => (
+              <div
+                class="row"
+                data-terminal="output"
+                hidden={index >= terminal.output}
+              >
+                <span set:text={line} />
+              </div>
+            ))}
+            <div class="row" data-terminal="prompt" hidden={!terminal.prompt}>
+              <span class="prompt" set:text={sessionDemoTerminal.prompt} />
+              <span class="caret" />
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="panel panel-console"
+          id={live ? `${id}-panel-console` : undefined}
+          role={live ? "tabpanel" : undefined}
+          aria-labelledby={live ? `${id}-tab-console` : undefined}
+          tabindex={live ? 0 : undefined}
+        >
+          <div class="k8s-header">
+            <span class="k8s-brand">kubernetes</span>
+            <span class="k8s-search">
+              <span class="glyph search" aria-hidden="true"></span>Search
+            </span>
+          </div>
+          <div class="k8s-toolbar">
+            <span class="glyph bars" aria-hidden="true"></span>Workloads
+          </div>
+          <div class="k8s-body">
+            <div class="k8s-card">
+              <p class="k8s-title">Deployments</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Images</th>
+                    <th>Pods</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="glyph status" aria-hidden="true"></span>
+                      blog-db
+                    </td>
+                    <td>postgres:16</td>
+                    <td>
+                      <span class="when-ready">1 / 1</span>
+                      <span class="when-waiting">0 / 1</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="k8s-card">
+              <p class="k8s-title">Pods</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="glyph status" aria-hidden="true"></span>
+                      blog-db-6f8b9c7d5d-kq4xz
+                    </td>
+                    <td>
+                      <span class="when-ready">Running</span>
+                      <span class="when-waiting">Pending</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="panel panel-editor"
+          id={live ? `${id}-panel-editor` : undefined}
+          role={live ? "tabpanel" : undefined}
+          aria-labelledby={live ? `${id}-tab-editor` : undefined}
+          tabindex={live ? 0 : undefined}
+        >
+          <div class="vs-activity" aria-hidden="true">
+            <span class="glyph vs-files on"></span>
+            <span class="glyph vs-search"></span>
+            <span class="glyph vs-scm"></span>
+            <span class="glyph vs-run"></span>
+            <span class="glyph vs-extensions"></span>
+            <span class="glyph vs-gear"></span>
+          </div>
+          <div class="vs-explorer" aria-hidden="true">
+            <p class="vs-heading">Explorer</p>
+            <p class="vs-section">Open Editors</p>
+            <p class="vs-item vs-open">
+              <span class="vs-close">×</span>
+              <span class="vs-yaml">!</span>
+              <em>{file}</em>
+              <small>{folder}</small>
+            </p>
+            <p class="vs-section">Exercises</p>
+            {explorer.map((item) => (
+              <p
+                class:list={[
+                  "vs-item",
+                  { "vs-selected": item.selected },
+                  item.folder && `vs-folder-${item.folder}`,
+                ]}
+                style={`--depth:${item.depth}`}
+              >
+                {item.folder ? (
+                  <span class="vs-chevron" />
+                ) : (
+                  <span class="vs-yaml">!</span>
+                )}
+                {item.name}
+              </p>
+            ))}
+            <p class="vs-section vs-closed vs-outline">Outline</p>
+            <p class="vs-section vs-closed">Timeline</p>
+          </div>
+          <div class="vs-main">
+            <div class="vs-tabs" aria-hidden="true">
+              <span class="vs-tab">
+                <span class="vs-yaml">!</span>
+                <em>{file}</em>
+                <span class="vs-close">×</span>
+              </span>
+            </div>
+            <div class="vs-crumbs" aria-hidden="true">
+              <span>{folder}</span>
+              <span class="vs-yaml">!</span>
+              <span>{file}</span>
+              <span class="when-unselected">apiVersion</span>
+              <span class="when-selected">spec</span>
+              <span class="when-selected">template</span>
+              <span class="when-selected">spec</span>
+              <span class="when-selected">containers</span>
+              <span class="when-selected">0</span>
+              <span class="when-selected">image</span>
+            </div>
+            <div class="vs-editor">
+              <div class="vs-code">
+                {code.map((tokens, index) => (
+                  <div
+                    class:list={[
+                      "vs-line",
+                      { "vs-match-line": index === match.line },
+                    ]}
+                  >
+                    <span class="vs-number">{index + 1}</span>
+                    <span class="vs-text">
+                      {tokens.map((token) => (
+                        <span
+                          class:list={[
+                            token.kind,
+                            { "vs-selection": token.selection },
+                          ]}
+                        >
+                          {token.text}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div class="vs-minimap" aria-hidden="true">
+                {minimap.map((line) => (
+                  <i class:list={{ number: line.number }} style={line.style} />
+                ))}
+              </div>
+            </div>
+          </div>
+          <div class="vs-status" aria-hidden="true">
+            <span class="vs-remote">&gt;&lt;</span>
+            <span class="vs-host">
+              {sessionNamespace}-editor.training.example.org
+            </span>
+            <span>⊗ 0 ⚠ 0</span>
+            <span class="vs-position" data-editor-status>
+              {editorStatus(state)}
+            </span>
+            <span class="vs-wide">Spaces: 2</span>
+            <span class="vs-wide">LF</span>
+            <span>YAML</span>
+          </div>
+        </div>
+
+        <div
+          class="panel panel-slides"
+          id={live ? `${id}-panel-slides` : undefined}
+          role={live ? "tabpanel" : undefined}
+          aria-labelledby={live ? `${id}-tab-slides` : undefined}
+          tabindex={live ? 0 : undefined}
+        >
+          <div class="slide">
+            <p class="slide-kicker">Kubernetes fundamentals</p>
+            <p class="slide-title">Deploying an application</p>
+            <ul>
+              <li>A database with persistent storage</li>
+              <li>A front end that talks to it</li>
+              <li>Checked by the workshop as you go</li>
+            </ul>
+          </div>
+          <span class="slide-controls" aria-hidden="true">
+            <span class="glyph left"></span>
+            <span class="glyph right"></span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { setUpSessionDemos } from "../scripts/session-demo.ts";
+  setUpSessionDemos();
+</script>
+
+<style>
+  .session-demo {
+    /* Colors of the products inside the dashboard, beyond the shared
+       product tokens: the slide and the Kubernetes dashboard on paper,
+       dimmed in the dark theme below, and VS Code's Dark+ chrome. */
+    --paper: #ffffff;
+    --paper-2: #f3f5f8;
+    --paper-ink: #1f2937;
+    --paper-muted: #5b6474;
+    --paper-line: #e5e7eb;
+    --k8s: #326ce5;
+    --success: #16a34a;
+    --pending: #d97706;
+    --vs-ink: #d4d4d4;
+    --vs-side: #252526;
+    --vs-ui: system-ui, -apple-system, "Segoe UI", Ubuntu, sans-serif;
+
+    container-type: inline-size;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* The dark theme, chosen or from the system, as in tokens.css. */
+  :global(:root[data-theme="dark"]) .session-demo {
+    --paper: #e6eaf0;
+    --paper-2: #d9dfe8;
+    --paper-ink: #111827;
+    --paper-muted: #4b5563;
+    --paper-line: #cbd2dc;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .session-demo {
+      --paper: #e6eaf0;
+      --paper-2: #d9dfe8;
+      --paper-ink: #111827;
+      --paper-muted: #4b5563;
+      --paper-line: #cbd2dc;
+    }
+  }
+
+  .session-demo [hidden] {
+    display: none !important;
+  }
+
+  .session-demo p {
+    margin: 0;
+  }
+
+  .frame {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    background: var(--color-surface);
+    box-shadow:
+      0 40px 80px -30px var(--color-shadow),
+      0 2px 6px var(--color-shadow);
+  }
+
+  .glyph {
+    display: inline-block;
+    flex: none;
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    mask: center / contain no-repeat;
+  }
+
+  /* The instructions */
+
+  .instructions {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border-right: 1px solid var(--color-line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px;
+    background: var(--color-dashboard-bar);
+    color: #ffffff;
+  }
+
+  .bar .glyph {
+    width: 17px;
+    height: 17px;
+  }
+
+  .home {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11l9-8 9 8M5 9.5V20h5v-6h4v6h5V9.5'/%3E%3C/svg%3E");
+  }
+  .left {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M11 6l-6 6 6 6'/%3E%3C/svg%3E");
+  }
+  .right {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+  }
+  .list {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01'/%3E%3C/svg%3E");
+  }
+
+  .page {
+    display: grid;
+    flex: 1;
+    gap: 12px;
+    align-content: start;
+    padding: 20px 22px 24px;
+  }
+
+  .title {
+    color: var(--color-ink);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  /* The step number, in a tinted badge before the step's title. */
+  .title-step {
+    display: inline-block;
+    min-width: 1.8em;
+    margin-right: 0.5em;
+    padding: 0.05em 0.3em;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--color-dashboard-bar) 15%, transparent);
+    text-align: center;
+  }
+
+  /* The bottom bar: the index and the progress ring on the left, Back and
+     Continue on the right. Continue stays faded, and marked disabled, until
+     the step's examiner check passes; it switches without a fade, so it is
+     never half faded while no longer disabled. */
+  .step-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 -2px 8px var(--color-shadow);
+    font: 500 13px/1 var(--font-sans);
+  }
+
+  .step-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid
+      color-mix(in srgb, var(--color-ink-muted) 50%, transparent);
+    border-radius: 6px;
+    color: var(--color-ink-muted);
+  }
+
+  .step-index .glyph {
+    width: 15px;
+    height: 15px;
+  }
+
+  .step-ring {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    margin-right: auto;
+  }
+
+  .step-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .step-ring circle {
+    fill: none;
+    stroke-width: 3;
+  }
+
+  .step-ring-track {
+    stroke: var(--color-chrome);
+  }
+
+  .step-ring-fill {
+    stroke: var(--color-dashboard-bar);
+    stroke-linecap: round;
+  }
+
+  .step-ring-text {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-ink-muted);
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .step-back,
+  .step-continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .step-back {
+    padding: 6px 9px;
+    border: 1px solid
+      color-mix(in srgb, var(--color-ink-muted) 70%, transparent);
+    color: var(--color-ink-muted);
+  }
+
+  .step-continue {
+    padding: 7px 16px;
+    background: var(--color-dashboard-bar);
+    color: #ffffff;
+  }
+
+  .step-continue[aria-disabled="true"] {
+    opacity: 0.45;
+  }
+
+  .step-back .glyph,
+  .step-continue .glyph {
+    width: 14px;
+    height: 14px;
+  }
+
+  .prose {
+    color: var(--color-ink-muted);
+  }
+
+  .prose code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+    font-size: 0.88em;
+  }
+
+  /* A clickable action, and the examiner check below them. */
+  .action,
+  .check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 13px;
+    border-radius: 8px;
+    font: 400 13.5px/1.4 var(--font-mono);
+    overflow-wrap: anywhere;
+  }
+
+  .action {
+    background: var(--color-highlight);
+    color: var(--color-highlight-ink);
+    transition:
+      box-shadow 0.2s,
+      transform 0.1s;
+  }
+
+  .action code {
+    font: inherit;
+  }
+
+  .action-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .action[data-look="pressed"] {
+    box-shadow: 0 0 0 3px var(--color-accent);
+    transform: scale(0.985);
+  }
+
+  .action-glyph {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M10 8.5l5 3.5-5 3.5z' fill='black'/%3E%3C/svg%3E");
+  }
+
+  .action[data-look="running"] .action-glyph,
+  .session-demo[data-check="running"] .check-glyph,
+  .session-demo[data-ready="false"] .status {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 1 1-6.2-8.56'/%3E%3C/svg%3E");
+  }
+
+  .action[data-look="running"] .action-glyph,
+  .session-demo[data-check="running"] .check-glyph {
+    animation: session-demo-spin 0.8s linear infinite;
+  }
+
+  .action[data-look="done"] .action-glyph,
+  .session-demo[data-check="passed"] .check-glyph,
+  .session-demo[data-ready="true"] .status {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 9.8'/%3E%3C/svg%3E");
+  }
+
+  .pointer {
+    position: absolute;
+    right: 18px;
+    bottom: -12px;
+    width: 22px;
+    height: 22px;
+    fill: var(--color-ink);
+    stroke: var(--color-surface);
+    stroke-width: 1.5;
+    opacity: 0;
+    transform: translate(26px, 18px);
+    transition:
+      opacity 0.2s,
+      transform 0.45s;
+    pointer-events: none;
+  }
+
+  .session-demo[data-pointer="0"] [data-action="0"] .pointer,
+  .session-demo[data-pointer="1"] [data-action="1"] .pointer,
+  .session-demo[data-pointer="2"] [data-action="2"] .pointer {
+    opacity: 1;
+    transform: none;
+  }
+
+  .check {
+    border: 1px dashed var(--color-line);
+    color: var(--color-ink-muted);
+  }
+
+  .check-glyph {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9'/%3E%3C/svg%3E");
+  }
+
+  .session-demo[data-check="running"] .check-glyph {
+    color: var(--color-accent);
+  }
+
+  .session-demo[data-check="passed"] .check {
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--success) 60%, transparent);
+    color: var(--color-ink);
+  }
+
+  .session-demo[data-check="passed"] .check-glyph {
+    color: var(--success);
+  }
+
+  /* The work area: the tabs and their panels */
+
+  .work {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-width: 0;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-chrome);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 7px 13px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-ink-muted);
+    font: 400 14px/1 var(--font-sans);
+    white-space: nowrap;
+  }
+
+  button.tab {
+    cursor: pointer;
+  }
+
+  button.tab:hover {
+    color: var(--color-ink);
+  }
+
+  .session-demo[data-tab="terminal"] [data-tab-name="terminal"],
+  .session-demo[data-tab="console"] [data-tab-name="console"],
+  .session-demo[data-tab="editor"] [data-tab-name="editor"],
+  .session-demo[data-tab="slides"] [data-tab-name="slides"] {
+    background: var(--color-dashboard-bar);
+    color: #ffffff;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    padding-inline: 4px;
+    color: var(--color-ink-muted);
+    font: 600 13px/1 var(--font-mono);
+  }
+
+  .controls .glyph {
+    width: 16px;
+    height: 16px;
+  }
+
+  .control {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 9px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: var(--color-surface);
+    color: var(--color-accent-strong);
+    font: 600 12px/1 var(--font-sans);
+    cursor: pointer;
+  }
+
+  .controls .control-glyph {
+    width: 13px;
+    height: 13px;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5v14M15 5v14'/%3E%3C/svg%3E");
+  }
+
+  .control[data-control="replay"] .control-glyph {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12a8 8 0 1 0 2.3-5.7L4 8.5M4 3.5v5h5'/%3E%3C/svg%3E");
+  }
+
+  .timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stopwatch {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='14' r='7.5'/%3E%3Cpath d='M12 10.5V14l2 2M10 2.5h4M12 2.5v4'/%3E%3C/svg%3E");
+  }
+  .sync {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11a8 8 0 0 0-14.3-4.3L4 9M4 4v5h5M4 13a8 8 0 0 0 14.3 4.3L20 15M20 20v-5h-5'/%3E%3C/svg%3E");
+  }
+  .bars {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E");
+  }
+  .search {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E");
+  }
+
+  .panels {
+    position: relative;
+    min-height: 400px;
+    background: var(--color-terminal);
+  }
+
+  /* Panels switch at once, as the dashboard's own tabs do. A cross-fade
+     would show both panels' text partly transparent while it runs, below
+     the WCAG contrast minimum. */
+  .panel {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+
+  .panel:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .session-demo[data-tab="terminal"] .panel-terminal,
+  .session-demo[data-tab="console"] .panel-console,
+  .session-demo[data-tab="editor"] .panel-editor,
+  .session-demo[data-tab="slides"] .panel-slides {
+    visibility: visible;
+  }
+
+  /* Terminal */
+
+  .panel-terminal {
+    background: var(--color-terminal);
+    color: var(--color-terminal-ink);
+  }
+
+  .terminal {
+    padding: 16px 18px;
+    font: 400 13.5px/1.65 var(--font-mono);
+  }
+
+  .row {
+    overflow-wrap: anywhere;
+  }
+
+  .row > span {
+    white-space: pre-wrap;
+  }
+
+  .prompt {
+    color: var(--color-terminal-success);
+  }
+
+  .caret {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.15em;
+    vertical-align: -0.2em;
+    background: var(--color-terminal-ink);
+    animation: session-demo-blink 1s steps(1) infinite;
+  }
+
+  /* Console: the Kubernetes dashboard */
+
+  .panel-console {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper-2);
+    color: var(--paper-ink);
+    font: 400 13px/1.4 var(--font-sans);
+  }
+
+  .k8s-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 9px 16px;
+    background: var(--paper);
+  }
+
+  /* Large text, so the logo blue keeps 3:1 on the dimmed paper. */
+  .k8s-brand {
+    color: var(--k8s);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .k8s-search {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 8px;
+    max-width: 240px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: var(--paper-2);
+    color: var(--paper-muted);
+  }
+
+  .k8s-search .glyph {
+    width: 15px;
+    height: 15px;
+  }
+
+  .k8s-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    background: var(--k8s);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .k8s-body {
+    display: grid;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .k8s-card {
+    border-radius: 4px;
+    background: var(--paper);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .k8s-title {
+    padding: 9px 14px;
+    font-size: 15px;
+  }
+
+  .panel-console table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .panel-console th {
+    padding: 6px 14px;
+    color: var(--paper-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .panel-console td {
+    padding: 9px 14px;
+    border-top: 1px solid var(--paper-line);
+    white-space: nowrap;
+  }
+
+  .status {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    vertical-align: -3px;
+    color: var(--pending);
+  }
+
+  .session-demo[data-ready="true"] .status {
+    color: var(--success);
+  }
+
+  .session-demo[data-ready="false"] .when-ready,
+  .session-demo[data-ready="true"] .when-waiting {
+    display: none;
+  }
+
+  /* Editor: VS Code as Educates shows it */
+
+  .panel-editor {
+    display: grid;
+    grid-template-columns: 44px 200px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 22px;
+    background: var(--color-editor);
+    color: var(--vs-ink);
+  }
+
+  .vs-activity {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-block: 14px 12px;
+    background: #333333;
+    color: #858585;
+  }
+
+  .vs-activity .glyph {
+    width: 24px;
+    height: 24px;
+  }
+
+  .vs-activity .on {
+    color: #ffffff;
+  }
+
+  .vs-activity::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 0;
+    width: 2px;
+    height: 44px;
+    background: #ffffff;
+  }
+
+  .vs-files {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z'/%3E%3Cpath d='M13.5 3v5.5H19'/%3E%3C/svg%3E");
+  }
+  .vs-search {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E");
+  }
+  .vs-scm {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='5' r='2'/%3E%3Ccircle cx='6' cy='19' r='2'/%3E%3Ccircle cx='18' cy='8' r='2'/%3E%3Cpath d='M6 7v10M18 10c0 4-6 3-11.3 7.4'/%3E%3C/svg%3E");
+  }
+  .vs-run {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 4.5v15l12-7.5z'/%3E%3C/svg%3E");
+  }
+  .vs-extensions {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 10h11v10.5h-11zM9 10v10.5M3.5 15.25h11M14.5 4h6v6h-6z'/%3E%3C/svg%3E");
+  }
+  .vs-gear {
+    margin-top: auto;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1'/%3E%3C/svg%3E");
+  }
+
+  .vs-explorer {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--vs-side);
+    color: #cccccc;
+    font: 400 13px/22px var(--vs-ui);
+  }
+
+  .vs-explorer p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .vs-heading {
+    padding-left: 20px;
+    color: #bbbbbb;
+    font-size: 11px;
+    line-height: 35px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .vs-section {
+    padding-left: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .vs-section::before,
+  .vs-chevron::before {
+    content: "›";
+    display: inline-block;
+    width: 16px;
+    color: #c5c5c5;
+    text-align: center;
+    transform: rotate(90deg);
+  }
+
+  .vs-closed::before,
+  .vs-folder-closed .vs-chevron::before {
+    transform: none;
+  }
+
+  .vs-explorer .vs-outline {
+    margin-top: auto;
+    border-top: 1px solid #3c3c3c;
+  }
+
+  .vs-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-left: calc(var(--depth, 0) * 8px + 12px);
+  }
+
+  .vs-item em {
+    font-style: italic;
+  }
+
+  .vs-item small {
+    margin-left: 4px;
+    color: rgba(204, 204, 204, 0.7);
+    font-size: 12px;
+  }
+
+  .vs-selected {
+    background: #094771;
+    box-shadow: inset 0 0 0 1px #007fd4;
+    color: #ffffff;
+  }
+
+  .vs-chevron {
+    margin-left: -6px;
+  }
+
+  .vs-yaml {
+    flex: none;
+    width: 14px;
+    color: #a074c4;
+    font: 700 13px/1 var(--font-mono);
+    text-align: center;
+  }
+
+  .vs-close {
+    flex: none;
+    width: 14px;
+    color: #c5c5c5;
+    text-align: center;
+  }
+
+  .vs-main {
+    display: grid;
+    grid-template-rows: 35px 22px minmax(0, 1fr);
+    min-width: 0;
+  }
+
+  .vs-tabs {
+    display: flex;
+    background: var(--vs-side);
+    font: 400 13px/1 var(--vs-ui);
+  }
+
+  .vs-tab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px 0 10px;
+    background: var(--color-editor);
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .vs-tab .vs-close {
+    margin-left: 8px;
+  }
+
+  .vs-crumbs {
+    display: flex;
+    align-items: center;
+    padding-left: 14px;
+    overflow: hidden;
+    color: #a9a9a9;
+    font: 400 12.5px/22px var(--vs-ui);
+    white-space: nowrap;
+  }
+
+  .vs-crumbs > span:not(:first-child, .vs-yaml)::before {
+    content: "›";
+    margin-inline: 6px;
+  }
+
+  .vs-crumbs > .vs-yaml + span::before {
+    content: none;
+  }
+
+  .vs-crumbs > .vs-yaml::before {
+    content: "›";
+    margin-inline: 6px;
+    color: #a9a9a9;
+    font: 400 12.5px/22px var(--vs-ui);
+  }
+
+  .vs-crumbs .vs-yaml {
+    width: auto;
+    margin-right: 4px;
+  }
+
+  .when-selected {
+    display: none;
+  }
+
+  .session-demo[data-selected="true"] .when-selected {
+    display: inline;
+  }
+
+  .session-demo[data-selected="true"] .when-unselected {
+    display: none;
+  }
+
+  .vs-editor {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vs-code {
+    padding: 2px 76px 0 0;
+    font: 400 13px/19px var(--font-mono);
+  }
+
+  .vs-line {
+    display: flex;
+    white-space: pre;
+  }
+
+  .vs-text {
+    display: flex;
+  }
+
+  .vs-number {
+    flex: none;
+    width: 52px;
+    padding-right: 22px;
+    color: #858585;
+    text-align: right;
+  }
+
+  /* The line with the cursor: the first, then the match's. */
+  .session-demo[data-selected="false"] .vs-line:first-child,
+  .session-demo[data-selected="true"] .vs-match-line {
+    box-shadow:
+      inset 0 1px 0 #282828,
+      inset 0 -1px 0 #282828;
+  }
+
+  .session-demo[data-selected="false"] .vs-line:first-child .vs-number,
+  .session-demo[data-selected="true"] .vs-match-line .vs-number {
+    color: #c6c6c6;
+  }
+
+  .key {
+    color: var(--color-editor-key);
+  }
+
+  .string {
+    color: var(--color-editor-string);
+  }
+
+  .number {
+    color: var(--color-editor-number);
+  }
+
+  .vs-selection {
+    transition: background 0.25s;
+  }
+
+  /* Selected text takes the editor's own ink: Dark+ keeps the string color,
+     which has too little contrast on the selection for WCAG AA. */
+  .session-demo[data-selected="true"] .vs-selection {
+    background: var(--color-editor-selection);
+    color: var(--vs-ink);
+  }
+
+  .vs-minimap {
+    position: absolute;
+    top: 4px;
+    right: 14px;
+    display: grid;
+    gap: 2px;
+    width: 56px;
+    opacity: 0.6;
+  }
+
+  .vs-minimap i {
+    --value: var(--color-editor-string);
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent var(--a),
+      var(--color-editor-key) var(--a) var(--b),
+      transparent var(--b) var(--c),
+      var(--value) var(--c) var(--d),
+      transparent var(--d)
+    );
+  }
+
+  .vs-minimap .number {
+    --value: var(--color-editor-number);
+  }
+
+  .vs-status {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 14px;
+    padding-right: 10px;
+    overflow: hidden;
+    background: #007acc;
+    color: #ffffff;
+    font: 400 12px/22px var(--vs-ui);
+    white-space: nowrap;
+  }
+
+  .vs-remote {
+    padding-inline: 10px;
+    background: #16825d;
+    font-weight: 700;
+  }
+
+  .vs-position {
+    margin-left: auto;
+  }
+
+  /* Slides */
+
+  .panel-slides {
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--paper-2);
+  }
+
+  .slide {
+    display: grid;
+    align-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 16 / 9;
+    padding: clamp(18px, 4cqi, 34px);
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    color: var(--paper-ink);
+  }
+
+  .slide-kicker {
+    color: var(--paper-muted);
+    font: 600 11px/1 var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .slide-title {
+    font-size: clamp(20px, 3.2cqi, 30px);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .slide ul {
+    display: grid;
+    gap: 4px;
+    margin: 4px 0 0;
+    padding-left: 18px;
+    font-size: clamp(13px, 1.8cqi, 16px);
+  }
+
+  .slide-controls {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    display: flex;
+    gap: 12px;
+    color: #2a76dd;
+  }
+
+  /* Narrower: the instructions above the work area. */
+  @container (max-width: 819px) {
+    .frame {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .instructions {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .panel-editor {
+      grid-template-columns: 44px 170px minmax(0, 1fr);
+    }
+  }
+
+  /* Phones: the instructions shrink to the actions and the check. */
+  @container (max-width: 559px) {
+    .prose,
+    .controls .sync,
+    .controls .bars,
+    .k8s-search,
+    .vs-explorer,
+    .vs-minimap,
+    .vs-host,
+    .vs-wide {
+      display: none;
+    }
+
+    .page {
+      padding: 16px;
+    }
+
+    .title {
+      font-size: 19px;
+    }
+
+    .step-bar {
+      padding-inline: 12px;
+    }
+
+    .step-back .step-label {
+      display: none;
+    }
+
+    .panels {
+      min-height: 360px;
+    }
+
+    .terminal {
+      padding: 12px 14px;
+      font-size: 12.5px;
+    }
+
+    .panel-editor {
+      grid-template-columns: 40px minmax(0, 1fr);
+    }
+
+    .vs-code {
+      padding-right: 8px;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .vs-number {
+      width: 36px;
+      padding-right: 12px;
+    }
+
+    .panel-console th,
+    .panel-console td {
+      padding-inline: 10px;
+    }
+
+    .k8s-body {
+      padding: 10px;
+    }
+
+    .panel-slides {
+      padding: 16px;
+    }
+
+    .slide {
+      aspect-ratio: auto;
+    }
+  }
+
+  .still *,
+  .still *::before {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .session-demo *,
+    .session-demo *::before {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  @keyframes session-demo-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @keyframes session-demo-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

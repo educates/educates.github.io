@@ -1,0 +1,37 @@
+pathways:
+  default: tour
+
+  paths:
+    tour:
+      title: Educates Feature Tour
+      steps:
+      - 00-workshop-overview
+      - 01-deploy-the-application
+      - 02-change-the-configuration
+      - 03-open-the-application
+      - 04-share-files
+      - 05-at-your-own-pace
+      - 06-check-your-work
+      - 07-wait-for-it
+      - 08-one-step-at-a-time
+      - 09-answer-a-question
+      - 10-checked-from-outside
+      - 11-the-big-picture
+      - 12-build-and-push
+      - 13-your-namespace
+      - 14-portal-rest-api
+      - 15-lookup-service
+      - 16-workshop-environments
+      - 17-terraform-modules
+      - 18-ai-authoring
+      - 99-workshop-summary
+
+    virtual-cluster:
+      title: Kubernetes Cluster Admin
+      steps:
+      - 50-virtual-cluster
+
+    no-kubernetes:
+      title: Python Without a Cluster
+      steps:
+      - 60-no-kubernetes

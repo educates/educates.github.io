@@ -1,0 +1,53 @@
+---
+// The homepage's "Used by": the logos of the companies that have
+// acknowledged they use Educates, from src/lib/used-by.ts. It renders
+// nothing while no company has.
+import { Image } from "astro:assets";
+import { usedBySection } from "../lib/used-by.ts";
+
+const section = usedBySection();
+---
+
+{section && (
+  <section class="used-by" aria-labelledby="used-by-heading">
+    <div class="wrap">
+      <h2 id="used-by-heading">Used by</h2>
+      <ul class="logos">
+        {section.logos.map((entry) => (
+          <li>
+            <Image src={entry.logo} alt={entry.company} height={40} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .used-by {
+    padding-block: 56px 0;
+  }
+  h2 {
+    color: var(--color-ink-muted);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 24px 48px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .logos img {
+    display: block;
+    width: auto;
+    height: 40px;
+  }
+</style>

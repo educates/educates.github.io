@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  labels:
+    app: frontend
+data:
+  default.conf: |
+    server {
+      listen 8080;
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        ssi on;
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-content
+  labels:
+    app: frontend
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>Bookshelf</title>
+      <style>
+        body { margin: 0; font: 18px/1.5 system-ui, sans-serif; color: #24292f;
+          background: linear-gradient(160deg, #fdf6ec, #f3e7d3); min-height: 100vh;
+          display: grid; place-items: center; }
+        main { max-width: 520px; padding: 40px; border-radius: 16px; background: #fff;
+          box-shadow: 0 10px 30px rgba(80, 50, 20, 0.15); text-align: center; }
+        h1 { margin: 0 0 8px; font-size: 36px; color: #8a4b14; }
+        p { margin: 8px 0; }
+        code { padding: 2px 6px; border-radius: 6px; background: #f6efe5; }
+      </style>
+    </head>
+    <body>
+      <main>
+        <h1>Bookshelf</h1>
+        <p>Your reading list, served from Kubernetes.</p>
+        <p>Answered by pod <code><!--# echo var="hostname" --></code></p>
+      </main>
+    </body>
+    </html>

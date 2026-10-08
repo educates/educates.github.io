@@ -1,0 +1,83 @@
+apiVersion: training.educates.dev/v1beta1
+kind: Workshop
+metadata:
+  name: lab-site-captures
+spec:
+  title: Educates Feature Tour
+  description: Deploy a small web application and see what a Session gives you along the way, from clickable actions and checks to the editor, the console and the services beside them.
+  duration: 30m
+  difficulty: beginner
+  publish:
+    image: "$(image_repository)/lab-site-captures-files:$(workshop_version)"
+    files:
+    - directory:
+        path: .
+      includePaths:
+      - /workshop/**
+      - /exercises/**
+      - /README.md
+  workshop:
+    files:
+    - image:
+        url: "$(image_repository)/lab-site-captures-files:$(workshop_version)"
+  environment:
+    # On a local cluster with a certificate authority of its own, copy the
+    # ingress certificate's secret, whose CA certificate the Session mounts.
+    # On a cluster without it, nothing is copied and nothing is mounted.
+    secrets:
+    - name: educates-wildcard-tls
+      namespace: educates-installer
+  request:
+    parameters:
+    - name: TEAM_NAME
+      value: ""
+  session:
+    env:
+    - name: PATHWAY_NAME
+      value: tour
+    namespaces:
+      budget: large
+      security:
+        token:
+          enabled: true
+    volumes:
+    - name: ingress-ca
+      secret:
+        secretName: educates-wildcard-tls
+        optional: true
+        items:
+        - key: ca.crt
+          path: ca.crt
+    volumeMounts:
+    - name: ingress-ca
+      mountPath: /opt/ingress-ca
+      readOnly: true
+    ingresses:
+    - name: frontend
+      protocol: http
+      host: frontend.$(session_namespace).svc
+      port: 8080
+    applications:
+      terminal:
+        enabled: true
+        layout: split
+      editor:
+        enabled: true
+      console:
+        enabled: true
+      slides:
+        enabled: true
+        reveal.js:
+          version: 4.x
+      examiner:
+        enabled: true
+      files:
+        enabled: true
+      uploads:
+        enabled: true
+      docker:
+        enabled: true
+      registry:
+        enabled: true
+      git:
+        enabled: true
