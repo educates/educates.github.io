@@ -175,7 +175,7 @@ This transformation ensures that the configuration is optimized for the specific
 
 ## Supported Infrastructure Providers
 
-Educates 3.x supports a variety of cluster infrastructure providers, each with its own set of opinionated defaults. These providers are defined in the [Educates repository](https://github.com/educates/educates-training-platform/tree/develop/carvel-packages/installer/bundle/config/ytt/_ytt_lib/infrastructure) and include configurations for packages such as [Contour](https://projectcontour.io) and [Kyverno](https://kyverno.io).
+Educates 3.x supports a variety of cluster infrastructure providers, each with its own set of opinionated defaults. These providers are defined in the [Educates repository](https://github.com/educates/educates-training-platform/tree/3.2.1/carvel-packages/installer/bundle/config/ytt/_ytt_lib/infrastructure) and include configurations for packages such as [Contour](https://projectcontour.io) and [Kyverno](https://kyverno.io).
 
 Refer to the official documentation for more details on the [configuration format](https://docs.educates.dev/en/stable/installation-guides/configuration-settings.html) and [supported infrastructure providers](https://docs.educates.dev/en/stable/installation-guides/infrastructure-providers.html).
 
