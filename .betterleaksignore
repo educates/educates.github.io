@@ -1,0 +1,12 @@
+# history scans (betterleaks git)
+282d9aa3ed459082542ca620e8d46cc0b7be4d50:getting-started-guides/about/crds.md:generic-password:101
+594b596bb61524342f62830f1ac58b52589a8342:src/content/features/lookup-service.md:generic-password:130
+594b596bb61524342f62830f1ac58b52589a8342:src/content/features/lookup-service.md:generic-password:144
+7cb2343d2cca638071d36f25300ec7aa11fe46d2:blog/2025-05-02-verify-educates-cloud-install/index.md:generic-password:299
+a2c9d0458f3b6fc349ae26bb67d0b3c1947681b5:captures/workshop/exercises/lookup/tenants.yaml:generic-password:41
+bac4ff76ea09d0333246a4c2615f785d49c7218f:blog/2025-03-21-how-to-best-work-locally/2025-03-21-how-to-best-work-locally.md:generic-password:211
+# working tree and staged scans
+src/content/features/lookup-service.md:generic-password:150
+src/content/features/lookup-service.md:generic-password:164
+src/content/posts/2025-03-21-how-to-best-work-locally/2025-03-21-how-to-best-work-locally.md:generic-password:211
+src/content/posts/2025-05-02-verify-educates-cloud-install/index.mdx:generic-password:301
