@@ -24,6 +24,19 @@ export function editUrl(filePath: string): string {
   return `${site.repository}/edit/${site.sourceBranch}/${filePath}`;
 }
 
+/**
+ * The GitHub page that opens a new issue about the page titled `title` at
+ * `pathname`: the title starts with the page's title, and the body names the
+ * page's canonical URL.
+ */
+export function reportIssueUrl(title: string, pathname: string): string {
+  const query = new URLSearchParams({
+    title: `${title}: `,
+    body: `Page: ${canonicalUrl(pathname)}\n\n`,
+  });
+  return `${site.repository}/issues/new?${query}`;
+}
+
 /** The canonical URL of the page at `pathname`: its absolute `pagePath()`. */
 export function canonicalUrl(pathname: string): string {
   return `${site.origin}${pagePath(pathname)}`;

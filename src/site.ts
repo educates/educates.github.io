@@ -4,7 +4,10 @@ export interface SiteSettings {
   readonly origin: string;
   /** The name appended to every page title. */
   readonly name: string;
-  /** The site's source on GitHub, where "Edit this page" links point. */
+  /**
+   * The site's source on GitHub, where "Edit this page" and "Report an
+   * issue" links point.
+   */
   readonly repository: string;
   /** The branch pull requests target, which edit links open. */
   readonly sourceBranch: string;
