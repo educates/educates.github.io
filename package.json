@@ -34,7 +34,7 @@
     "astro-expressive-code": "^0.44.3",
     "astro-mermaid": "^2.2.0",
     "feed": "^6.0.0",
-    "mermaid": "^11.17.2",
+    "mermaid": "^12.3.0",
     "node-html-parser": "^9.0.7",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
