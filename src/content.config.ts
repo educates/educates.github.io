@@ -422,6 +422,13 @@ const posts = defineCollection({
         slug: z.string(),
         /** One or two sentences for lists, search results and shared links. */
         description: z.string().min(1),
+        /**
+         * The day the post goes out, such as `2026-11-25`, at midnight UTC.
+         * A build leaves out a post dated after the UTC day it runs on, and
+         * a daily deploy publishes it on its date; until then, links to it
+         * from other pages render as plain text (see
+         * src/lib/post-schedule.ts).
+         */
         date: z.coerce.date(),
         /** Keys of `src/content/authors.yml`. */
         authors: z.array(z.string()).min(1),
@@ -437,7 +444,10 @@ const posts = defineCollection({
         part: z.number().int().positive().optional(),
         /** An image next to the post that replaces its generated cover. */
         cover: image().optional(),
-        /** A draft shows in the dev server only, never in a build. */
+        /**
+         * A draft shows in the dev server only, never in a build, and links
+         * to it from other pages render as plain text.
+         */
         draft: z.boolean().default(false),
       })
       .refine(

@@ -6,6 +6,7 @@ import sitemap from "@astrojs/sitemap";
 import expressiveCode from "astro-expressive-code";
 import mermaid from "astro-mermaid";
 import { openGraphImages } from "./src/integrations/open-graph-images.ts";
+import { scheduledPosts } from "./src/integrations/scheduled-posts.ts";
 import { singleSitemap } from "./src/integrations/single-sitemap.ts";
 import { admonitions } from "./src/markdown/admonitions.ts";
 import { taskListLabels } from "./src/markdown/task-list-labels.ts";
@@ -46,12 +47,16 @@ export default defineConfig({
   // <pre class="mermaid"> that Mermaid renders in the browser, in the theme
   // `data-theme` names; it comes after expressiveCode() and adds its plugin
   // to the processor above. A `mermaid` fence in MDX fails the build unless
-  // the processor's `rawHtml` feature is on. react() renders the islands;
-  // singleSitemap() reads sitemap()'s output; openGraphImages() draws every
-  // page's Open Graph image from the built pages.
+  // the processor's `rawHtml` feature is on. scheduledPosts(), in a build,
+  // fixes the day the build publishes posts up to and adds a step to the
+  // processor that unlinks links to the posts it leaves out. react()
+  // renders the islands; singleSitemap() reads sitemap()'s output;
+  // openGraphImages() draws every page's Open Graph image from the built
+  // pages.
   integrations: [
     expressiveCode(),
     mermaid({ enableLog: false }),
+    scheduledPosts(),
     mdx(),
     react(),
     sitemap(),
