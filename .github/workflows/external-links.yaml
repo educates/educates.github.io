@@ -34,12 +34,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # With the posts dated after today, so their links are checked before
+      # they go out.
       - name: Build the site
+        env:
+          INCLUDE_FUTURE_POSTS: "true"
         run: npx astro build
 
       # Online, with lychee.toml's settings, for http and https links only.
       # Links to educates.dev itself are left to the internal link check,
-      # which every pull request runs against the build.
+      # which every pull request runs against the build. Slack answers every
+      # client that isn't signed in with 403, so links to its workspaces
+      # can't be checked.
       - name: Check external links
         id: lychee
         uses: lycheeverse/lychee-action@v2
@@ -48,6 +54,7 @@ jobs:
             --root-dir "${{ github.workspace }}/dist"
             --scheme https --scheme http
             --exclude '^https?://educates\.dev(/|$)'
+            --exclude '^https?://[a-z0-9-]+\.slack\.com/'
             --accept '100..=103,200..=299,429'
             'dist/**/*.html'
           fail: false

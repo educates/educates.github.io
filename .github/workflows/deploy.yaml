@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  # By hand, and every day a post on main is dated, by Publish scheduled
+  # posts, since a build leaves out the posts dated after its day.
   workflow_dispatch:
 
 permissions:

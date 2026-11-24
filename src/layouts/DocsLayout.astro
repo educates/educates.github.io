@@ -14,7 +14,7 @@ import type { Crumb } from "../lib/breadcrumbs.ts";
 import type { PageCoverData } from "../lib/page-cover.ts";
 import type { Sidebar, SidebarItem } from "../lib/sidebar.ts";
 import { tableOfContents } from "../lib/table-of-contents.ts";
-import { pagePath } from "../lib/urls.ts";
+import { pagePath, reportIssueUrl } from "../lib/urls.ts";
 
 /** A link to a neighbouring page, with the page's title as its label. */
 interface PagerLink {
@@ -40,7 +40,10 @@ export interface Props {
   eyebrow?: string;
   /** The pages before and after this one, for a section read in order. */
   pager?: { previous?: PagerLink; next?: PagerLink };
-  /** Where to edit the page's source, from `editUrl()` in src/lib/urls.ts. */
+  /**
+   * Where to edit the page's source, from `editUrl()` in src/lib/urls.ts.
+   * A page with one also links to reporting an issue about it.
+   */
   editUrl?: string;
   /** The breadcrumb trail, from `breadcrumbs()` in src/lib/breadcrumbs.ts. */
   breadcrumbs?: Crumb[];
@@ -136,6 +139,10 @@ const toc = tableOfContents(headings);
           <a href={editUrl}>
             <Icon name="github" />
             Edit this page on GitHub
+          </a>
+          <a href={reportIssueUrl(title, Astro.url.pathname)}>
+            <Icon name="github" />
+            Report an issue
           </a>
         </p>
       )}
@@ -269,6 +276,9 @@ const toc = tableOfContents(headings);
     font-weight: 700;
   }
   .edit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
     margin: 48px 0 0;
     font-size: 15px;
   }

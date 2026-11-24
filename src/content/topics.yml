@@ -32,5 +32,5 @@ hub:
 
 news:
   label: News
-  tags: [announcement, releases]
+  tags: [announcement, releases, v4-new]
   order: 6
