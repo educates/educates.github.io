@@ -1,0 +1,58 @@
+name: Publish scheduled posts
+
+# Daily, and by hand: deploys `main` when a post on it is dated today, so a
+# post merged before its date goes out on that date. A build leaves out the
+# posts dated after the day it runs (see src/lib/post-schedule.ts).
+# Scheduled workflows run on the default branch, `develop`, so this one
+# starts Deploy to GitHub Pages on `main` rather than deploy.yaml having a
+# schedule of its own. A workflow_dispatch event is the one event that
+# GITHUB_TOKEN may start another workflow with.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: publish-scheduled-posts
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish scheduled posts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      # Node.js at the Volta pin in package.json.
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Find the posts dated today
+        id: due
+        run: |
+          slugs=$(npm run --silent posts-due)
+          if [ -z "$slugs" ]; then
+            echo "No post on main is dated $(date -u +%F)."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Dated $(date -u +%F):"
+            echo "$slugs"
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy main
+        if: steps.due.outputs.deploy == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yaml --repo "$GITHUB_REPOSITORY" --ref main
