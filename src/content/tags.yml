@@ -102,3 +102,8 @@ python:
   label: Python
   permalink: /python
   description: Python
+
+v4-new:
+  label: v4 New
+  permalink: /v4-new
+  description: v4 New
