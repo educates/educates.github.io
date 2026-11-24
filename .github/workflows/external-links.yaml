@@ -34,7 +34,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # With the posts dated after today, so their links are checked before
+      # they go out.
       - name: Build the site
+        env:
+          INCLUDE_FUTURE_POSTS: "true"
         run: npx astro build
 
       # Online, with lychee.toml's settings, for http and https links only.

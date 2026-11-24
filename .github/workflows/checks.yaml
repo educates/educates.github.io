@@ -41,9 +41,14 @@ jobs:
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: npm run format:check
 
+      # With the posts dated after today, which a deploy leaves out until
+      # their date, so they are checked before they go out and the links
+      # to them resolve.
       - name: Build the site
         id: build
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        env:
+          INCLUDE_FUTURE_POSTS: "true"
         run: npx astro build
 
       - name: Run the site check
