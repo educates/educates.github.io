@@ -3,6 +3,7 @@
 
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import type { PostCover } from "./cover.ts";
+import { isPublished, publishDay } from "./post-schedule.ts";
 import { seriesOf, type PostSeries } from "./post-series.ts";
 import { readingMinutes } from "./reading-time.ts";
 
@@ -14,13 +15,15 @@ export type Tag = CollectionEntry<"tags">;
 export const blogPath = "/blog";
 
 /**
- * The posts the site publishes, newest first. Drafts are left out of every
- * build and show only in the dev server.
+ * The posts the site publishes, newest first. A build leaves out drafts and
+ * the posts dated after its publish day, as `isPublished()` in
+ * src/lib/post-schedule.ts says; the dev server shows every post.
  */
 export async function posts(): Promise<Post[]> {
+  const day = import.meta.env.DEV ? undefined : publishDay(process.env);
   const entries = await getCollection(
     "posts",
-    (entry) => import.meta.env.DEV || !entry.data.draft,
+    (entry) => import.meta.env.DEV || isPublished(entry.data, day),
   );
   return entries.sort(
     (a, b) =>

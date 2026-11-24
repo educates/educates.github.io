@@ -23,6 +23,7 @@ npm.
 | `npm test` | Runs the unit tests. |
 | `npm run link-check` | Checks the internal links in the build in `dist/`, offline. Needs [lychee](https://lychee.cli.rs/), for example from `brew install lychee`. |
 | `npm run url-check -- <base-url>` | Requests every URL of the must-resolve list from the site served at `<base-url>`, such as `https://educates.dev` after a deploy; see below. |
+| `npm run posts-due [-- <day>]` | Prints the slug of each post that goes out on a day, `YYYY-MM-DD`, today in UTC unless you name one: the posts dated that day, drafts aside. See [Scheduling a blog post](#scheduling-a-blog-post). |
 | `npm run posters` | Downloads the poster of every video from the project's YouTube channel that has none, next to its outside Content entry in `src/content/outside-content/`. Run it after adding an entry for such a video, which fails the build until it has its poster, and commit each poster with its entry. |
 | `npm run captures` | Takes the screenshots and loops on the Features pages from a running Educates, and wires them into the Feature entries; `npm run captures -- setup` deploys what it needs first. See [scripts/captures/README.md](scripts/captures/README.md). |
 | `npm run docker-build` | Builds the Docker image; see below. |
@@ -98,16 +99,50 @@ Workflows in `.github/workflows/`:
   check, the formatting check, the build, the site check, the unit tests,
   the internal link check, and Lighthouse on a mobile profile, the median of
   three runs, on the pages listed in `lighthouserc.yml`. Accessibility or
-  SEO below 90 fails the checks; performance below 90 warns.
+  SEO below 90 fails the checks; performance below 90 warns. The checks
+  build the posts dated after today too, so a post is checked before it
+  goes out.
 - **Deploy to GitHub Pages** builds `main` and publishes it, on every push
   to `main` and by hand.
+- **Publish scheduled posts** runs every day at 06:17 UTC, and by hand, and
+  starts Deploy to GitHub Pages on `main` when a post on `main` is dated
+  that day.
 - **External links** checks the links to other sites every week and keeps
   one issue, "Dead external links", listing the dead ones. It never blocks
-  a pull request.
+  a pull request. Like the checks, it builds the posts dated after today.
 
 All of them run Node.js at the Volta pin in `package.json`. Dependabot
 opens a weekly pull request with the minor and patch updates for npm, one
 for GitHub Actions, and a pull request of its own for each major update.
+
+## Scheduling a blog post
+
+A post's `date` is the day it goes out, at midnight UTC. A build leaves
+out the posts dated after the UTC day it runs on, as it leaves out drafts:
+no page, no place in the lists, tags, feeds, sitemap, series boxes or
+related content, and a link to one in the Markdown of another page renders
+as its plain text. So a post can merge into `main` before its date. On its
+date, the Publish scheduled posts workflow deploys `main`, and the build
+publishes the post and turns the links to it back into links. The dev
+server shows every post.
+
+A link in an entry's frontmatter, such as a Feature's `reading` list, and
+a Featured Content id are not held back: add one only once its post is
+out, or the build has a dead link, or for Featured Content, fails.
+
+Two environment variables change what a build publishes:
+
+- `INCLUDE_FUTURE_POSTS=true` publishes the posts of every date, drafts
+  aside, as the checks do.
+- `PUBLISH_DAY=<YYYY-MM-DD>` builds the site as it is on that day. A build
+  sets it to the day it starts on, so a build that runs past midnight UTC
+  stays on one day.
+
+For example, to see the site as it will be on 25 November 2026:
+
+```
+PUBLISH_DAY=2026-11-25 npm run build && npm run preview
+```
 
 ## Publishing workflow for GitHub
 
