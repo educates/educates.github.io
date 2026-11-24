@@ -46,16 +46,26 @@ export default defineConfig({
   // mermaid() turns each `mermaid` fence in Markdown into a
   // <pre class="mermaid"> that Mermaid renders in the browser, in the theme
   // `data-theme` names; it comes after expressiveCode() and adds its plugin
-  // to the processor above. A `mermaid` fence in MDX fails the build unless
-  // the processor's `rawHtml` feature is on. scheduledPosts(), in a build,
-  // fixes the day the build publishes posts up to and adds a step to the
-  // processor that unlinks links to the posts it leaves out. react()
+  // to the processor above. Diagrams keep Mermaid's dagre layout, classic
+  // look and 200px flowchart labels: its defaults, ELK, neo and 120px, lay
+  // them out taller and break command names in labels across lines.
+  // astro-mermaid sets the theme. A `mermaid` fence in MDX fails the build
+  // unless the processor's `rawHtml` feature is on. scheduledPosts(), in a
+  // build, fixes the day the build publishes posts up to and adds a step to
+  // the processor that unlinks links to the posts it leaves out. react()
   // renders the islands; singleSitemap() reads sitemap()'s output;
   // openGraphImages() draws every page's Open Graph image from the built
   // pages.
   integrations: [
     expressiveCode(),
-    mermaid({ enableLog: false }),
+    mermaid({
+      enableLog: false,
+      mermaidConfig: {
+        layout: "dagre",
+        look: "classic",
+        flowchart: { wrappingWidth: 200 },
+      },
+    }),
     scheduledPosts(),
     mdx(),
     react(),
