@@ -4,7 +4,7 @@ title: "Educates 4 Configuration: From One Values File to a Ladder of Kinds"
 description: "Educates 4 replaces the 3.x values.yaml with versioned, schema-validated config kinds, from a five-line laptop file to a verbatim escape hatch. How the CLI translates each one into the operator chart and four resources, and why it never applies them."
 date: 2026-11-25
 authors: [jorge]
-tags: [educates, installation, cli, kubernetes]
+tags: [educates, installation, cli, kubernetes, v4-new]
 series: "How the installer works in Educates 4"
 part: 3
 ---
