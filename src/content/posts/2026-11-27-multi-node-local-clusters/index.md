@@ -11,7 +11,7 @@ Every Educates local cluster has always been a single node. That is fine for run
 
 We are pleased to announce that, in Educates 4.0, a local cluster can have several nodes, each with the Kubernetes labels and taints you declare, so a laptop cluster can model the node pools of a production one.
 
-4.0 isn't final yet, so everything here uses the latest prerelease at the moment of writing, 4.0.0-alpha.14.
+4.0 isn't final yet, so everything here uses the latest prerelease at the moment of writing, 4.0.0-alpha.15.
 
 ## The Problem with a Single-Node Local Cluster
 
@@ -29,7 +29,6 @@ In 4.0, the `EducatesLocalConfig` takes a `cluster.nodes` list. This one declare
 
 ```yaml
 cluster:
-  listenAddress: 10.10.10.1
   nodes:
     - role: control-plane
     - role: worker
@@ -49,7 +48,7 @@ Each node has a `role`, either `control-plane` or `worker`, optional `labels` an
 A few rules keep it simple:
 
 - **Leaving `cluster.nodes` out keeps one node**, the single control-plane cluster of 3.x.
-- **Exactly one node is the control plane.** It's the node that publishes ports 80 and 443 on the listen address, and a second one couldn't bind them. The CLI refuses a list with none or with more than one.
+- **Exactly one node is the control plane.** It's the node the [shared router](/blog/multiple-local-clusters#one-router-for-every-cluster) sends the cluster's names to, where Envoy serves ports 80 and 443. The CLI refuses a list with none or with more than one.
 - **Taints apply to workers.** Labels apply to every node.
 - **Every node runs the same Kubernetes version.** `--kubernetes-version` picks it, from 1.34 to 1.37, defaulting to 1.36.
 
@@ -57,13 +56,13 @@ A few rules keep it simple:
 
 ### Three fields, not a kind config
 
-The surface is narrow on purpose: three fields per node, not a raw kind config. The CLI renders them into the kind config you would otherwise write by hand, labels as the kubelet's `node-labels` and taints as its `register-with-taints`, as kind's [configuration guide](https://kind.sigs.k8s.io/docs/user/configuration/#nodes) describes. What Educates depends on stays under the CLI's control: the port mappings on the control plane, its `ingress-ready` label, and the containerd configuration that points every node at the local registry and mirrors.
+The surface is narrow on purpose: three fields per node, not a raw kind config. The CLI renders them into the kind config you would otherwise write by hand, labels as the kubelet's `node-labels` and taints as its `register-with-taints`, as kind's [configuration guide](https://kind.sigs.k8s.io/docs/user/configuration/#nodes) describes. What Educates depends on stays under the CLI's control: the control plane's `ingress-ready` label, and the containerd configuration that points every node at the local registry and mirrors. No node maps a host port, since the router reaches the control plane over Docker's `kind` network by its container name.
 
 The cost is that nothing else of kind is reachable from `cluster.nodes`: no per-node images, no mounts on workers, no feature gates or API server flags.
 
 ### Where Educates puts itself
 
-Educates doesn't pick nodes for its own components. Where each one lands follows from tolerations alone: kind keeps the control-plane taint once a cluster has workers, and almost nothing Educates installs tolerates a taint. The Envoy ingress runs on the control plane, where ports 80 and 443 arrive, and on untainted workers. The operator, the session manager, training portals and every workshop session run on untainted workers.
+Educates doesn't pick nodes for its own components. Where each one lands follows from tolerations alone: kind keeps the control-plane taint once a cluster has workers, and almost nothing Educates installs tolerates a taint. The Envoy ingress runs on the control plane, where the router sends ports 80 and 443, and on untainted workers. The operator, the session manager, training portals and every workshop session run on untainted workers.
 
 On the cluster above, that puts all of them on the general worker, and leaves the batch worker free for whatever your workshop schedules there. `educates local cluster status` shows each node with the labels and taints you declared, so you can check the shape before you build on it:
 

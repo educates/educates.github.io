@@ -11,7 +11,7 @@ Every session of a workshop that used the argocd extension package downloaded it
 
 We are pleased to announce that, in Educates 4.0, an extension package can be published as an image of its own and declared in a workshop by reference. Where the cluster supports Kubernetes image volumes, the package is mounted straight into the session, and where it doesn't, the same image is fetched instead. The workshop definition is the same either way.
 
-4.0 isn't final yet, so everything here uses the latest prerelease at the moment of writing, 4.0.0-alpha.14.
+4.0 isn't final yet, so everything here uses the latest prerelease at the moment of writing, 4.0.0-alpha.15.
 
 ## The Problem with Downloading Packages per Session
 
