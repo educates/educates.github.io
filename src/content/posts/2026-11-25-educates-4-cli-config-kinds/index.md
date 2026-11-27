@@ -1,7 +1,7 @@
 ---
 slug: educates-4-cli-config-kinds
 title: "Educates 4 Configuration: From One Values File to a Ladder of Kinds"
-description: "Educates 4 replaces the 3.x values.yaml with versioned, schema-validated config kinds, from a five-line laptop file to a verbatim escape hatch. How the CLI translates each one into the operator chart and four resources, and why it never applies them."
+description: "Educates 4 replaces the 3.x values.yaml with versioned, schema-validated config kinds, from a three-line laptop file to a verbatim escape hatch. How the CLI translates each one into the operator chart and four resources, and why it never applies them."
 date: 2026-11-25
 authors: [jorge]
 tags: [educates, installation, cli, kubernetes, v4-new]
@@ -73,7 +73,7 @@ flowchart TB
     r1 & r2 & r3 & r4 -.-> out
 ```
 
-- **`EducatesLocalConfig`** is a kind cluster on your laptop. The envelope plus a listen address is a complete install.
+- **`EducatesLocalConfig`** is a kind cluster on your laptop. The envelope alone is a complete install.
 - **`EducatesGKEConfig` and `EducatesEKSConfig`** are a GKE or EKS cluster where Educates installs and manages the ingress controller, certificates, DNS and policy engine.
 - **`EducatesInlineConfig`** is a cluster that already has an ingress controller, certificates and a policy engine, such as OpenShift.
 - **`EducatesConfig`** is the escape hatch: the specs of the four resources, verbatim, with no CLI defaults at all.
@@ -87,17 +87,16 @@ No rung is ever applied to a cluster, so no cluster ever holds an `EducatesGKECo
 `educates local config init` writes the smallest config there is:
 
 ```
-$ educates local config init --listen-address 10.10.10.1
+$ educates local config init
+wrote /Users/me/Library/Application Support/educates/router.yaml, with this host's IP address 192.168.1.10 as the router address
 wrote /Users/me/Library/Application Support/educates/config.yaml
 $ educates local config view --raw
 # yaml-language-server: $schema=https://schemas.educates.dev/cli/v1alpha1/EducatesLocalConfig.json
 apiVersion: cli.educates.dev/v1alpha1
 kind: EducatesLocalConfig
-cluster:
-  listenAddress: 10.10.10.1
 ```
 
-It lives in the data home, `~/Library/Application Support/educates` on macOS and `~/.local/share/educates` on Linux. A first install doesn't even need `init`: `educates local cluster create` writes the same file when there is none, with your host's current IP address as the listen address. That address must be a specific IP of your host, neither `0.0.0.0` nor loopback; [Running Several Educates Clusters on One Laptop](/blog/multiple-local-clusters) explains why, and how each named cluster gets a config of its own.
+It lives in the data home, `~/Library/Application Support/educates` on macOS and `~/.local/share/educates` on Linux. A first install doesn't even need `init`: `educates local cluster create` writes the same file when there is none. The cluster's config holds no address. Every local cluster is served through one shared router, on the router address, which `init` writes first to `router.yaml` beside it, a kind of its own, `EducatesLocalRouter`, with your host's current IP address. That address must be a specific IP of your host, neither `0.0.0.0` nor loopback, and an alias such as `10.10.10.1`, which survives network changes, is the better choice. The rest of this post uses one, set with `educates local router update --address 10.10.10.1`. [Running Several Educates Clusters on One Laptop](/blog/multiple-local-clusters) explains the router, and how each named cluster gets a config of its own.
 
 `view --raw` prints the file as written. `view` without it prints what the CLI will actually use, and says where the extra values came from:
 
@@ -108,8 +107,9 @@ $ educates local config view
 # Effective EducatesLocalConfig with all CLI defaults applied. Values
 # absent from the configuration file are filled in by the CLI: static
 # defaults, the image registry and version compiled into this CLI, and
-# (when no ingress.domain is set) the nip.io name of cluster.listenAddress,
-# with ingress.insecure defaulted to true.
+# (when no ingress.domain is set) a nip.io name of the router address,
+# with a named local cluster's name under it, and ingress.insecure
+# defaulted to true.
 #
 # To see the configuration file as written, run:
 #   educates local config view --raw
@@ -117,8 +117,6 @@ $ educates local config view
 #
 apiVersion: cli.educates.dev/v1alpha1
 kind: EducatesLocalConfig
-cluster:
-  listenAddress: 10.10.10.1
 ingress:
   domain: 10-10-10-1.nip.io
   insecure: true
@@ -129,7 +127,7 @@ imagePrePuller:
 operator:
   image:
     repository: ghcr.io/educates/educates-operator
-    tag: 4.0.0
+    tag: 4.0.0-alpha.15
   logLevel: info
 ```
 
@@ -137,26 +135,27 @@ Three layers fill those values in, and we keep them apart on purpose:
 
 - **Static defaults**, applied when the file loads: `clusterAdmin`, `lookupService`, the image pre-puller and the `info` log level.
 - **The CLI binary**: the operator image comes from the CLI's own registry and version, so one CLI version always installs the operator of the same version.
-- **Local cluster rules**: with no `ingress.domain`, the domain becomes the nip.io name of the listen address, now with dashes where 3.x used dots, and `ingress.insecure` becomes `true`, so a first install needs no certificate authority.
+- **Local cluster rules**: with no `ingress.domain`, the domain becomes the nip.io name of the router address, now with dashes where 3.x used dots, with a named cluster's name under it, and `ingress.insecure` becomes `true`, so a first install needs no certificate authority.
 
 `init --defaults` writes that effective config into the file instead. The catch is that it pins the operator tag, so a newer CLI keeps installing the old operator until you remove the line. The minimal file follows the CLI.
 
 The file never carries certificates. For a domain of your own, `render` and `deploy` take a cached wildcard certificate or mint a CA from a cached root CA, and with neither they stop and print the commands that fix it.
 
-The rest of the kind is short on purpose: the kind cluster itself (API server, subnets, volume mounts and [nodes](/blog/multi-node-local-clusters)), extra resolver domains, the lookup service, the image pre-puller, website styling, image versions and the operator. It has no mode, DNS, ACME, registry prefix or analytics; those live further down the ladder. The registry mirrors every local cluster shares sit beside it in `mirrors.yaml`, a kind of their own, `EducatesLocalMirrors`.
+The rest of the kind is short on purpose: the kind cluster itself (API server, subnets, volume mounts and [nodes](/blog/multi-node-local-clusters)), extra resolver domains, the lookup service, the image pre-puller, website styling, image versions and the operator. It has no mode, DNS, ACME, registry prefix or analytics; those live further down the ladder. The registry mirrors every local cluster shares sit beside it in `mirrors.yaml`, a kind of their own, `EducatesLocalMirrors`, as the router address does in `router.yaml`.
 
-## Five Lines In, Four Resources Out
+## Three Lines In, Four Resources Out
 
-Render that five-line file, with no cluster and no CA:
+Render that three-line file, with no cluster and no CA:
 
 ```
 $ educates admin platform render --local-config
-# === operator chart values (helm install -f - educates-installer ...) ===
+# === operator chart values (educates-installer chart) ===
 image:
   repository: ghcr.io/educates/educates-operator
-  tag: 4.0.0-alpha.14
+  tag: 4.0.0-alpha.15
 logLevel: info
-# === platform CRs (kubectl apply -f - ...) ===
+---
+# === platform CRs ===
 apiVersion: config.educates.dev/v1alpha1
 kind: EducatesClusterConfig
 metadata:
@@ -213,7 +212,7 @@ spec:
     storageGroup: 1
 ```
 
-Five lines became one Helm values file and four custom resources, each a singleton named `cluster`, in the order `deploy` applies them. What each resource does is the subject of [Part 2](/blog/educates-4-operator-and-crds). Everything that isn't in your file is the laptop rung's locked choices: Managed mode, Contour with a `ClusterIP` Envoy service on host ports 80 and 443 (kind has no load balancer), Kyverno for both policy engines, `storageGroup: 1`, and the cloud metadata addresses blocked from sessions.
+Three lines became one Helm values file and four custom resources, each a singleton named `cluster`, in the order `deploy` applies them. What each resource does is the subject of [Part 2](/blog/educates-4-operator-and-crds). Everything that isn't in your file is the laptop rung's locked choices: Managed mode, Contour with a `ClusterIP` Envoy service on host ports 80 and 443 (kind has no load balancer), Kyverno for both policy engines, `storageGroup: 1`, and the cloud metadata addresses blocked from sessions.
 
 Render is deterministic for a given config file and CLI version, with its keys sorted, so the output diffs cleanly in a review or in Git. That is why the translator never looks at the environment: the command applies the nip.io name, the CLI version and the certificate decision before translating. `--local-config` is the laptop mode that applies those local rules. `--config` is the explicit mode for a file of any kind, so an `EducatesLocalConfig` passed that way has to set its own domain:
 
@@ -221,7 +220,7 @@ Render is deterministic for a given config file and CLI version, with its keys s
 $ educates admin platform render --config local-no-domain.yaml
 Error: ingress.domain is required when using --config.
 Set it explicitly in local-no-domain.yaml, or use --local-config to fall back to the nip.io
-name of cluster.listenAddress.
+name of the router address.
 ```
 
 ## The Cloud Rungs: GKE and EKS
@@ -313,7 +312,7 @@ Error: gke-noacme.yaml: schema validation failed:
   - acme: required unless externalTLSTermination is true; it holds the ACME issuer settings for the wildcard certificate
 ```
 
-`externalTLSTermination: true` is for a cloud load balancer or proxy that terminates TLS in front of the cluster. No certificate is issued inside the cluster, URLs still use `https`, and `acme` is no longer required.
+`externalTLSTermination: true` is for a cloud load balancer or proxy that terminates TLS in front of the cluster. No certificate is issued inside the cluster, URLs still use `https`, and `acme` is no longer required. The laptop kind has the same switch, `ingress.externalTLSTermination`, which has the local router [play that load balancer](/blog/multiple-local-clusters#letting-the-router-end-tls).
 
 `EducatesEKSConfig` is the same stack on Route53 with IRSA:
 
@@ -424,7 +423,6 @@ Every kind has a JSON schema embedded in the CLI, and every command that reads a
 apiVersion: cli.educates.dev/v1alpha1
 kind: EducatesLocalConfig
 cluster:
-  listenAddress: 10.10.10.1
   networking:
     podCIDR: 10.244.0.0/16
     serviceCIDR: 10.96.0.0/12
@@ -488,8 +486,6 @@ apiVersion: cli.educates.dev/v1alpha1
 kind: EducatesLocalConfig
 operator:
   logLevel: trace
-cluster:
-  listenAddress: 10.10.10.1
 ```
 
 Save it empty to give up, and the CLI keeps a copy of your changes beside the config, which stays as it was. In 3.x, the same mistake lost the edit.
@@ -497,14 +493,14 @@ Save it empty to give up, and the CLI keeps a copy of your changes beside the co
 Editors get the schemas through the `yaml-language-server` modeline that `init` writes: any editor using the [YAML language server](https://github.com/redhat-developer/yaml-language-server) completes, hovers and validates from it. Not yet, though. `schemas.educates.dev` returns 404 until 4.0.0 ships, because the job that publishes the schemas runs only on final release tags. Until then, a file in your repository can point its modeline at a tag's copy, which resolves today:
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/educates/educates-training-platform/4.0.0-alpha.14/client-programs/pkg/config/v1alpha1/schemas/EducatesGKEConfig.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/educates/educates-training-platform/4.0.0-alpha.15/client-programs/pkg/config/v1alpha1/schemas/EducatesGKEConfig.schema.json
 ```
 
 Name such files `*.educates.yaml`, the convention the [schema notes](https://github.com/educates/educates-training-platform/blob/develop/developer-docs/json-schemas.md) document for a SchemaStore entry once the schemas are published.
 
 ## Coming from 3.x
 
-On a laptop, you don't migrate by hand. The first 4.0 command that needs the local config finds a 3.x `values.yaml` whose provider is `kind` or empty, translates it to an `EducatesLocalConfig`, moves any registry mirrors to `mirrors.yaml`, keeps the original as `values.yaml.v3-backup`, and prints a line for each thing it changed or dropped. [Running Several Educates Clusters on One Laptop](/blog/multiple-local-clusters#upgrading-from-a-single-cluster) shows that receipt. Check two things after it. Settings the laptop kind has no place for, such as an analytics tracking ID, are dropped without a line. And an explicit nip.io domain from 3.x becomes a custom domain in 4.0, secure by default, so set `ingress.insecure` or remove the domain to get the dashed nip.io default.
+On a laptop, you don't migrate by hand. The first 4.0 command that needs the local config finds a 3.x `values.yaml` whose provider is `kind` or empty, translates it to an `EducatesLocalConfig`, writes the router address to `router.yaml`, moves any registry mirrors to `mirrors.yaml`, keeps the original as `values.yaml.v3-backup`, and prints a line for each thing it changed or dropped. [Running Several Educates Clusters on One Laptop](/blog/multiple-local-clusters#upgrading-from-a-single-cluster) shows that receipt. Check two things after it. Settings the laptop kind has no place for, such as an analytics tracking ID, are dropped without a line. And an explicit nip.io domain from 3.x becomes a custom domain in 4.0, secure by default, so set `ingress.insecure` or remove the domain to get the dashed nip.io default.
 
 Any other provider gets an honest error and an untouched file: the DNS, ACME and identity wiring of a cloud install can't be guessed safely, so the CLI lists the five kinds and asks you to declare one. The [migration guide](https://docs.educates.dev/en/latest/installation-guides/migrating-from-v3.html) maps each 3.x provider to its kind and each removed command to its replacement. `educates create-cluster` and `educates deploy-platform --config` still work as aliases, but there is no in-place upgrade of a 3.x cluster install: delete it and install 4.0.
 
