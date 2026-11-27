@@ -11,7 +11,7 @@ part: 3
 
 In [Part 1](/blog/installing-educates-4-with-helm), we installed Educates 4 the way a GitOps tool does: the operator's Helm chart plus four resources. In [Part 2](/blog/educates-4-operator-and-crds), we followed the operator as it reconciles those four singleton resources and reports their status. This last part is about the `educates` CLI, which is where most of you start. You describe an install as a config kind, a short versioned YAML file, and the CLI translates it into the chart's values and the four resources. It never applies the config kind to a cluster.
 
-Educates 4.0 isn't final yet at the time of writting this post, so be mindful that some output might have changed. Always look at the current docs.
+Educates 4.0 isn't final yet at the time of writing this post, so be mindful that some output might have changed. Always look at the current docs.
 
 ## One Values File for Every Install
 
